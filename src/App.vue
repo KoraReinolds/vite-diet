@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import { Fats } from './classes/MacroNutrient';
+import { Food } from './classes/Food';
+import { Fats, Proteins, Carbohydrates } from './classes/MacroNutrient';
 
-const fats = new Fats()
-console.log(fats)
+const f = new Fats(8)
+const c = new Carbohydrates(11)
+const p = new Proteins(1)
+const food = new Food('egg', [p,f,c])
+console.log(food, food.getEnergy())
+
 </script>
