@@ -2,10 +2,10 @@
 import { Food } from './classes/Food';
 import { Fats, Proteins, Carbohydrates } from './classes/MacroNutrient';
 
-const f = new Fats(8)
-const c = new Carbohydrates(11)
-const p = new Proteins(1)
-const food = new Food('egg', [p,f,c])
+const fats = new Fats(8)
+const carbohydrates = new Carbohydrates(11)
+const proteins = new Proteins(1)
+const food = new Food({ name: 'egg', fats, carbohydrates, proteins })
 console.log(food, food.getEnergy())
 
 </script>

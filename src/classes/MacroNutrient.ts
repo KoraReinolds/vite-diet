@@ -1,7 +1,10 @@
 import { type MN } from "@/interfaces/IMacroNutrientValues";
 import { Composite } from "./Composite";
+import type { IImutable } from "@/interfaces/IImmutable";
 
-abstract class MacroNutrient extends Composite<MacroNutrient> {
+abstract class MacroNutrient
+extends Composite<MacroNutrient>
+implements IImutable<number> {
   abstract _energyPerGram: number
   abstract _type: MN; 
   private _value: number
@@ -11,12 +14,8 @@ abstract class MacroNutrient extends Composite<MacroNutrient> {
     this._value = value
   }
 
-  get value() {
+  get value(): number {
     return this._value
-  }
-  
-  set value(value: number) {
-    this._value = value
   }
 
   getEnergy(): number {
