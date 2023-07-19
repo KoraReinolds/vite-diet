@@ -49,18 +49,6 @@ class Carbohydrates extends MacroNutrient {
   _energyPerGram: number = 4.2;
   _type: MN = 'carbohydrates';
 }
-class ImmutableFats extends ImmutableMacroNutrient {
-  _energyPerGram: number = 9.3;
-  _type: MN = 'fats';
-}
-class ImmutableProteins extends ImmutableMacroNutrient {
-  _energyPerGram: number = 4.2;
-  _type: MN = 'proteins';
-}
-class ImmutableCarbohydrates extends ImmutableMacroNutrient {
-  _energyPerGram: number = 4.2;
-  _type: MN = 'carbohydrates';
-}
 
 export {
   Fats,
@@ -68,6 +56,4 @@ export {
   Carbohydrates,
   MacroNutrient,
   ImmutableMacroNutrient,
-  ImmutableFats,
-  ImmutableProteins,
-  ImmutableCarbohydrates, }
+}

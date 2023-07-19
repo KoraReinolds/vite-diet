@@ -1,6 +1,6 @@
 import type { IMutable } from "@/interfaces/IMutable";
 import { Composite } from "./Composite";
-import { ImmutableCarbohydrates, ImmutableFats, ImmutableProteins, type ImmutableMacroNutrient } from "./MacroNutrient";
+import { Carbohydrates, Fats, Proteins, type ImmutableMacroNutrient } from "./MacroNutrient";
 import type { IFoodParams } from "@/interfaces/IFoodParams";
 
 class Food
@@ -13,9 +13,9 @@ implements IMutable<number> {
     super()
     this.name = name
     this._value = value
-    this.add(new ImmutableFats(fats))
-    this.add(new ImmutableCarbohydrates(carbohydrates))
-    this.add(new ImmutableProteins(proteins))
+    this.add(new Fats(fats))
+    this.add(new Carbohydrates(carbohydrates))
+    this.add(new Proteins(proteins))
   }
   
   getEnergy(): number {
