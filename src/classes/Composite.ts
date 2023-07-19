@@ -1,7 +1,9 @@
 import type { IComposite } from "@/interfaces/IComposite";
 import type { IEnergy } from "@/interfaces/IEnergy";
+import type { IImmutable } from "@/interfaces/IImmutable";
 
-abstract class Composite<T extends Composite<T>> implements IEnergy, IComposite<T> {
+abstract class Composite<T extends Composite<T>>
+implements IEnergy, IComposite<T> {
 
   getEnergy(): number {
     let energy = 0

@@ -1,21 +1,21 @@
 import type { IMutable } from "@/interfaces/IMutable";
 import { Composite } from "./Composite";
-import type { MacroNutrient } from "./MacroNutrient";
+import { ImmutableCarbohydrates, ImmutableFats, ImmutableProteins, type ImmutableMacroNutrient } from "./MacroNutrient";
 import type { IFoodParams } from "@/interfaces/IFoodParams";
 
 class Food
-extends Composite<MacroNutrient>
+extends Composite<ImmutableMacroNutrient>
 implements IMutable<number> {
   name: string
-  _value: number = 100
-
+  private _value: number 
+  
   constructor({ name, value = 100, fats, carbohydrates, proteins }: IFoodParams) {
     super()
     this.name = name
     this._value = value
-    this.add(fats)
-    this.add(carbohydrates)
-    this.add(proteins)
+    this.add(new ImmutableFats(fats))
+    this.add(new ImmutableCarbohydrates(carbohydrates))
+    this.add(new ImmutableProteins(proteins))
   }
   
   getEnergy(): number {

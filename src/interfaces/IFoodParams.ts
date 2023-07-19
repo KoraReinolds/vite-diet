@@ -1,11 +1,9 @@
-import type { MacroNutrient } from "@/classes/MacroNutrient"
-
 interface IFoodParams {
   name: string
   value?: number
-  proteins: MacroNutrient
-  fats: MacroNutrient
-  carbohydrates: MacroNutrient
+  proteins: number
+  fats: number
+  carbohydrates: number
 }
 
 export type { IFoodParams }

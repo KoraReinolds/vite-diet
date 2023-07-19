@@ -1,5 +1,5 @@
-interface IImutable<T> {
+interface IImmutable<T> {
   get value(): T
 }
 
-export type { IImutable }
+export type { IImmutable }

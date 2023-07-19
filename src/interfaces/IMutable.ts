@@ -1,6 +1,6 @@
-import type { IImutable } from "./IImmutable";
+import type { IImmutable } from "./IImmutable";
 
-interface IMutable<T> extends IImutable<T> {
+interface IMutable<T> extends IImmutable<T> {
   set(value: T): void;
 }
 
