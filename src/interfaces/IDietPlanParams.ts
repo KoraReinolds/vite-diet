@@ -1,7 +1,8 @@
+import type { Dish } from "@/classes/Dish"
+import type { Food } from "@/classes/Food"
+
 interface IDietPlanParams {
-  proteins: number
-  fats: number
-  carbohydrates: number
+  food: Array<Food | Dish>
 }
 
 export type { IDietPlanParams }

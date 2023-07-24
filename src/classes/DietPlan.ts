@@ -1,15 +1,14 @@
 import { Composite } from "./Composite";
-import { Carbohydrates, Fats, Proteins, type MacroNutrient } from "./MacroNutrient";
+import type { Dish } from "./Dish";
+import type { Food } from "./Food";
 import type { IDietPlanParams } from "@/interfaces/IDietPlanParams";
 
 class DietPlan
-extends Composite<MacroNutrient> {
+extends Composite<Food | Dish> {
   
-  constructor({ fats, carbohydrates, proteins }: IDietPlanParams) {
+  constructor({ food }: IDietPlanParams) {
     super()
-    this.add(new Fats(fats))
-    this.add(new Carbohydrates(carbohydrates))
-    this.add(new Proteins(proteins))
+    food.forEach((f) => this.add(f))
   }
   
   getName(): string {
