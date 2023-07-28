@@ -19,6 +19,19 @@ implements IImmutable<number> {
     return this._value
   }
 
+  
+  get proteins(): number {
+    return 0
+  }
+
+  get carbohydrates(): number {
+    return 0
+  }
+
+  get fats(): number {
+    return 0
+  }
+
   getEnergy(): number {
     return this._energyPerGram * this._value
   }
@@ -40,14 +53,23 @@ implements IMutable<number> {
 class Fats extends MacroNutrient {
   _energyPerGram: number = 9.3;
   _type: MN = 'fats';
+  get fats(): number {
+    return this._value
+  }
 }
 class Proteins extends MacroNutrient {
   _energyPerGram: number = 4.2;
   _type: MN = 'proteins';
+  get proteins(): number {
+    return this._value
+  }
 }
 class Carbohydrates extends MacroNutrient {
   _energyPerGram: number = 4.2;
   _type: MN = 'carbohydrates';
+  get carbohydrates(): number {
+    return this._value
+  }
 }
 
 export {

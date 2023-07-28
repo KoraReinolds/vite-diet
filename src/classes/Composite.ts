@@ -1,8 +1,10 @@
 import type { IComposite } from "@/interfaces/IComposite";
 import type { IEnergy } from "@/interfaces/IEnergy";
+import type { IHasMacronutrients } from "@/interfaces/IHasMacronutrients";
+import type { MN } from "@/interfaces/IMacroNutrientValues";
 
 abstract class Composite<T extends Composite<any>>
-implements IEnergy, IComposite<T> {
+implements IEnergy, IHasMacronutrients, IComposite<T> {
 
   getEnergy(): number {
     let energy = 0
@@ -19,6 +21,30 @@ implements IEnergy, IComposite<T> {
 
   get(name: string): T | undefined {
     return this._components.get(name)
+  }
+  
+  getAll(): Map<string, T> {
+    return this._components
+  }
+ 
+  _getMacronutrient(mn: MN): number {
+    let val = 0
+    for (const component of this._components.values()) {
+      val += component[mn]
+    }
+    return val
+  }
+
+  get proteins(): number {
+    return this._getMacronutrient('proteins')
+  }
+
+  get carbohydrates(): number {
+    return this._getMacronutrient('carbohydrates')
+  }
+
+  get fats(): number {
+    return this._getMacronutrient('fats')
   }
 
   remove(name: string): boolean {
