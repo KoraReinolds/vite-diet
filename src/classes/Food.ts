@@ -9,10 +9,11 @@ implements IMutable<number> {
   name: string
   private _value: number 
   
-  constructor({ name, value = 100, fats, carbohydrates, proteins }: IFoodParams) {
+  constructor({ name, chunk = 100, value = 100, fats, carbohydrates, proteins }: IFoodParams) {
     super()
     this.name = name
     this._value = value
+    this.chunk = chunk
     this.add(new Fats(fats))
     this.add(new Carbohydrates(carbohydrates))
     this.add(new Proteins(proteins))

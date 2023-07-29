@@ -47,10 +47,23 @@ implements IEnergy, IHasMacronutrients, IComposite<T> {
     return this._getMacronutrient('fats')
   }
 
+  get proteinsChunk(): number {
+    return this.proteins / this.chunk
+  }
+
+  get carbohydratesChunk(): number {
+    return this.carbohydrates / this.chunk
+  }
+
+  get fatsChunk(): number {
+    return this.fats / this.chunk
+  }
+
   remove(name: string): boolean {
     return this._components.delete(name)
   }
 
+  chunk: number = 100
   abstract getName(): string
   private _components: Map<string, T> = new Map() 
 

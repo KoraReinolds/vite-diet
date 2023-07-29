@@ -4,6 +4,7 @@ interface IFoodParams {
   proteins: number
   fats: number
   carbohydrates: number
+  chunk?: number
 }
 
 export type { IFoodParams }
