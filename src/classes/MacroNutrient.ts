@@ -19,7 +19,6 @@ implements IImmutable<number> {
     return this._value
   }
 
-  
   get proteins(): number {
     return 0
   }
@@ -47,6 +46,9 @@ extends ImmutableMacroNutrient
 implements IMutable<number> {
   set(value: number) {
     this._value = value
+  }
+  setEnergy(value: number) {
+    this._value = value / this._energyPerGram
   }
 }
 

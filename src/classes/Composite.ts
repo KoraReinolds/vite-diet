@@ -13,7 +13,11 @@ implements IEnergy, IHasMacronutrients, IComposite<T> {
     }
     return energy
   }
-  
+
+  getEnergyChunk(): number {
+    return this.getEnergy() / this.chunk
+  }
+
   add(component: T): void {
     const name = component.getName()
     this._components.set(name, component)

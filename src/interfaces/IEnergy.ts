@@ -1,5 +1,6 @@
 interface IEnergy {
-  getEnergy(): number 
+  getEnergy(): number
+  getEnergyChunk(): number 
 }
 
 export type { IEnergy }
