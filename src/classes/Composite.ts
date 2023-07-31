@@ -31,7 +31,7 @@ implements IEnergy, IHasMacronutrients, IComposite<T> {
     return this._components
   }
  
-  _getMacronutrient(mn: MN): number {
+  getMacronutrient(mn: MN): number {
     let val = 0
     for (const component of this._components.values()) {
       val += component[mn]
@@ -40,15 +40,15 @@ implements IEnergy, IHasMacronutrients, IComposite<T> {
   }
 
   get proteins(): number {
-    return this._getMacronutrient('proteins')
+    return this.getMacronutrient('proteins')
   }
 
   get carbohydrates(): number {
-    return this._getMacronutrient('carbohydrates')
+    return this.getMacronutrient('carbohydrates')
   }
 
   get fats(): number {
-    return this._getMacronutrient('fats')
+    return this.getMacronutrient('fats')
   }
 
   get proteinsChunk(): number {

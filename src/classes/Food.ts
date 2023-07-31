@@ -2,6 +2,7 @@ import type { IMutable } from "@/interfaces/IMutable";
 import { Composite } from "./Composite";
 import { Carbohydrates, Fats, Proteins, type ImmutableMacroNutrient } from "./MacroNutrient";
 import type { IFoodParams } from "@/interfaces/IFoodParams";
+import type { MN } from "@/interfaces/IMacroNutrientValues";
 
 class Food
 extends Composite<ImmutableMacroNutrient>
@@ -20,7 +21,11 @@ implements IMutable<number> {
   }
   
   getEnergy(): number {
-    return this.value * super.getEnergy() / 100
+    return this.value * super.getEnergy() / this.chunk
+  }
+  
+  getMacronutrient(mn: MN): number {
+    return this.value * super.getMacronutrient(mn) / this.chunk
   }
 
   get value(): number {

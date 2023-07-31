@@ -1,3 +1,5 @@
+import type { MN } from "./IMacroNutrientValues"
+
 interface IHasMacronutrients {
   proteins: number
   fats: number
@@ -6,6 +8,7 @@ interface IHasMacronutrients {
   fatsChunk: number
   carbohydratesChunk: number
   chunk: number
+  getMacronutrient(mn: MN): number
 }
 
 export type { IHasMacronutrients }
