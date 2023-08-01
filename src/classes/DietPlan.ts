@@ -1,12 +1,12 @@
 import { Composite } from "./Composite";
-import type { Dish } from "./Dish";
 import type { Food } from "./Food";
 import type { IDietPlanParams } from "@/interfaces/IDietPlanParams";
 import LPSolver from 'javascript-lp-solver/src/solver';
 import { Carbohydrates, Fats, Proteins } from "./MacroNutrient";
+import { Result } from "./Result";
 
 class DietPlan
-  extends Composite<Food | Dish> {
+  extends Composite<Food> {
   private _proteins: Proteins = new Proteins(0)
   private _fats: Fats = new Fats(0)
   private _carbohydrates: Carbohydrates = new Carbohydrates(0)
@@ -25,13 +25,17 @@ class DietPlan
     this._carbohydrates.setEnergy(scale * pfcRatio.carbohydrates)
   }
 
-  _getConstraints() {
+  _getEdgeValues() {
     const gap = [100 - this._percise, 100 + this._percise]
-    const [prots, fats, carbs] = [
+    return [
       this._proteins.value,
       this._fats.value,
       this._carbohydrates.value,
     ].map(v => gap.map(i => v * i / 100))
+  }
+
+  _getConstraints() {
+    const [prots, fats, carbs] = this._getEdgeValues()
 
     const constraints: Record<string, Object> = {
       protein_min: { min: prots[0] },
@@ -83,7 +87,7 @@ class DietPlan
     }, init)
   }
 
-  getSelected(): (Food | Dish | undefined)[] {
+  getSelected(): (Food | undefined)[] {
     const all = this.getAll()
 
     return this._selected.map((name) => {
@@ -95,13 +99,26 @@ class DietPlan
     return this._selected = [...this.getAll().keys()]
   }
 
-  calculate(): void {
-    const { bounded, result, feasible, isIntegral, ...rest } = LPSolver.Solve({
+  calculate(): Result {
+    // console.log(this._getConstraints(), this._getVariables(), this._getInts())
+    const results: Record<string, number> = LPSolver.Solve({
       constraints: this._getConstraints(),
       variables: this._getVariables(),
       ints: this._getInts(),
     });
-    return rest
+   
+    const foods: Food = []
+
+    Object.entries(results)
+      .map(([key, val]) => {
+        const f = this.get(key)
+        if (f) {
+          f.set(val)
+          foods.push(f)
+        }
+      })
+    
+    return new Result({ results, foods })
   }
 
   getName(): string {
