@@ -10,9 +10,12 @@ class DietPlan
   private _proteins: Proteins = new Proteins(0)
   private _fats: Fats = new Fats(0)
   private _carbohydrates: Carbohydrates = new Carbohydrates(0)
-  private _percise: number = 1
+  private _percise: number = 2
   private _kkal: number
   private _selected: string[] = []
+  proteinsBoundaries: number[] = []
+  fatsBoundaries: number[] = []
+  carbohydratesBoundaries: number[] = []
 
   constructor({ food, pfcRatio, kkal }: IDietPlanParams) {
     super()
@@ -23,28 +26,24 @@ class DietPlan
     this._proteins.setEnergy(scale * pfcRatio.proteins)
     this._fats.setEnergy(scale * pfcRatio.fats)
     this._carbohydrates.setEnergy(scale * pfcRatio.carbohydrates)
+    this.carbohydratesBoundaries = this._getBoundaries(this._carbohydrates.value)
+    this.fatsBoundaries = this._getBoundaries(this._fats.value)
+    this.proteinsBoundaries = this._getBoundaries(this._proteins.value)
   }
 
-  _getEdgeValues() {
-    const gap = [100 - this._percise, 100 + this._percise]
-    return [
-      this._proteins.value,
-      this._fats.value,
-      this._carbohydrates.value,
-    ].map(v => gap.map(i => v * i / 100))
+  _getBoundaries(value: number) {
+    return [100 - this._percise, 100 + this._percise].map(i => Math.floor(value * i) / 100)
   }
 
   _getConstraints() {
-    const [prots, fats, carbs] = this._getEdgeValues()
-
     const constraints: Record<string, Object> = {
-      protein_min: { min: prots[0] },
-      protein_max: { max: prots[1] },
-      fats_min: { min: fats[0] },
-      fats_max: { max: fats[1] },
-      carbohydrates_min: { min: carbs[0] },
-      carbohydrates_max: { max: carbs[1] },
-      kkal: { min: this._kkal }
+      protein_min: { min: this.proteinsBoundaries[0] },
+      protein_max: { max: this.proteinsBoundaries[1] },
+      fats_min: { min: this.fatsBoundaries[0] },
+      fats_max: { max: this.fatsBoundaries[1] },
+      carbohydrates_min: { min: this.carbohydratesBoundaries[0] },
+      carbohydrates_max: { max: this.carbohydratesBoundaries[1] },
+      kkal: { max: this._kkal }
     }
 
     return constraints
@@ -87,12 +86,20 @@ class DietPlan
     }, init)
   }
 
+  get selected(): string[] {
+    return this._selected 
+  }
+
   getSelected(): (Food | undefined)[] {
     const all = this.getAll()
 
     return this._selected.map((name) => {
       return all.get(name)
     })
+  }
+  
+  setSelected(list: string[]) {
+    this._selected = list
   }
 
   selectAll() {
@@ -102,10 +109,13 @@ class DietPlan
   calculate(): Result {
     // console.log(this._getConstraints(), this._getVariables(), this._getInts())
     const results: Record<string, number> = LPSolver.Solve({
+      optimize: "kkal",
+      opType: "min",
       constraints: this._getConstraints(),
       variables: this._getVariables(),
       ints: this._getInts(),
     });
+    console.log(results)
    
     const foods: Food = []
 
