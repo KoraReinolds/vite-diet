@@ -12,7 +12,7 @@
       {{ key }}
     </div> 
   </div>
-  <div v-if="res.feasible">
+  <div>
 
     <div class="flex">
       <div class="w-20">
@@ -35,7 +35,7 @@
       </div>
     </div>
 
-    <div v-for="[key, food] in res.getAll()"
+    <div v-for="[key, food] in result.getAll()"
       :key="`res-${key}`"
       class="flex"
     >
@@ -67,35 +67,33 @@
         
       </div>
       <div class="w-20">
-        <div>{{ dp.proteinsBoundaries[0] }}</div>
-        <div>{{ Math.floor(res.proteins) }}</div>
-        <div>{{ dp.proteinsBoundaries[1] }}</div>
+        <div>{{ result.proteinsBoundaries[0] }}</div>
+        <div>{{ Math.floor(result.proteins) }}</div>
+        <div>{{ result.proteinsBoundaries[1] }}</div>
       </div>
       <div class="w-20">
-        <div>{{ dp.fatsBoundaries[0] }}</div>
-        <div>{{ Math.floor(res.fats) }}</div>
-        <div>{{ dp.fatsBoundaries[1] }}</div>
+        <div>{{ result.fatsBoundaries[0] }}</div>
+        <div>{{ Math.floor(result.fats) }}</div>
+        <div>{{ result.fatsBoundaries[1] }}</div>
       </div>
       <div class="w-20">
-        <div>{{ dp.carbohydratesBoundaries[0] }}</div>
-        <div>{{ Math.floor(res.carbohydrates) }}</div>
-        <div>{{ dp.carbohydratesBoundaries[1] }}</div>
+        <div>{{ result.carbohydratesBoundaries[0] }}</div>
+        <div>{{ Math.floor(result.carbohydrates) }}</div>
+        <div>{{ result.carbohydratesBoundaries[1] }}</div>
       </div>
       <div class="w-20">
-        {{ res.getEnergy() }}
+        {{ result.getEnergy() }}
       </div>
     </div>
   </div>
-  <div v-else>
-    not result
-  </div>
-  <div>{{ res._results }}</div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch, type Ref } from 'vue';
 import { DietPlan } from './classes/DietPlan';
 import { Food } from './classes/Food';
+import { Result } from 'postcss';
+import { LPSolverResult } from './classes/LPSolverResult';
 
 const poridge = new Food({ name: 'poridge', fats: 5, carbohydrates: 63, proteins: 14 })
 const milk = new Food({ name: 'milk', fats: 3.2, carbohydrates: 4.7, proteins: 2.9 })
@@ -107,7 +105,9 @@ const rice = new Food({ name: 'rice', fats: 0.5, carbohydrates: 75, proteins: 6.
 const chicken = new Food({ name: 'chicken', fats: 0.5, carbohydrates: 0.5, proteins: 20 })
 const dp = new DietPlan({ food: [chicken, rice, egg, poridge, milk, strawberry, cherry, nuts], pfcRatio: { proteins: 25, carbohydrates: 55, fats: 20 }, kkal: 2500 })
 // dp.selectAll()
-const res = ref(dp.calculate())
+const result = new LPSolverResult(dp)
+result.calculate()
+// const res = ref(dp.calculate())
 const selected: Ref<Record<string, boolean>> = ref(dp.selected.reduce((obj: Record<string, boolean>, v) => {
   if (v) obj[v] = true
   return obj
@@ -117,7 +117,7 @@ watch(selected.value, (selectedObj) => {
     .filter(([key, val]) => !!val)
     .map(([key, val]) => key)
   )
-  res.value = dp.calculate()
+  result.calculate()
 })
 
 </script>
