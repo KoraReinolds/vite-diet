@@ -1,11 +1,15 @@
-import type { Composite } from "@/classes/Composite"
+import type { AComposite } from "@/classes/Composite"
 
-interface IComposite<T extends Composite<T>> {
-  add(component: T): void
+interface IImmutableComposite<T extends AComposite<T>> {
   get(name: string): T | undefined
-  remove(name: string): boolean
-  getName(): string
+  name: string
   getAll(): Map<string, T>
+  getAllList(): T[]
 }
 
-export type { IComposite }
+interface IComposite<T extends AComposite<T>> extends IImmutableComposite<T> {
+  add(component: T): void
+  remove(name: string): boolean
+}
+
+export type { IImmutableComposite, IComposite }
