@@ -1,24 +1,15 @@
-import { type MN } from "@/interfaces/IMacroNutrientValues";
-import { Composite } from "./Composite";
-import type { IMutable } from "@/interfaces/IMutable";
-import type { IImmutable } from "@/interfaces/IImmutable";
+import { ImmutableComposite } from "./Composite";
+import type { ILeafParams } from "@/interfaces/ICompositeParams";
 
-abstract class ImmutableMacroNutrient
-extends Composite<ImmutableMacroNutrient>
-implements IImmutable<number> {
-  abstract _energyPerGram: number
-  abstract _type: MN; 
-  protected _value: number
-  
-  constructor(value: number) {
-    super()
-    this._value = value
+class MacroNutrient
+extends ImmutableComposite<MacroNutrient> {
+  protected _energyPerGram!: number;
+
+  constructor({ chunks, energyPerGram, name }: ILeafParams) {
+    super({ childs: [], chunks, name })
+    this._energyPerGram = energyPerGram
   }
-
-  get value() {
-    return this._value
-  }
-
+ 
   get proteins(): number {
     return 0
   }
@@ -32,45 +23,37 @@ implements IImmutable<number> {
   }
 
   getEnergy(): number {
-    return this._energyPerGram * this._value
+    return this.getEnergyChunk() * this.chunks
+  }
+  
+  getEnergyChunk(): number {
+    return this._energyPerGram
   }
 
-  getName(): string {
-    return this._type
-  }
-
-}
-
-abstract class MacroNutrient
-extends ImmutableMacroNutrient
-implements IMutable<number> {
-  set(value: number) {
-    this._value = value
-  }
-  setEnergy(value: number) {
-    this._value = value / this._energyPerGram
-  }
 }
 
 class Fats extends MacroNutrient {
-  _energyPerGram: number = 9.3;
-  _type: MN = 'fats';
+  constructor(chunks: number) {
+    super({ chunks, energyPerGram: 9.3, name: 'fats' })
+  }
   get fats(): number {
-    return this._value
+    return this.chunks
   }
 }
 class Proteins extends MacroNutrient {
-  _energyPerGram: number = 4.2;
-  _type: MN = 'proteins';
+  constructor(chunks: number) {
+    super({ chunks, energyPerGram: 4.2, name: 'proteins' })
+  }
   get proteins(): number {
-    return this._value
+    return this.chunks
   }
 }
 class Carbohydrates extends MacroNutrient {
-  _energyPerGram: number = 4.2;
-  _type: MN = 'carbohydrates';
+  constructor(chunks: number) {
+    super({ chunks, energyPerGram: 4.2, name: 'carbohydrates' })
+  }
   get carbohydrates(): number {
-    return this._value
+    return this.chunks
   }
 }
 
@@ -79,5 +62,4 @@ export {
   Proteins,
   Carbohydrates,
   MacroNutrient,
-  ImmutableMacroNutrient,
 }
