@@ -8,7 +8,6 @@ interface IChunks extends Required<IChunksParams> {
   fatsChunk: number
   carbohydratesChunk: number
   getEnergyChunk(): number
-  value: number
 }
 
 export type { IChunks, IChunksParams }

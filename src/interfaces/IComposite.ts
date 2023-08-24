@@ -1,15 +1,21 @@
-import type { AComposite } from "@/classes/Composite"
+import type { IEnergy } from "./IEnergy"
+import type { IHasMacronutrients } from "./IHasMacronutrients"
+import type { IChunks } from "./IChunks"
+import type { IMutable } from "./IMutable"
 
-interface IImmutableComposite<T extends AComposite<T>> {
+interface IImmutableComposite<T extends IImmutableComposite<any>>
+extends IEnergy, IHasMacronutrients, IChunks {
   get(name: string): T | undefined
   name: string
-  getAll(): Map<string, T>
   getAllList(): T[]
 }
 
-interface IComposite<T extends AComposite<T>> extends IImmutableComposite<T> {
+interface IMutableChilds<T extends IImmutableComposite<any>> {
   add(component: T): void
   remove(name: string): boolean
 }
 
-export type { IImmutableComposite, IComposite }
+interface IComposite<T extends IImmutableComposite<any>>
+extends IImmutableComposite<T>, IMutable<number>, IMutableChilds<T> {}
+
+export type { IComposite, IImmutableComposite, IMutableChilds }

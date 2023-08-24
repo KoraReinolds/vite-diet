@@ -1,15 +1,20 @@
-import type { IChunks } from "@/interfaces/IChunks";
-import type { IComposite, IImmutableComposite } from "@/interfaces/IComposite";
-import type { IEnergy } from "@/interfaces/IEnergy";
-import type { IHasMacronutrients } from "@/interfaces/IHasMacronutrients";
+import type { IImmutableComposite } from "@/interfaces/IComposite";
 import type { ICompositeParams } from "@/interfaces/ICompositeParams";
 import type { MN } from "@/interfaces/IMacroNutrientValues";
+import { MutableChilds, MutableValue } from "./CompositeDecorator";
 
 abstract class AComposite<T extends AComposite<any>>
-implements IEnergy, IHasMacronutrients, IImmutableComposite<T>, IChunks {
+implements IImmutableComposite<T> {
+
+  constructor({ childs = [], chunks = 100, chunkSize = 1, name }: ICompositeParams<T>) {
+    childs.forEach(child => this._add(child))
+    this._chunks = chunks
+    this._chunkSize = chunkSize
+    this._name = name
+  }
 
   getAllList(): T[] {
-    return [...this.getAll().values()]
+    return [...this._components.values()]
   }
 
   getEnergy(): number {
@@ -31,10 +36,6 @@ implements IEnergy, IHasMacronutrients, IImmutableComposite<T>, IChunks {
 
   get(name: string): T | undefined {
     return this._components.get(name)
-  }
-
-  getAll(): Map<string, T> {
-    return this._components
   }
 
   private _getMacronutrient(mn: MN): number {
@@ -86,10 +87,6 @@ implements IEnergy, IHasMacronutrients, IImmutableComposite<T>, IChunks {
     this._chunks = val
   }
 
-  protected _remove(name: string): boolean {
-    return this._components.delete(name)
-  }
-
   get name(): string {
     return this._name || this.constructor.name
   }
@@ -97,35 +94,31 @@ implements IEnergy, IHasMacronutrients, IImmutableComposite<T>, IChunks {
   protected _chunkSize: number = 1
   protected _chunks: number = 100
   private _multiply: number = 1
-  private _components: Map<string, T> = new Map()
+  protected _components: Map<string, T> = new Map()
   protected _name: string | undefined
 
 }
 
 class ImmutableComposite<T extends AComposite<any>>
-  extends AComposite<T> {
+extends AComposite<T> {}
 
-  constructor({ childs = [], chunks = 100, chunkSize = 1, name }: ICompositeParams<T>) {
-    super()
-    childs.forEach(child => this._add(child))
-    this._chunks = chunks
-    this._chunkSize = chunkSize
-    this._name = name
-  }
+@MutableValue
+class ImmutableCompositeWithMutableValue<T extends AComposite<any>>
+extends AComposite<T> {}
 
-}
-
+@MutableChilds
+@MutableValue
 class Composite<T extends AComposite<any>>
-  extends ImmutableComposite<T> implements IComposite<T> {
+extends AComposite<T> {}
 
-  add(component: T): void {
-    this._add(component)
-  }
+@MutableChilds
+class CompositeWithFixedValue<T extends AComposite<any>>
+extends AComposite<T> {}
 
-  remove(name: string): boolean {
-    return this._remove(name)
-  }
-
+export {
+  AComposite,
+  Composite,
+  ImmutableComposite,
+  CompositeWithFixedValue,
+  ImmutableCompositeWithMutableValue,
 }
-
-export { AComposite, Composite, ImmutableComposite }
