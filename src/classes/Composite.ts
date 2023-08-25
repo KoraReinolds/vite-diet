@@ -1,7 +1,8 @@
-import type { IImmutableComposite } from "@/interfaces/IComposite";
+import type { IImmutableComposite, IMutableChilds } from "@/interfaces/IComposite";
 import type { ICompositeParams } from "@/interfaces/ICompositeParams";
 import type { MN } from "@/interfaces/IMacroNutrientValues";
 import { MutableChilds, MutableValue } from "./CompositeDecorator";
+import type { IMutable } from "@/interfaces/IMutable";
 
 abstract class AComposite<T extends AComposite<any>>
 implements IImmutableComposite<T> {
@@ -104,16 +105,37 @@ extends AComposite<T> {}
 
 @MutableValue
 class ImmutableCompositeWithMutableValue<T extends AComposite<any>>
-extends AComposite<T> {}
+extends AComposite<T> implements IMutable<number> {
+  set(value: number): void {
+    this.set(value)
+  }
+}
 
 @MutableChilds
 @MutableValue
 class Composite<T extends AComposite<any>>
-extends AComposite<T> {}
+extends AComposite<T> implements IMutable<number> {
+  set(value: number): void {
+    this.set(value)
+  }
+  add(component: T): void {
+    this.add(component)
+  }
+  remove(name: string): boolean {
+    return this.remove(name)
+  }
+}
 
 @MutableChilds
 class CompositeWithFixedValue<T extends AComposite<any>>
-extends AComposite<T> {}
+extends AComposite<T> implements IMutableChilds<T> {
+  add(component: T): void {
+    this.add(component)
+  }
+  remove(name: string): boolean {
+    return this.remove(name)
+  }
+}
 
 export {
   AComposite,
