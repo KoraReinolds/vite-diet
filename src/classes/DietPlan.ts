@@ -1,25 +1,22 @@
+import type { IDietPlan } from "@/interfaces/IDietPlan";
 import { Composite } from "./Composite";
 import type { Food } from "./Food";
 import type { IDietPlanParams } from "@/interfaces/IDietPlanParams";
-import { Carbohydrates, Fats, Proteins } from "./MacroNutrient";
-// import { Result } from "./Node";
+import type { PFC } from "@/interfaces/PFC";
 
 class DietPlan
-extends Composite<Food> {
+extends Composite<Food>
+implements IDietPlan {
   private _percise: number = 2
   private _kkal: number
-  private _selected: string[] = []
-  private _pfc: { proteins: number, carbohydrates: number, fats: number }
+  private _pfc: PFC
+  protected _chunks: number = 1
 
-  constructor({ food, pfcRatio, kkal }: IDietPlanParams) {
-    super()
-    food.forEach((f) => this.add(f))
+  constructor(params: IDietPlanParams) {
+    const { pfcRatio, kkal } = params
+    super(params)
     this._kkal = kkal
-    this._pfc = pfcRatio 
-  }
-
-  get selected(): string[] {
-    return this._selected 
+    this._pfc = pfcRatio
   }
 
   get pfc() {
@@ -30,30 +27,10 @@ extends Composite<Food> {
     return this._percise
   }
   
-  
   get kkal() {
     return this._kkal
   }
-
-  getSelected(): (Food | undefined)[] {
-    const all = this.getAll()
-
-    return this._selected.map((name) => {
-      return all.get(name)
-    })
-  }
   
-  setSelected(list: string[]) {
-    this._selected = list
-  }
-
-  selectAll() {
-    return this._selected = [...this.getAll().keys()]
-  }
-
-  getName(): string {
-    return 'DietPlan'
-  }
 }
 
 export { DietPlan }

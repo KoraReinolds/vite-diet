@@ -1,13 +1,11 @@
 import type { Food } from "@/classes/Food"
+import type { PFC } from "./PFC"
+import type { ICompositeParams } from "./ICompositeParams"
 
-interface IDietPlanParams {
-  food: Food[]
+interface IDietPlanParams
+extends ICompositeParams<Food> {
   kkal: number
-  pfcRatio: {
-    proteins: number
-    fats: number
-    carbohydrates: number
-  }
+  pfcRatio: PFC
 }
 
 export type { IDietPlanParams }

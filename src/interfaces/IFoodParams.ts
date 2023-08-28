@@ -1,10 +1,8 @@
-interface IFoodParams {
-  name: string
-  value?: number
-  proteins: number
-  fats: number
-  carbohydrates: number
-  chunk?: number
-}
+import type { PFC } from "./PFC";
+import type { IChunksParams } from "./IChunks";
+import type { IHasName } from "./IHasName";
+
+interface IFoodParams
+extends Partial<IChunksParams>, IHasName, PFC {}
 
 export type { IFoodParams }
