@@ -2,11 +2,45 @@ import { Food } from '@/classes/Food'
 import type { IFoodParams } from '@/interfaces/IFoodParams'
 import { expect, test } from 'vitest'
 
+class FoodChecker {
+  food: Food
+  params: IFoodParams
+  constructor(params: IFoodParams) {
+    this.food = new Food(params)
+    this.params = params
+  }
+}
+
+const createPoridge = (params = {}) => new FoodChecker({
+  name: 'poridge',
+  proteins: 12,
+  carbohydrates: 63,
+  fats: 2,
+  ...params,
+})
+
+const createEgg = (params = {}) => new FoodChecker({
+  name: 'egg',
+  proteins: 20,
+  carbohydrates: 1,
+  fats: 10,
+  ...params,
+})
+
+const createSugar = (params = {}) => new FoodChecker({
+  name: 'sugar',
+  proteins: 0,
+  carbohydrates: 98,
+  fats: 0,
+  ...params,
+})
+
 function foodCheck(
-  food: Food,
-  params: IFoodParams,
+  checker: FoodChecker,
   testName: string
 ) {
+  const params = checker.params
+  const food = checker.food
   if (!params.chunks) params.chunks = 100
   const { name, chunks, proteins, carbohydrates, fats } = params
   const kkal = proteins * 4.2 + fats * 9.3 + carbohydrates * 4.2
@@ -57,62 +91,30 @@ function foodCheck(
 }
 
 // not default chunks
-const foodParams = {
-  name: 'poridge',
-  proteins: 12,
-  carbohydrates: 63,
-  fats: 2,
-  chunks: 10,
-}
-const food = new Food(foodParams) 
-
-foodCheck(food, foodParams, food.name+food.chunks) 
+const checker = createPoridge({ chunks: 10 })
+foodCheck(checker, checker.food.name+checker.food.chunks) 
 
 // with default chunks
-const food2Params = {
-  name: 'poridge',
-  proteins: 12,
-  carbohydrates: 63,
-  fats: 2,
-}
-const food2 = new Food(food2Params) 
-
-foodCheck(food2, {
-  ...food2Params,
-  chunks: 100,
-}, food2.name+'default chunks')
+const checker2 = createPoridge()
+foodCheck(checker2, checker2.food.name+'default chunks') 
 
 // changing chunks
-const food3Params = {
-  name: 'poridge',
-  proteins: 12,
-  carbohydrates: 63,
-  fats: 2,
-}
-
+const checker3 = createPoridge()
 const newValue = 25
-const food3 = new Food(food3Params) 
-food3.set(newValue)
-
-foodCheck(food3, {
-  ...food3Params,
-  chunks: newValue,
-  proteins: food3Params.proteins / 4,
-  fats: food3Params.fats / 4,
-  carbohydrates: food3Params.carbohydrates / 4,
-}, food3.name+food3.chunks)
+const food = checker3.food
+const params = checker3.params
+food.set(newValue)
+params.chunks = newValue
+params.proteins /=  4
+params.fats /= 4
+params.carbohydrates /= 4
+foodCheck(checker3, food.name+food.chunks) 
 
 // not default chunkSize
-const food4Params = {
-  name: 'poridge',
-  proteins: 12,
-  carbohydrates: 63,
-  fats: 2,
-  chunkSize: 50,
-}
-const food4 = new Food(food4Params) 
+const checker4 = createPoridge({
+  chunkSize: 50
+})
+checker4.params.chunks = 2
+foodCheck(checker4, checker4.food.name+'default chunkSize') 
 
-foodCheck(food4, {
-  ...food4Params,
-  chunks: 2,
-}, food4.name+'default chunks')
+export { createPoridge, createEgg, createSugar }
