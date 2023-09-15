@@ -6,12 +6,13 @@ import { createEgg, createPoridge, createSugar } from './food.test'
 
 class DietPlanChecker {
   dp: DietPlan
+  params = {
+    kkal: 2000,
+    pfcRatio: { carbohydrates: 60, fats: 20, proteins: 20 },
+    childs: []
+  } 
   constructor() {
-    this.dp = new DietPlan({
-      kkal: 2000,
-      pfcRatio: { carbohydrates: 60, fats: 20, proteins: 20 },
-      childs: []
-    })
+    this.dp = new DietPlan(this.params)
   }
   carbohydrates = 0
   proteins = 0
@@ -46,6 +47,15 @@ class DietPlanChecker {
     this.fatsChunk -= food.fats / this.chunks
     this.energy -= food.getEnergy()
   }
+  addPoridge() {
+    this.add(createPoridge().food)
+  }
+  addEgg() {
+    this.add(createEgg().food)
+  }
+  addSugar() {
+    this.add(createSugar().food)
+  }
 }
 
 const dietPlanCheck = (dpc: DietPlanChecker, name: string) => {
@@ -68,18 +78,20 @@ const dietPlanCheck = (dpc: DietPlanChecker, name: string) => {
 dietPlanCheck(new DietPlanChecker(), 'init diet plan')
 
 const dpc1 = new DietPlanChecker()
-dpc1.add(createPoridge().food)
+dpc1.addPoridge()
 dietPlanCheck(dpc1, 'diet plan with one position')
 
 const dpc2 = new DietPlanChecker()
-dpc2.add(createPoridge().food)
-dpc2.add(createEgg().food)
-dpc2.add(createSugar().food)
+dpc2.addPoridge()
+dpc2.addEgg()
+dpc2.addSugar()
 dietPlanCheck(dpc2, 'diet plan with three position')
 
 const dpc3 = new DietPlanChecker()
-dpc3.add(createPoridge().food)
-dpc3.add(createEgg().food)
-dpc3.add(createSugar().food)
+dpc3.addPoridge()
+dpc3.addEgg()
+dpc3.addSugar()
 dpc3.remove('sugar')
 dietPlanCheck(dpc3, 'diet plan add and remove')
+
+export { DietPlanChecker }

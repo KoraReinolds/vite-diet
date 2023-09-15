@@ -1,8 +1,7 @@
-import type { PFC } from "./PFC"
+import type { IDietPlanParams } from "./IDietPlanParams"
 
-interface IDietPlan {
-  pfc: PFC 
-  kkal: number
+interface IDietPlan
+extends Omit<IDietPlanParams, 'childs'> {
   percise: number
 }
 

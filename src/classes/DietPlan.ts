@@ -1,11 +1,11 @@
 import type { IDietPlan } from "@/interfaces/IDietPlan";
-import { Composite } from "./Composite";
+import { CompositeWithFixedValue } from "./Composite";
 import type { Food } from "./Food";
 import type { IDietPlanParams } from "@/interfaces/IDietPlanParams";
 import type { PFC } from "@/interfaces/PFC";
 
 class DietPlan
-extends Composite<Food>
+extends CompositeWithFixedValue<Food>
 implements IDietPlan {
   private _percise: number = 2
   private _kkal: number
@@ -14,12 +14,24 @@ implements IDietPlan {
 
   constructor(params: IDietPlanParams) {
     const { pfcRatio, kkal } = params
-    super(params)
+    super({
+      ...params,
+      chunks: 1,
+      name: 'DietPlan'
+    })
     this._kkal = kkal
     this._pfc = pfcRatio
   }
 
-  get pfc() {
+  getParams(): IDietPlanParams {
+    return {
+      childs: this.getAllList(),
+      kkal: this.kkal,
+      pfcRatio: this.pfcRatio
+    } 
+  }
+
+  get pfcRatio() {
     return this._pfc 
   }
   
