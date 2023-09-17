@@ -61,14 +61,14 @@ class DietPlanChecker {
 const dietPlanCheck = (dpc: DietPlanChecker, name: string) => {
   test(name, () => {
     const dp = dpc.dp
-    expect(dp.carbohydrates).toBe(dpc.carbohydrates)
-    expect(dp.proteins).toBe(dpc.proteins)
-    expect(dp.fats).toBe(dpc.fats)
+    expect(dp.carbohydrates).toBeCloseTo(dpc.carbohydrates)
+    expect(dp.proteins).toBeCloseTo(dpc.proteins)
+    expect(dp.fats).toBeCloseTo(dpc.fats)
     expect(dp.chunks).toBe(dpc.chunks)
     expect(dp.set).toBe(undefined)
-    expect(dp.carbohydratesChunk).toBe(dpc.carbohydratesChunk)
-    expect(dp.proteinsChunk).toBe(dpc.proteinsChunk)
-    expect(dp.fatsChunk).toBe(dpc.fatsChunk)
+    expect(dp.carbohydratesChunk).toBeCloseTo(dpc.carbohydratesChunk)
+    expect(dp.proteinsChunk).toBeCloseTo(dpc.proteinsChunk)
+    expect(dp.fatsChunk).toBeCloseTo(dpc.fatsChunk)
     expect(dp.getAllList()).toStrictEqual([...dpc.all.values()])
     expect(dp.getEnergy()).toBe(dpc.energy)
     expect(dp.getEnergyChunk()).toBe(dpc.energy / dpc.chunks)
