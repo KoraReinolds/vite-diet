@@ -3,16 +3,17 @@ import { DietPlan } from '@/classes/DietPlan'
 import type { Food } from '@/classes/Food'
 import { expect, test } from 'vitest'
 import { createEgg, createPoridge, createSugar } from './food.test'
+import type { IDietPlanParams } from '@/interfaces/IDietPlanParams'
 
 class DietPlanChecker {
   dp: DietPlan
-  params = {
-    kkal: 2000,
-    pfcRatio: { carbohydrates: 60, fats: 20, proteins: 20 },
-    childs: []
-  } 
-  constructor() {
-    this.dp = new DietPlan(this.params)
+  constructor(params: Partial<IDietPlanParams> = {}) {
+    this.dp = new DietPlan({
+      kkal: 2000,
+      pfcRatio: { carbohydrates: 60, fats: 20, proteins: 20 },
+      childs: [],
+      ...params
+    })
   }
   carbohydrates = 0
   proteins = 0

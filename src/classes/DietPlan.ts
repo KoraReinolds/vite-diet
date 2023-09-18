@@ -20,15 +20,11 @@ implements IDietPlan {
       name: 'DietPlan'
     })
     this._kkal = kkal
+    const totalPFC = pfcRatio.proteins + pfcRatio.carbohydrates + pfcRatio.fats
+    pfcRatio.proteins /= totalPFC
+    pfcRatio.fats /= totalPFC
+    pfcRatio.carbohydrates /= totalPFC
     this._pfc = pfcRatio
-  }
-
-  getParams(): IDietPlanParams {
-    return {
-      childs: this.getAllList(),
-      kkal: this.kkal,
-      pfcRatio: this.pfcRatio
-    } 
   }
 
   get pfcRatio() {

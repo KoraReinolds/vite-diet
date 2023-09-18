@@ -37,6 +37,14 @@ const createSugar = (params = {}) => new FoodChecker({
   ...params,
 })
 
+const createCandy = (params = {}) => new FoodChecker({
+  name: 'candy',
+  proteins: 8,
+  carbohydrates: 90,
+  fats: 0,
+  ...params,
+})
+
 function foodCheck(
   checker: FoodChecker,
   testName: string
@@ -119,4 +127,4 @@ const checker4 = createPoridge({
 checker4.params.chunks = 2
 foodCheck(checker4, checker4.food.name+'default chunkSize') 
 
-export { createPoridge, createEgg, createSugar }
+export { createPoridge, createEgg, createSugar, createCandy }
