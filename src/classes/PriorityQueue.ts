@@ -13,20 +13,24 @@ implements IPriorityQueue<T> {
     return this.queue.length - 1
   }
 
+  less(op1: Comparable<T>, op2: Comparable<T>): boolean {
+    return op1.compareTo(op2) < 0
+  }
+
   private _sink() {
     let cur = 1
     const getNext = () => {
       const left = this.queue[cur * 2]
       const right = this.queue[cur * 2 + 1]
       if (left && right) {
-        return left.compareTo(right) > 0 
+        return this.less(right, left) 
           ? cur * 2
           : cur * 2 + 1
       }
       return cur * 2
     }
     let next = getNext()
-    while (next <= this.length && this.queue[cur].compareTo(this.queue[next]) < 0) {
+    while (next <= this.length && this.less(this.queue[cur], this.queue[next])) {
       [this.queue[cur], this.queue[next]] = [this.queue[next], this.queue[cur]]
       cur = next
       next = getNext()
@@ -36,7 +40,7 @@ implements IPriorityQueue<T> {
   private _popup() {
     let cur = this.length
     let next = Math.floor(cur / 2)
-    while (next > 0 && this.queue[cur].compareTo(this.queue[next]) > 0) {
+    while (next > 0 && this.less(this.queue[next], this.queue[cur])) {
       [this.queue[cur], this.queue[next]] = [this.queue[next], this.queue[cur]]
       cur = next
       next = Math.floor(cur / 2)

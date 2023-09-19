@@ -1,5 +1,6 @@
 
 import { PriorityQueue } from '@/classes/PriorityQueue'
+import { PriorityQueueMin } from '@/classes/PriorityQueueMin'
 import { expect, test } from 'vitest'
 
 test('empty queue', () => {
@@ -27,9 +28,9 @@ test('add one and remove one', () => {
   expect(res).toBe(1)
 })
 
-const checkPriority = (n: number) => {
-  test('check priority ' + n, () => {
-    const pq = new PriorityQueue<number>()
+type SortFunction = (a: number, b: number) => number
+const checkPriority = (n: number, name: string, sort: SortFunction, pq: PriorityQueue<number>) => {
+  test(name, () => {
     const res = [];
     const checkArr = [...new Array(n).keys()]
     for (let i=0; i<n; i++) {
@@ -40,13 +41,21 @@ const checkPriority = (n: number) => {
     for (let i=0; i<n; i++) {
       res.push(pq.dequeue())
     }
-    expect(res.toString()).toBe(checkArr.sort((a, b) => b - a).toString())
-
+    expect(res.toString()).toBe(checkArr.sort(sort).toString())
   })
 }
 
 for (let i=0; i<20; i++) {
-  checkPriority(i)
+  checkPriority(
+    i, 'check priority max ' + i,
+    (a: number, b: number) => b - a,
+    new PriorityQueue()
+  )
+  checkPriority(
+    i, 'check priority min ' + i,
+    (a: number, b: number) => a - b,
+    new PriorityQueueMin()
+  )
 }
 
 
