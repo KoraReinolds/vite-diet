@@ -21,9 +21,9 @@ const createPoridge = (params = {}) => new FoodChecker({
 
 const createEgg = (params = {}) => new FoodChecker({
   name: 'egg',
-  proteins: 20 * 0.6,
-  carbohydrates: 1 * 0.6,
-  fats: 10 * 0.6,
+  proteins: 20,
+  carbohydrates: 1,
+  fats: 10,
   chunkSize: 60,
   chunks: 60,
   ...params,
