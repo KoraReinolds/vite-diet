@@ -11,12 +11,13 @@ implements ISelected<Food> {
     return this._selected 
   }
 
-  getSelected(): (Food | undefined)[] {
-    const all = this.getAll()
-
-    return this._selected.map((name) => {
-      return all.get(name)
+  getSelected(): Food[] {
+    const selected: Food[] = []
+    this._selected.forEach((name) => {
+      const food = this.get(name)
+      if (food) selected.push(food)
     })
+    return selected
   }
   
   setSelected(list: string[]) {
@@ -24,7 +25,7 @@ implements ISelected<Food> {
   }
 
   selectAll() {
-    return this._selected = [...this.getAll().keys()]
+    return this._selected = [...this.getAllList().map(food => food.name)]
   }
 
   getName(): string {
