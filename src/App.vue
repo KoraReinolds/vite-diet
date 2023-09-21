@@ -49,19 +49,19 @@
         {{ Math.floor(food.chunks * 100) / 100 }}
       </div>
       <div class="w-20">
-        {{ Math.floor(food.chunkSize) }}
+        {{ Math.floor(food.chunkSize * 100) / 100 }}
       </div>
       <div class="w-20">
-        {{ Math.floor(food.proteins) }}
+        {{ Math.floor(food.proteins * 100) / 100 }}
       </div>
       <div class="w-20">
-        {{ Math.floor(food.fats) }}
+        {{ Math.floor(food.fats * 100) / 100 }}
       </div>
       <div class="w-20">
-        {{ Math.floor(food.carbohydrates) }}
+        {{ Math.floor(food.carbohydrates * 100) / 100 }}
       </div>
       <div class="w-20">
-        {{ Math.floor(food.getEnergy()) }}
+        {{ Math.floor(food.getEnergy() * 100) / 100 }}
       </div>
     </div>
 
@@ -72,6 +72,8 @@
 import { ref, watch, type Ref } from 'vue';
 import { Food } from './classes/Food';
 import { SelectableDietPlan } from './classes/SeletableDIetPlan';
+import { GraphNode } from './classes/GraphNode';
+import { BFS } from './classes/BFS';
 
 const poridge = new Food({ name: 'poridge', fats: 5, carbohydrates: 63, proteins: 14 })
 const milk = new Food({ name: 'milk', fats: 3.2, carbohydrates: 4.7, proteins: 2.9 })
@@ -83,11 +85,13 @@ const rice = new Food({ name: 'rice', fats: 0.5, carbohydrates: 75, proteins: 6.
 const chicken = new Food({ name: 'chicken', fats: 0.5, carbohydrates: 0.5, proteins: 20 })
 const dp = new SelectableDietPlan({ childs: [poridge, chicken, milk, nuts, strawberry, cherry, egg, rice], pfcRatio: { proteins: 25, carbohydrates: 55, fats: 20 }, kkal: 2500 })
 dp.selectAll()
-
 const selected: Ref<Record<string, boolean>> = ref(dp.selected.reduce((obj: Record<string, boolean>, v) => {
   if (v) obj[v] = true
   return obj
 }, {}))
+
+const bfs = new BFS(new GraphNode(dp))
+console.log(bfs.search(1))
 
 watch(selected.value, (selectedObj) => {
   dp.setSelected(Object.entries(selectedObj)

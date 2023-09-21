@@ -5,11 +5,11 @@ import { DietPlan } from "./DietPlan";
 class GraphNode
 implements IPrototype<GraphNode>, IGraphNode {
 
-  private _dp: DietPlan
+  dp: DietPlan
   state: GraphState = {}
   
   constructor(dp: DietPlan, state?: GraphState) {
-    this._dp = dp
+    this.dp = dp
     if (state) {
       this.state = state
     } else {
@@ -22,12 +22,12 @@ implements IPrototype<GraphNode>, IGraphNode {
   }
 
   heuristic(): number {
-    let res = this._dp.kkal
-    this._dp.getAllList().forEach(food => {
+    let res = this.dp.kkal
+    this.dp.getAllList().forEach(food => {
       let macroApproximation = 1
-      macroApproximation -= Math.abs(food.pfcRatio.proteins - this._dp.pfcRatio.proteins) / 3
-      macroApproximation -= Math.abs(food.pfcRatio.carbohydrates - this._dp.pfcRatio.carbohydrates) / 3
-      macroApproximation -= Math.abs(food.pfcRatio.fats - this._dp.pfcRatio.fats) / 3
+      macroApproximation -= Math.abs(food.pfcRatio.proteins - this.dp.pfcRatio.proteins) / 3
+      macroApproximation -= Math.abs(food.pfcRatio.carbohydrates - this.dp.pfcRatio.carbohydrates) / 3
+      macroApproximation -= Math.abs(food.pfcRatio.fats - this.dp.pfcRatio.fats) / 3
       res -= food.getEnergyChunk() * this.state[food.name] * macroApproximation
     })
     return res
@@ -42,7 +42,7 @@ implements IPrototype<GraphNode>, IGraphNode {
   }
 
   clone(): GraphNode {
-    return new GraphNode(this._dp, { ...this.state })
+    return new GraphNode(this.dp, { ...this.state })
   };
 
 }

@@ -84,7 +84,7 @@ implements IImmutableComposite<T> {
   }
 
   protected set chunks(val: number) {
-    this._multiply *= this.value / val
+    this._multiply *= this._chunks / val
     this._chunks = val
   }
 
