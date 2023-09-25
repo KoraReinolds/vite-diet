@@ -32,13 +32,7 @@ extends ImmutableCompositeWithMutableValue<MacroNutrient> {
         new Proteins(proteins),
       ]
     })
-    const total = fats + carbohydrates + proteins
-    this.pfcRatio = {
-      proteins: proteins / total,
-      fats: fats / total,
-      carbohydrates: carbohydrates / total,
-    }
- 
+    this.pfcRatio = this.normilizePFC() 
   }
 }
 

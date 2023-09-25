@@ -3,6 +3,7 @@ import type { ICompositeParams } from "@/interfaces/ICompositeParams";
 import type { MN } from "@/interfaces/IMacroNutrientValues";
 import { MutableChilds, MutableValue } from "./CompositeDecorator";
 import type { IMutable } from "@/interfaces/IMutable";
+import type { PFC } from "@/interfaces/PFC";
 
 abstract class AComposite<T extends AComposite<any>>
 implements IImmutableComposite<T> {
@@ -12,6 +13,18 @@ implements IImmutableComposite<T> {
     this._chunks = chunks
     this._chunkSize = chunkSize
     this._name = name
+  }
+
+  normilizePFC(pfc?: PFC | undefined): PFC {
+    const carbohydrates = pfc?.carbohydrates || this.carbohydrates
+    const proteins = pfc?.proteins || this.proteins
+    const fats = pfc?.fats || this.fats
+    const total = carbohydrates + fats + proteins
+    return {
+      carbohydrates: (carbohydrates / total) || 0,
+      proteins: (proteins / total) || 0,
+      fats: (fats / total) || 0,
+    }
   }
 
   getAllList(): T[] {

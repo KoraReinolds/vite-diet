@@ -22,14 +22,18 @@ implements IPrototype<GraphNode>, IGraphNode {
   }
 
   heuristic(): number {
-    let res = this.dp.kkal
-    this.dp.getAllList().forEach(food => {
-      let macroApproximation = 1
-      macroApproximation -= Math.abs(food.pfcRatio.proteins - this.dp.pfcRatio.proteins) / 3
-      macroApproximation -= Math.abs(food.pfcRatio.carbohydrates - this.dp.pfcRatio.carbohydrates) / 3
-      macroApproximation -= Math.abs(food.pfcRatio.fats - this.dp.pfcRatio.fats) / 3
-      res -= food.getEnergyChunk() * this.state[food.name] * macroApproximation
-    })
+    const childs = this.dp.getAllList()
+      .filter(food => {
+        const val = this.state[food.name]
+        if (val) food.set(val)
+        return !!val
+      })
+    const dp = new DietPlan({ childs, kkal: this.dp.kkal, pfcRatio: this.dp.pfcRatio })
+    const { proteins, fats, carbohydrates } = dp.normilizePFC()
+    let res = 0
+    res += Math.abs(proteins - dp.pfcRatio.proteins)
+    res += Math.abs(carbohydrates - dp.pfcRatio.carbohydrates)
+    res += Math.abs(fats - dp.pfcRatio.fats)
     return res
   }
 

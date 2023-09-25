@@ -1,8 +1,8 @@
-import type { IBFS } from "@/interfaces/IBFS"
+import type { IGreedySearch } from "@/interfaces/IGreedySearch"
 import type { IGraphNode } from "@/interfaces/IGraphNode"
 import { PriorityQueueMin } from "./PriorityQueueMin"
 
-class BFS implements IBFS<IGraphNode> {
+class GreedySearch implements IGreedySearch<IGraphNode> {
   private _pq: PriorityQueueMin<IGraphNode> = new PriorityQueueMin()
   private _visited: Set<string> = new Set() 
 
@@ -30,9 +30,15 @@ class BFS implements IBFS<IGraphNode> {
       if (item) {
         const h = item.heuristic()
         if (h < goal) {
-          Object.entries(item).forEach(([key, val]) => { 
-            item.dp.get(key)?.set(val)
+          
+          Object.entries(item.state).forEach(([key, val]) => { 
+            if (val !== 0) {
+              item.dp.get(key)?.set(val)
+            } else {
+              item.dp.remove(key)
+            }
           })
+          return
         }
 
         item.getNeighbors().forEach(nextItem => {
@@ -46,4 +52,4 @@ class BFS implements IBFS<IGraphNode> {
 
 }
 
-export { BFS }
+export { GreedySearch }

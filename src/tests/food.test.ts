@@ -106,7 +106,7 @@ foodCheck(checker, checker.food.name+checker.food.chunks)
 
 // with default chunks
 const checker2 = createPoridge()
-foodCheck(checker2, checker2.food.name+'default chunks') 
+foodCheck(checker2, checker2.food.name+' default chunks') 
 
 // changing chunks
 const checker3 = createPoridge()
@@ -122,9 +122,10 @@ foodCheck(checker3, food.name+food.chunks)
 
 // not default chunkSize
 const checker4 = createPoridge({
-  chunkSize: 50
+  chunkSize: 50,
+  chunks: 2,
 })
 checker4.params.chunks = 2
-foodCheck(checker4, checker4.food.name+'default chunkSize') 
+foodCheck(checker4, checker4.food.name+' default chunkSize') 
 
 export { createPoridge, createEgg, createSugar, createCandy }

@@ -73,7 +73,7 @@ import { ref, watch, type Ref } from 'vue';
 import { Food } from './classes/Food';
 import { SelectableDietPlan } from './classes/SeletableDIetPlan';
 import { GraphNode } from './classes/GraphNode';
-import { BFS } from './classes/BFS';
+import { GreedySearch } from './classes/GreedySearch';
 
 const poridge = new Food({ name: 'poridge', fats: 5, carbohydrates: 63, proteins: 14 })
 const milk = new Food({ name: 'milk', fats: 3.2, carbohydrates: 4.7, proteins: 2.9 })
@@ -90,8 +90,7 @@ const selected: Ref<Record<string, boolean>> = ref(dp.selected.reduce((obj: Reco
   return obj
 }, {}))
 
-const bfs = new BFS(new GraphNode(dp))
-console.log(bfs.search(1))
+new GreedySearch(new GraphNode(dp)).search(0.01)
 
 watch(selected.value, (selectedObj) => {
   dp.setSelected(Object.entries(selectedObj)
@@ -99,4 +98,4 @@ watch(selected.value, (selectedObj) => {
     .map(([key, val]) => key)
   )
 })
-</script>
+</script>./classes/GreedyS
