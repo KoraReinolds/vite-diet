@@ -9,7 +9,7 @@ class DietPlanChecker {
   dp: DietPlan
   constructor(params: Partial<IDietPlanParams> = {}) {
     this.dp = new DietPlan({
-      kkal: 2000,
+      kcal: 2000,
       pfcRatio: { carbohydrates: 60, fats: 20, proteins: 20 },
       childs: [],
       ...params

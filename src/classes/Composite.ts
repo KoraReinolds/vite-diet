@@ -36,11 +36,11 @@ implements IImmutableComposite<T> {
     for (const component of this._components.values()) {
       energy += component.getEnergy()
     }
-    return energy / this._multiply
+    return energy * this.value / this._defaultSize
   }
 
   getEnergyChunk(): number {
-    return this.getEnergy() / this.chunks
+    return (this.getEnergy() / this.chunks) || 0
   }
 
   protected _add(component: T): void {
@@ -57,7 +57,7 @@ implements IImmutableComposite<T> {
     for (const component of this._components.values()) {
       val += component[mn]
     }
-    return val / this._multiply
+    return val * this.value / this._defaultSize
   }
 
   get proteins(): number {
@@ -73,15 +73,15 @@ implements IImmutableComposite<T> {
   }
 
   get proteinsChunk(): number {
-    return this.proteins / this.chunks
+    return (this.proteins / this.chunks) || 0
   }
 
   get carbohydratesChunk(): number {
-    return this.carbohydrates / this.chunks
+    return (this.carbohydrates / this.chunks) || 0
   }
 
   get fatsChunk(): number {
-    return this.fats / this.chunks
+    return (this.fats / this.chunks) || 0
   }
 
   get chunks(): number {
@@ -97,7 +97,6 @@ implements IImmutableComposite<T> {
   }
 
   protected set chunks(val: number) {
-    this._multiply *= this._chunks / val
     this._chunks = val
   }
 
@@ -105,9 +104,9 @@ implements IImmutableComposite<T> {
     return this._name || this.constructor.name
   }
 
+  protected _defaultSize: number = 100
   protected _chunkSize: number = 1
   protected _chunks: number = 100
-  private _multiply: number = 1
   protected _components: Map<string, T> = new Map()
   protected _name: string | undefined
 

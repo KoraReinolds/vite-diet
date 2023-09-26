@@ -30,15 +30,7 @@ class GreedySearch implements IGreedySearch<IGraphNode> {
       if (item) {
         const h = item.heuristic()
         if (h < goal) {
-          
-          Object.entries(item.state).forEach(([key, val]) => { 
-            if (val !== 0) {
-              item.dp.get(key)?.set(val)
-            } else {
-              item.dp.remove(key)
-            }
-          })
-          return
+          return item
         }
 
         item.getNeighbors().forEach(nextItem => {

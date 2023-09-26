@@ -51,9 +51,9 @@ function foodCheck(
 ) {
   const params = checker.params
   const food = checker.food
-  if (!params.chunks) params.chunks = 100
+  if (params.chunks === undefined) params.chunks = 100
   const { name, chunks, proteins, carbohydrates, fats } = params
-  const kkal = proteins * 4.2 + fats * 9.3 + carbohydrates * 4.2
+  const kcal = proteins * 4.2 + fats * 9.3 + carbohydrates * 4.2
 
   test(testName+' name', () => {
     expect(food.name).toBe(name)
@@ -72,8 +72,8 @@ function foodCheck(
   })
 
   test(testName+' energy', () => {
-    expect(food.getEnergy()).toBe(kkal)
-    expect(food.getEnergyChunk()).toBe(kkal / chunks)
+    expect(food.getEnergy()).toBe(kcal)
+    expect(food.getEnergyChunk()).toBe((kcal / chunks) || 0)
   })
 
   test(testName+' chunks', () => {
@@ -82,15 +82,15 @@ function foodCheck(
 
   
   test(testName+' proteins chunks', () => {
-    expect(food.proteinsChunk).toBe(proteins / chunks)
+    expect(food.proteinsChunk).toBe((proteins / chunks) || 0)
   })
 
   test(testName+' fats chunks', () => {
-    expect(food.fatsChunk).toBe(fats / chunks)
+    expect(food.fatsChunk).toBe((fats / chunks) || 0)
   })
 
   test(testName+' carbohydrates chunks', () => {
-    expect(food.carbohydratesChunk).toBe(carbohydrates / chunks)
+    expect(food.carbohydratesChunk).toBe((carbohydrates / chunks) || 0)
   })
  
   test(testName+' immutable', () => {
@@ -102,6 +102,10 @@ function foodCheck(
 
 // not default chunks
 const checker = createPoridge({ chunks: 10 })
+checker.params.chunks = 10
+checker.params.proteins /=  10
+checker.params.fats /= 10
+checker.params.carbohydrates /= 10
 foodCheck(checker, checker.food.name+checker.food.chunks) 
 
 // with default chunks
@@ -112,12 +116,11 @@ foodCheck(checker2, checker2.food.name+' default chunks')
 const checker3 = createPoridge()
 const newValue = 25
 const food = checker3.food
-const params = checker3.params
 food.set(newValue)
-params.chunks = newValue
-params.proteins /=  4
-params.fats /= 4
-params.carbohydrates /= 4
+checker3.params.chunks = newValue
+checker3.params.proteins /=  4
+checker3.params.fats /= 4
+checker3.params.carbohydrates /= 4
 foodCheck(checker3, food.name+food.chunks) 
 
 // not default chunkSize
@@ -126,6 +129,25 @@ const checker4 = createPoridge({
   chunks: 2,
 })
 checker4.params.chunks = 2
-foodCheck(checker4, checker4.food.name+' default chunkSize') 
+foodCheck(checker4, checker4.food.name+' default chunkSize')
+
+// default zero chunks
+const checker5 = createPoridge({
+  chunks: 0,
+})
+checker5.params.chunks = 0
+checker5.params.proteins = 0
+checker5.params.fats = 0
+checker5.params.carbohydrates = 0
+foodCheck(checker5, checker5.food.name+' default zero chunks')
+
+// set zero chunks
+const checker6 = createPoridge()
+checker6.food.set(0)
+checker6.params.chunks = 0
+checker6.params.proteins = 0
+checker6.params.fats = 0
+checker6.params.carbohydrates = 0
+foodCheck(checker6, checker6.food.name+' set zero chunks')
 
 export { createPoridge, createEgg, createSugar, createCandy }

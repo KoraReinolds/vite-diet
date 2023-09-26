@@ -9,18 +9,11 @@ extends ImmutableCompositeWithMutableValue<MacroNutrient> {
   pfcRatio: PFC
 
   constructor(foodParams: IFoodParams) {
-    if (!foodParams.chunks) {
+    if (foodParams.chunks === undefined) {
       foodParams.chunks = 100
     }
-    if (!foodParams.chunkSize) {
+    if (foodParams.chunkSize === undefined) {
       foodParams.chunkSize = 1
-    }
-    const value = foodParams.chunkSize * foodParams.chunks 
-    if (value !== 100) {
-      const ratio = 100 / value
-      foodParams.carbohydrates /= ratio 
-      foodParams.fats /= ratio 
-      foodParams.proteins /= ratio 
     }
     const { fats, carbohydrates, proteins } = foodParams
     super({

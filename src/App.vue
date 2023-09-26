@@ -34,11 +34,11 @@
         carbs
       </div>
       <div class="w-20">
-        kkal
+        kcal
       </div>
     </div>
 
-    <div v-for="food in dp.getSelected()"
+    <div v-for="food in result?.dp.getAllList() || dp.getAllList()"
       :key="`res-${food.name}`"
       class="flex"
     >
@@ -64,6 +64,7 @@
         {{ Math.floor(food.getEnergy() * 100) / 100 }}
       </div>
     </div>
+    {{ Math.floor(dp.getEnergy()) }}
 
   </div>
 </template>
@@ -71,7 +72,7 @@
 <script setup lang="ts">
 import { ref, watch, type Ref } from 'vue';
 import { Food } from './classes/Food';
-import { SelectableDietPlan } from './classes/SeletableDIetPlan';
+import { SelectableDietPlan } from './classes/SeletableDietPlan';
 import { GraphNode } from './classes/GraphNode';
 import { GreedySearch } from './classes/GreedySearch';
 
@@ -83,14 +84,20 @@ const cherry = new Food({ name: 'cherry', fats: 0.44, carbohydrates: 11.2, prote
 const egg = new Food({ name: 'egg', chunkSize: 60, chunks: 1, fats: 11, carbohydrates: 1.1, proteins: 13 })
 const rice = new Food({ name: 'rice', fats: 0.5, carbohydrates: 75, proteins: 6.5 })
 const chicken = new Food({ name: 'chicken', fats: 0.5, carbohydrates: 0.5, proteins: 20 })
-const dp = new SelectableDietPlan({ childs: [poridge, chicken, milk, nuts, strawberry, cherry, egg, rice], pfcRatio: { proteins: 25, carbohydrates: 55, fats: 20 }, kkal: 2500 })
+const dp = new SelectableDietPlan({ childs: [poridge, chicken, milk, nuts, strawberry, cherry, egg, rice], pfcRatio: { proteins: 25, carbohydrates: 55, fats: 20 }, kcal: 2500 })
 dp.selectAll()
 const selected: Ref<Record<string, boolean>> = ref(dp.selected.reduce((obj: Record<string, boolean>, v) => {
   if (v) obj[v] = true
   return obj
 }, {}))
 
-new GreedySearch(new GraphNode(dp)).search(0.01)
+const result = new GreedySearch(new GraphNode(dp)).search(0.01)
+if (result) {
+  const multiply = Math.floor(dp.kcal / dp.getEnergy())
+  result.dp.getAllList().forEach(food => {
+    food.set(food.chunks * multiply)
+  })
+}
 
 watch(selected.value, (selectedObj) => {
   dp.setSelected(Object.entries(selectedObj)
@@ -98,4 +105,4 @@ watch(selected.value, (selectedObj) => {
     .map(([key, val]) => key)
   )
 })
-</script>./classes/GreedyS
+</script>

@@ -73,7 +73,7 @@ test('node heuristic with food', () => {
   dpc.addSugar()
   const state = { sugar: 1 }
   const gn = new GraphNode(dpc.dp, state)
-  expect(gn.heuristic()).lessThan(dpc.dp.kkal)
+  expect(gn.heuristic()).lessThan(dpc.dp.kcal)
 })
 
 test('node zero heuristic', () => {
@@ -81,7 +81,7 @@ test('node zero heuristic', () => {
   const { name, ...pfcRatio } = poridge.params 
   const dp = new DietPlan({
     pfcRatio,
-    kkal: poridge.food.getEnergyChunk() * 6,
+    kcal: poridge.food.getEnergyChunk() * 6,
     childs: [poridge.food]
   })
   const gn = new GraphNode(dp, { poridge: 6 })
@@ -95,12 +95,12 @@ test('node heuristic with difference macronutrients', () => {
   const { candyName, ...pfcRatioCandy } = candy.params
   const dpSugar = new DietPlan({
     pfcRatio: pfcRatioSugar,
-    kkal: sugar.food.getEnergyChunk(),
+    kcal: sugar.food.getEnergyChunk(),
     childs: [sugar.food]
   })
   const dpCandy = new DietPlan({
     pfcRatio: pfcRatioSugar,
-    kkal: candy.food.getEnergyChunk(),
+    kcal: candy.food.getEnergyChunk(),
     childs: [candy.food]
   })
   const gnCandy = new GraphNode(dpCandy, { candy: 1 })

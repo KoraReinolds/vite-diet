@@ -3,7 +3,7 @@ import type { PFC } from "./PFC"
 
 interface IDietPlanParams {
   childs: Food[]
-  kkal: number
+  kcal: number
   pfcRatio: PFC
 }
 

@@ -13,27 +13,20 @@ implements IPrototype<GraphNode>, IGraphNode {
     if (state) {
       this.state = state
     } else {
-      dp.getAllList().reduce((prev, food) => {
-        food.set(1)
-        prev[food.name] = 0 
-        return prev
+      dp.getAllList().reduce((state, food) => {
+        state[food.name] = 0
+        return state
       }, this.state)
     }
   }
 
   heuristic(): number {
-    const childs = this.dp.getAllList()
-      .filter(food => {
-        const val = this.state[food.name]
-        if (val) food.set(val)
-        return !!val
-      })
-    const dp = new DietPlan({ childs, kkal: this.dp.kkal, pfcRatio: this.dp.pfcRatio })
-    const { proteins, fats, carbohydrates } = dp.normilizePFC()
+    this.dp.setValuesFromState(this.state)
+    const { proteins, fats, carbohydrates } = this.dp.normilizePFC()
     let res = 0
-    res += Math.abs(proteins - dp.pfcRatio.proteins)
-    res += Math.abs(carbohydrates - dp.pfcRatio.carbohydrates)
-    res += Math.abs(fats - dp.pfcRatio.fats)
+    res += Math.abs(proteins - this.dp.pfcRatio.proteins)
+    res += Math.abs(carbohydrates - this.dp.pfcRatio.carbohydrates)
+    res += Math.abs(fats - this.dp.pfcRatio.fats)
     return res
   }
 
