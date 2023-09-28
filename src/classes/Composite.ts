@@ -21,26 +21,30 @@ implements IImmutableComposite<T> {
     const fats = pfc?.fats || this.fats
     const total = carbohydrates + fats + proteins
     return {
-      carbohydrates: (carbohydrates / total) || 0,
-      proteins: (proteins / total) || 0,
-      fats: (fats / total) || 0,
+      carbohydrates: (Math.floor(carbohydrates / total * 1000) / 1000) || 0,
+      proteins: (Math.floor(proteins / total * 1000) / 1000) || 0,
+      fats: (Math.floor(fats / total * 1000) / 1000) || 0,
     }
   }
 
   getAllList(): T[] {
     return [...this._components.values()]
   }
-
-  getEnergy(): number {
+  
+  private _getEnergy(): number {
     let energy = 0
     for (const component of this._components.values()) {
       energy += component.getEnergy()
     }
-    return energy * this.value / this._defaultSize
+    return energy / this._defaultSize 
+  }
+
+  getEnergy(): number {
+    return this._getEnergy() * this.value
   }
 
   getEnergyChunk(): number {
-    return (this.getEnergy() / this.chunks) || 0
+    return this._getEnergy() * this._chunkSize
   }
 
   protected _add(component: T): void {
