@@ -6,6 +6,7 @@ class SelectableDietPlan
 extends DietPlan
 implements ISelected<Food> {
   private _selected: string[] = []
+  min: number = 1000000
 
   get selected(): string[] {
     return this._selected 

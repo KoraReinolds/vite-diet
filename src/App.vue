@@ -64,7 +64,7 @@
         {{ Math.floor(food.getEnergy() * 100) / 100 }}
       </div>
     </div>
-    {{ Math.floor(dp.getEnergy()) }}
+    {{ Math.floor(dp.getEnergy()) }} {{ dp.normilizePFC() }}
 
   </div>
 </template>
@@ -92,12 +92,6 @@ const selected: Ref<Record<string, boolean>> = ref(dp.selected.reduce((obj: Reco
 }, {}))
 
 const result = new GreedySearch(new GraphNode(dp)).search(0.01)
-if (result) {
-  const multiply = Math.floor(dp.kcal / dp.getEnergy())
-  result.dp.getAllList().forEach(food => {
-    food.set(food.chunks * multiply)
-  })
-}
 
 watch(selected.value, (selectedObj) => {
   dp.setSelected(Object.entries(selectedObj)

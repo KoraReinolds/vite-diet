@@ -7,6 +7,7 @@ implements IPrototype<GraphNode>, IGraphNode {
 
   dp: DietPlan
   state: GraphState = {}
+  min: number = 10000
   
   constructor(dp: DietPlan, state?: GraphState) {
     this.dp = dp
@@ -27,13 +28,19 @@ implements IPrototype<GraphNode>, IGraphNode {
     res += Math.abs(proteins - this.dp.pfcRatio.proteins)
     res += Math.abs(carbohydrates - this.dp.pfcRatio.carbohydrates)
     res += Math.abs(fats - this.dp.pfcRatio.fats)
-    return res
+    return res * 2 + Math.abs((this.dp.kcal - this.dp.getEnergy()) / this.dp.kcal)
   }
 
   getNeighbors(): IGraphNode[] {
     return Object.keys(this.state).map(key => {
       const newGraphNode = this.clone()
-      newGraphNode.state[key] += 1
+      const food = this.dp.get(key)
+      let chunks = 1
+      if (food) {
+        const energyChunk = (this.dp.kcal - this.dp.getEnergy()) / 10
+        chunks = Math.max(1, Math.floor(energyChunk / food.getEnergyChunk()))
+      }
+      newGraphNode.state[key] += chunks
       return newGraphNode 
     })
   }
