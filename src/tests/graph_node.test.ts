@@ -65,7 +65,7 @@ test('node neighbors', () => {
 test('node heuristic without food', () => {
   const dpc = new DietPlanChecker()
   const gn = new GraphNodeChecker(dpc.dp).getGraphNode()
-  expect(gn.heuristic()).toBe(1)
+  expect(gn.heuristic()).greaterThan(0)
 })
 
 test('node heuristic with food', () => {

@@ -22,7 +22,7 @@ class GreedySearch implements IGreedySearch<IGraphNode> {
     }
   }
 
-  search(goal: number) {
+  search(goal: number): IGraphNode | undefined {
     const maxSize = 1000
     while (this.pq.length < maxSize) {
       if (this.pq.length > maxSize) return
