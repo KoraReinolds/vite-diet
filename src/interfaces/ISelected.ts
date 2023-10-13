@@ -1,5 +1,6 @@
 interface ISelected<T> {
-  selected: string[]
+  selected: Record<string, boolean>
+  getSelected(): T[]
   selectAll(): void
 }
 

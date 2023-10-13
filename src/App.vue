@@ -1,20 +1,9 @@
 <template>
+  <FoodListComponent
+    :food-list="fl"
+    @update-selected="calculate"
+  />
   <div>
-    {{ fl.selected }}
-    <div
-      class="bg-red-100"
-      v-for="food in fl.getAllList()"
-      :key="`dp-${food.name}`"
-    >
-      <input
-        type="checkbox"
-        v-model="selected[food.name]"
-      >
-      {{ food.name }}
-    </div> 
-  </div>
-  <div>
-
     <div class="flex">
       <div class="w-20">
         name
@@ -68,12 +57,11 @@
       </div>
       {{ Math.floor(dp.getEnergy()) }} {{ dp.normilizePFC() }}
     </template>
-
-
   </div>
 </template>
 
 <script setup lang="ts">
+import FoodListComponent from './components/FoodList.vue'
 import { ref, watch, type Ref } from 'vue';
 import { Food } from './classes/Food';
 import { FoodList } from './classes/FoodList';
@@ -92,16 +80,11 @@ const rice = new Food({ name: 'rice', fats: 0.5, carbohydrates: 75, proteins: 6.
 const chicken = new Food({ name: 'chicken', fats: 0.5, carbohydrates: 0.5, proteins: 20 })
 const fl = new FoodList([poridge, chicken, milk, nuts, strawberry, cherry, egg, rice])
 fl.selectAll()
-const selected: Ref<Record<string, boolean>> = ref(fl.selected.reduce((obj: Record<string, boolean>, v) => {
-  if (v) obj[v] = true
-  return obj
-}, {}))
+
 const dp: Ref<DietPlan | undefined> = ref()
 const result: Ref<IGraphNode | undefined> = ref()
-const calculate = (selectedObj: Record<string, boolean>) => {
-  fl.selected = Object.entries(selectedObj)
-  .filter(([key, val]) => !!val)
-  .map(([key, val]) => key)
+
+const calculate = () => {
   dp.value = new DietPlan({
     childs: fl.getSelected(),
     pfcRatio: { proteins: 25, carbohydrates: 55, fats: 20 },
@@ -111,8 +94,6 @@ const calculate = (selectedObj: Record<string, boolean>) => {
   result.value = gs.search(0.01)
 }
 
-calculate(selected.value)
-watch(selected.value, calculate)
-
+calculate()
 
 </script>

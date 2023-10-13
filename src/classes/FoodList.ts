@@ -6,7 +6,7 @@ class FoodList
 extends CompositeWithFixedValue<Food>
 implements ISelected<Food> {
 
-  selected: string[] = []
+  selected: Record<string, boolean> = {}
 
   constructor(list: Food[]) {
     super({ childs: list, chunks: 1, name: 'FoodList' })
@@ -14,15 +14,22 @@ implements ISelected<Food> {
 
   getSelected(): Food[] {
     const selected: Food[] = []
-    return this.selected.reduce((arr, name) => {
-      const food = this.get(name)
-      if (food) arr.push(food)
-      return arr
-    }, selected)
+    return Object.entries(this.selected)
+      .filter(([item, val]) => val)
+      .reduce((arr, [name]) => {
+        const food = this.get(name)
+        if (food) arr.push(food)
+        return arr
+      }, selected)
   }
   
   selectAll() {
-    return this.selected = [...this.getAllList().map(food => food.name)]
+    this.getAllList()
+      .map(food => food.name)
+      .reduce((sel, name) => {
+        sel[name] = true
+        return sel
+      }, this.selected)
   }
 
 }
