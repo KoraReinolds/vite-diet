@@ -47,6 +47,10 @@ implements IImmutableComposite<T> {
     return this._getEnergy() * this._chunkSize
   }
 
+  getEnergyPer100(): number {
+    return this.getEnergyChunk() * this._defaultSize / this._chunkSize
+  }
+
   protected _add(component: T): void {
     const name = component.name
     this._components.set(name, component)
@@ -61,31 +65,43 @@ implements IImmutableComposite<T> {
     for (const component of this._components.values()) {
       val += component[mn]
     }
-    return val * this.value / this._defaultSize
+    return val / this._defaultSize
   }
 
   get proteins(): number {
-    return this._getMacronutrient('proteins')
+    return this._getMacronutrient('proteins') * this.value
   }
+
+  get proteinsChunkPer100(): number {
+    return this.proteinsChunk * this._defaultSize / this._chunkSize
+  };
 
   get carbohydrates(): number {
-    return this._getMacronutrient('carbohydrates')
+    return this._getMacronutrient('carbohydrates') * this.value
   }
+
+  get carbohydratesChunkPer100(): number {
+    return this.carbohydratesChunk * this._defaultSize / this._chunkSize
+  };
 
   get fats(): number {
-    return this._getMacronutrient('fats')
+    return this._getMacronutrient('fats') * this.value
   }
 
+  get fatsChunkPer100(): number {
+    return this.fatsChunk * this._defaultSize / this._chunkSize
+  };
+
   get proteinsChunk(): number {
-    return (this.proteins / this.chunks) || 0
+    return this._getMacronutrient('proteins') * this._chunkSize
   }
 
   get carbohydratesChunk(): number {
-    return (this.carbohydrates / this.chunks) || 0
+    return this._getMacronutrient('carbohydrates') * this._chunkSize
   }
 
   get fatsChunk(): number {
-    return (this.fats / this.chunks) || 0
+    return this._getMacronutrient('fats') * this._chunkSize
   }
 
   get chunks(): number {

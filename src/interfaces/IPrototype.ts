@@ -1,5 +1,5 @@
 interface IPrototype<T> {
-  clone: () => T
+  clone(): T
 }
 
 export type { IPrototype }

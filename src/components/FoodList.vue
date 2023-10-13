@@ -2,14 +2,13 @@
   <table class="table-auto">
   <thead>
     <tr>
-      <th></th>
-      <th>Name</th>
-      <th>Chunks</th>
-      <th>Chunk size</th>
-      <th>Proteins</th>
-      <th>Fats</th>
-      <th>Carbohydrates</th>
-      <th>Kcal</th>
+      <th class="w-10 text-sm text-left"></th>
+      <th class="w-20 text-sm text-left">Name</th>
+      <th class="w-20 text-sm text-left">Chunk size</th>
+      <th class="w-20 text-sm text-left">Proteins</th>
+      <th class="w-20 text-sm text-left">Fats</th>
+      <th class="w-20 text-sm text-left">Carbs</th>
+      <th class="w-20 text-sm text-left">Kcal</th>
     </tr>
   </thead>
   <tbody>
@@ -22,12 +21,11 @@
         >
       </td>
       <td>{{ item.name }}</td>
-      <td>{{ item.chunks }}</td>
       <td>{{ item.chunkSize }}</td>
-      <td>{{ item.proteins }}</td>
-      <td>{{ item.fats }}</td>
-      <td>{{ item.carbohydrates }}</td>
-      <td>{{ item.getEnergy() }}</td>
+      <td>{{ item.proteinsChunkPer100.toFixed(1) }}</td>
+      <td>{{ item.fatsChunkPer100.toFixed(1) }}</td>
+      <td>{{ item.carbohydratesChunkPer100.toFixed(1) }}</td>
+      <td>{{ item.getEnergyPer100().toFixed(1) }}</td>
     </tr>
   </tbody>
 </table>
