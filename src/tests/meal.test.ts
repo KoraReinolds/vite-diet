@@ -1,115 +1,95 @@
-import { Food } from '@/classes/Food'
-import { Meal } from '@/classes/Meal'
-import type { IFoodParams } from '@/interfaces/IFoodParams'
+import type { Food } from '@/classes/Food'
 import { expect, test } from 'vitest'
 import { createEgg, createPoridge, createSugar } from './food.test'
+import { Meal } from '@/classes/Meal'
+import { DietPlanChecker } from './dietplan.test'
 
-// not default chunks
-const poridge = createPoridge().food
-const sugar = createSugar().food
-const egg = createEgg().food
-const meal = new Meal({ childs: [
-  poridge,
-  sugar,
-  egg,
-] })
+class MealChecker {
+  meal: Meal
+  constructor() {
+    this.meal = new Meal({
+      childs: [],
+      dp: new DietPlanChecker().dp
+    })
+  }
+  carbohydrates = 0
+  proteins = 0
+  fats = 0
+  carbohydratesChunk = 0
+  proteinsChunk = 0
+  fatsChunk = 0
+  chunks = 1
+  all: Map<string, Food> = new Map([])
+  energy = 0
+  add(food: Food) {
+    this.meal.add(food)
+    this.carbohydrates += food.carbohydrates
+    this.proteins += food.proteins
+    this.fats += food.fats
+    this.carbohydratesChunk += food.carbohydrates / this.chunks
+    this.proteinsChunk += food.proteins / this.chunks
+    this.fatsChunk += food.fats / this.chunks
+    this.all.set(food.name, food)
+    this.energy += food.getEnergy()
+  }
+  remove(name: string) {
+    this.meal.remove(name)
+    const food = this.all.get(name)
+    if (!food) return
+    this.all.delete(name)
+    this.carbohydrates -= food.carbohydrates
+    this.proteins -= food.proteins
+    this.fats -= food.fats
+    this.carbohydratesChunk -= food.carbohydrates / this.chunks
+    this.proteinsChunk -= food.proteins / this.chunks
+    this.fatsChunk -= food.fats / this.chunks
+    this.energy -= food.getEnergy()
+  }
+  addPoridge() {
+    this.add(createPoridge().food)
+  }
+  addEgg() {
+    this.add(createEgg().food)
+  }
+  addSugar() {
+    this.add(createSugar().food)
+  }
+}
 
-const mealKcal = poridge.getEnergy() + sugar.getEnergy() + egg.getEnergy()
-const mealChunks = 1
-const proteins = poridge.proteins + sugar.proteins + egg.proteins
-const fats = poridge.fats + sugar.fats + egg.fats
-const carbohydrates = poridge.carbohydrates + sugar.carbohydrates + egg.carbohydrates
+const mealCheck = (mealChecker: MealChecker, name: string) => {
+  test(name, () => {
+    const meal = mealChecker.meal
+    expect(meal.carbohydrates).toBeCloseTo(mealChecker.carbohydrates)
+    expect(meal.proteins).toBeCloseTo(mealChecker.proteins)
+    expect(meal.fats).toBeCloseTo(mealChecker.fats)
+    expect(meal.chunks).toBe(mealChecker.chunks)
+    expect(meal.set).toBe(undefined)
+    expect(meal.carbohydratesChunk).toBeCloseTo(mealChecker.carbohydratesChunk)
+    expect(meal.proteinsChunk).toBeCloseTo(mealChecker.proteinsChunk)
+    expect(meal.fatsChunk).toBeCloseTo(mealChecker.fatsChunk)
+    expect(meal.getAllList()).toStrictEqual([...mealChecker.all.values()])
+    expect(meal.getEnergy()).toBe(mealChecker.energy)
+    expect(meal.getEnergyChunk()).toBe(mealChecker.energy / mealChecker.chunks)
+  })
+}
 
-test('meal name', () => {
-  expect(meal.name).toBe('Meal')
-})
+mealCheck(new MealChecker(), 'init meal')
 
-test('meal proteins', () => {
-  expect(meal.proteins).toBe(proteins)
-})
+const mealChecker1 = new MealChecker()
+mealChecker1.addPoridge()
+mealCheck(mealChecker1, 'meal with one position')
 
-test('meal fats', () => {
-  expect(meal.fats).toBe(fats)
-})
+const mealChecker2 = new MealChecker()
+mealChecker2.addPoridge()
+mealChecker2.addEgg()
+mealChecker2.addSugar()
+mealCheck(mealChecker2, 'meal with three position')
 
-test('meal carbohydrates', () => {
-  expect(meal.carbohydrates).toBe(carbohydrates)
-})
+const mealChecker3 = new MealChecker()
+mealChecker3.addPoridge()
+mealChecker3.addEgg()
+mealChecker3.addSugar()
+mealChecker3.remove('sugar')
+mealCheck(mealChecker3, 'meal add and remove')
 
-test('meal energy', () => {
-  expect(meal.getEnergy()).toBe(mealKcal)
-  expect(meal.getEnergyChunk()).toBeCloseTo((mealKcal / mealChunks) || 0)
-})
-
-test('meal chunks', () => {
-  expect(meal.chunks).toBe(mealChunks)
-})
-
-test('meal chunk size', () => {
-  expect(meal.chunkSize).toBe(1)
-})
-
-test('meal proteins chunks', () => {
-  expect(meal.proteinsChunk).toBe((proteins / mealChunks) || 0)
-})
-
-test('meal fats chunks', () => {
-  expect(meal.fatsChunk).toBe((fats / mealChunks) || 0)
-})
-
-test('meal carbohydrates chunks', () => {
-  expect(meal.carbohydratesChunk).toBe((carbohydrates / mealChunks) || 0)
-})
-
-test('meal immutable', () => {
-  expect(!!meal.add).toBe(true)
-  expect(!!meal.remove).toBe(true)
-})
-
-// checker.params.chunks = 10
-// checker.params.proteins /=  10
-// checker.params.fats /= 10
-// checker.params.carbohydrates /= 10
-// foodCheck(checker, ' check meal') 
-
-// // with default chunks
-// const checker2 = createPoridge()
-// foodCheck(checker2, checker2.meal.name+' default chunks') 
-
-// // changing chunks
-// const checker3 = createPoridge()
-// const newValue = 25
-// const food = checker3.food
-// meal.set(newValue)
-// checker3.params.chunks = newValue
-// checker3.params.proteins /=  4
-// checker3.params.fats /= 4
-// checker3.params.carbohydrates /= 4
-// foodCheck(checker3, meal.name+meal.chunks) 
-
-// // not default chunkSize
-// const checker4 = createPoridge({
-//   chunkSize: 50,
-//   chunks: 2,
-// })
-// checker4.params.chunks = 2
-// foodCheck(checker4, checker4.meal.name+' default chunkSize')
-
-// // default zero chunks
-// const checker5 = createPoridge({
-//   chunks: 0,
-// })
-// checker5.params.chunks = 0
-// checker5.params.proteins = 0
-// checker5.params.fats = 0
-// checker5.params.carbohydrates = 0
-// foodCheck(checker5, checker5.meal.name+' default zero chunks')
-
-// // set zero chunks
-// const checker6 = createPoridge()
-// checker6.meal.set(0)
-// checker6.params.chunks = 0
-// checker6.params.proteins = 0
-// checker6.params.fats = 0
-// checker6.params.carbohydrates = 0
-// foodCheck(checker6, checker6.meal.name+' set zero chunks')
+export { MealChecker }

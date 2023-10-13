@@ -2,14 +2,10 @@ import { Food } from '@/classes/Food'
 import type { IFoodParams } from '@/interfaces/IFoodParams'
 import { expect, test } from 'vitest'
 
-interface IFoodCheckerParams extends IFoodParams {
-  energyChunk?: number
-}
-
 class FoodChecker {
   food: Food
-  params: IFoodCheckerParams
-  constructor(params: IFoodCheckerParams) {
+  params: IFoodParams
+  constructor(params: IFoodParams) {
     this.food = new Food(params)
     this.params = params
   }
