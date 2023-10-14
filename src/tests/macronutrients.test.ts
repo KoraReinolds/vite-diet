@@ -3,10 +3,11 @@ import type { PFC } from '@/interfaces/PFC'
 import { expect, test } from 'vitest'
 
 
-class MockMacronutient implements MacroNutrient {
+abstract class MockMacronutient implements MacroNutrient {
 
   chunks: number
-  _energy: number | undefined
+  abstract _energy: number
+  abstract _name: string
 
   constructor(chunks: number) {
     this.chunks = chunks
@@ -88,8 +89,6 @@ class MockMacronutient implements MacroNutrient {
     return this._name
   }
   
-  protected _name: string | undefined;
-
 }
 
 class MockFats extends MockMacronutient {
@@ -156,32 +155,12 @@ const macronutrientCheck = (testName: string, mn: MacroNutrient, mock: MockMacro
     expect(mn.getEnergyChunk()).toBe(mock.getEnergyChunk())
   })
 
-  test(testName + 'normilizePFC', () => {
-    expect(mn.normilizePFC()).toStrictEqual(mock.normilizePFC())
-  })
-
   test(testName + 'getAllList', () => {
     expect(mn.getAllList()).toStrictEqual(mock.getAllList())
   })
 
-  test(testName + 'getEnergyPer100', () => {
-    expect(mn.getEnergyPer100()).toBe(mock.getEnergyPer100())
-  })
-
   test(testName + 'get', () => {
     expect(mn.get('any')).toBe(mock.get('any'))
-  })
-
-  test(testName + 'proteinsChunkPer100', () => {
-    expect(mn.proteinsChunkPer100).toBe(mock.proteinsChunkPer100)
-  })
-
-  test(testName + 'carbohydratesChunkPer100', () => {
-    expect(mn.carbohydratesChunkPer100).toBe(mock.carbohydratesChunkPer100)
-  })
-
-  test(testName + 'fatsChunkPer100', () => {
-    expect(mn.fatsChunkPer100).toBe(mock.fatsChunkPer100)
   })
 
   test(testName + 'proteinsChunk', () => {

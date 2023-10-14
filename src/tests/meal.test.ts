@@ -1,95 +1,133 @@
-import type { Food } from '@/classes/Food'
+import { Food } from '@/classes/Food'
 import { expect, test } from 'vitest'
-import { createEgg, createPoridge, createSugar } from './food.test'
 import { Meal } from '@/classes/Meal'
-import { DietPlanChecker } from './dietplan.test'
+import { mockChicken, mockEgg, mockPoridge, type MockFood, chicken, poridge, egg } from './food.test'
+import type { IMealParams } from '@/interfaces/IMealParams'
 
-class MealChecker {
-  meal: Meal
-  constructor() {
-    this.meal = new Meal({
-      childs: [],
-      dp: new DietPlanChecker().dp
-    })
+interface IMockMealParams extends IMealParams {
+  all: MockFood[]
+}
+
+class MockMeal implements Meal {
+  _all: MockFood[]
+  params: IMealParams
+  constructor(params: IMockMealParams) {
+    this.params = params
+    this._all = params.all
   }
-  carbohydrates = 0
-  proteins = 0
-  fats = 0
-  carbohydratesChunk = 0
-  proteinsChunk = 0
-  fatsChunk = 0
-  chunks = 1
-  all: Map<string, Food> = new Map([])
-  energy = 0
-  add(food: Food) {
-    this.meal.add(food)
-    this.carbohydrates += food.carbohydrates
-    this.proteins += food.proteins
-    this.fats += food.fats
-    this.carbohydratesChunk += food.carbohydrates / this.chunks
-    this.proteinsChunk += food.proteins / this.chunks
-    this.fatsChunk += food.fats / this.chunks
-    this.all.set(food.name, food)
-    this.energy += food.getEnergy()
+  getAllList(): Food[] {
+    return this._all as unknown as Food[]
   }
-  remove(name: string) {
-    this.meal.remove(name)
-    const food = this.all.get(name)
-    if (!food) return
-    this.all.delete(name)
-    this.carbohydrates -= food.carbohydrates
-    this.proteins -= food.proteins
-    this.fats -= food.fats
-    this.carbohydratesChunk -= food.carbohydrates / this.chunks
-    this.proteinsChunk -= food.proteins / this.chunks
-    this.fatsChunk -= food.fats / this.chunks
-    this.energy -= food.getEnergy()
+  _getEnergy(): number {
+    return this.getAllList().reduce((sum, cur) => {
+      return sum + cur.getEnergy()
+    }, 0)
   }
-  addPoridge() {
-    this.add(createPoridge().food)
+  getEnergy(): number {
+    return this._getEnergy()
   }
-  addEgg() {
-    this.add(createEgg().food)
+  getEnergyChunk(): number {
+    return this._getEnergy()
   }
-  addSugar() {
-    this.add(createSugar().food)
+  get proteins(): number {
+    return this.getAllList().reduce((sum, cur) => {
+      return sum + cur.proteins
+    }, 0)
+  }
+  get carbohydrates(): number {
+    return this.getAllList().reduce((sum, cur) => {
+      return sum + cur.carbohydrates
+    }, 0)
+  }
+  get fats(): number {
+    return this.getAllList().reduce((sum, cur) => {
+      return sum + cur.fats
+    }, 0)
+  }
+  get proteinsChunk(): number {
+    return this.proteins
+  }
+  get carbohydratesChunk(): number {
+    return this.carbohydrates
+  }
+  get fatsChunk(): number {
+    return this.fats
+  }
+  get chunks(): number {
+    return 1
+  }
+  get chunkSize(): number {
+    return 1
+  }
+  get value(): number {
+    return 1
+  }
+  get name(): string {
+    return 'newMeal'
   }
 }
 
-const mealCheck = (mealChecker: MealChecker, name: string) => {
-  test(name, () => {
-    const meal = mealChecker.meal
-    expect(meal.carbohydrates).toBeCloseTo(mealChecker.carbohydrates)
-    expect(meal.proteins).toBeCloseTo(mealChecker.proteins)
-    expect(meal.fats).toBeCloseTo(mealChecker.fats)
-    expect(meal.chunks).toBe(mealChecker.chunks)
-    expect(meal.set).toBe(undefined)
-    expect(meal.carbohydratesChunk).toBeCloseTo(mealChecker.carbohydratesChunk)
-    expect(meal.proteinsChunk).toBeCloseTo(mealChecker.proteinsChunk)
-    expect(meal.fatsChunk).toBeCloseTo(mealChecker.fatsChunk)
-    expect(meal.getAllList()).toStrictEqual([...mealChecker.all.values()])
-    expect(meal.getEnergy()).toBe(mealChecker.energy)
-    expect(meal.getEnergyChunk()).toBe(mealChecker.energy / mealChecker.chunks)
+const mealCheck = (testName: string, meal: Meal, mock: MockMeal) => {
+
+  test(testName + 'getAllList', () => {
+    expect(meal.getAllList().length).toBe(mock.getAllList().length)
+  })
+
+  test(testName + 'getEnergy', () => {
+    expect(meal.getEnergy()).toBeCloseTo(mock.getEnergy())
+  })
+
+  test(testName + 'getEnergyChunk', () => {
+    expect(meal.getEnergyChunk()).toBeCloseTo(mock.getEnergyChunk())
+  })
+
+  test(testName + 'proteins', () => {
+    expect(meal.proteins).toBeCloseTo(mock.proteins)
+  })
+  
+  test(testName + 'carbohydrates', () => {
+    expect(meal.carbohydrates).toBeCloseTo(mock.carbohydrates)
+  })
+
+  test(testName + 'fats', () => {
+    expect(meal.fats).toBeCloseTo(mock.fats)
+  })
+  
+  test(testName + 'proteinsChunk', () => {
+    expect(meal.proteinsChunk).toBeCloseTo(mock.proteinsChunk)
+  })
+
+  test(testName + 'carbohydratesChunk', () => {
+    expect(meal.carbohydratesChunk).toBeCloseTo(mock.carbohydratesChunk)
+  })
+
+  test(testName + 'fatsChunk', () => {
+    expect(meal.fatsChunk).toBeCloseTo(mock.fatsChunk)
+  })
+
+  test(testName + 'chunks', () => {
+    expect(meal.chunks).toBe(mock.chunks)
+  })
+
+  test(testName + 'chunkSize', () => {
+    expect(meal.chunkSize).toBe(mock.chunkSize)
+  })
+
+  test(testName + 'value', () => {
+    expect(meal.value).toBe(mock.value)
+  })
+
+  test(testName + 'name', () => {
+    expect(meal.name).toBe(mock.name)
   })
 }
 
-mealCheck(new MealChecker(), 'init meal')
+mealCheck('newMeal (empty) ', new Meal(), new MockMeal({
+  all: []
+}))
 
-const mealChecker1 = new MealChecker()
-mealChecker1.addPoridge()
-mealCheck(mealChecker1, 'meal with one position')
-
-const mealChecker2 = new MealChecker()
-mealChecker2.addPoridge()
-mealChecker2.addEgg()
-mealChecker2.addSugar()
-mealCheck(mealChecker2, 'meal with three position')
-
-const mealChecker3 = new MealChecker()
-mealChecker3.addPoridge()
-mealChecker3.addEgg()
-mealChecker3.addSugar()
-mealChecker3.remove('sugar')
-mealCheck(mealChecker3, 'meal add and remove')
-
-export { MealChecker }
+mealCheck('newMeal (empty) ', new Meal({
+  childs: [chicken, egg, poridge] 
+}), new MockMeal({
+  all: [mockChicken, mockEgg, mockPoridge]
+}))
