@@ -3,7 +3,6 @@ import type { ICompositeParams } from "@/interfaces/ICompositeParams";
 import type { MN } from "@/interfaces/IMacroNutrientValues";
 import { MutableChilds, MutableValue } from "./CompositeDecorator";
 import type { IMutable } from "@/interfaces/IMutable";
-import type { PFC } from "@/interfaces/PFC";
 
 abstract class AComposite<T extends AComposite<any>>
 implements IImmutableComposite<T> {
@@ -13,18 +12,6 @@ implements IImmutableComposite<T> {
     this._chunks = chunks
     this._chunkSize = chunkSize
     this._name = name
-  }
-
-  normilizePFC(pfc?: PFC | undefined): PFC {
-    const carbohydrates = pfc?.carbohydrates || this.carbohydrates
-    const proteins = pfc?.proteins || this.proteins
-    const fats = pfc?.fats || this.fats
-    const total = carbohydrates + fats + proteins
-    return {
-      carbohydrates: (Math.floor(carbohydrates / total * 1000) / 1000) || 0,
-      proteins: (Math.floor(proteins / total * 1000) / 1000) || 0,
-      fats: (Math.floor(fats / total * 1000) / 1000) || 0,
-    }
   }
 
   getAllList(): T[] {
@@ -45,10 +32,6 @@ implements IImmutableComposite<T> {
 
   getEnergyChunk(): number {
     return this._getEnergy() * this._chunkSize
-  }
-
-  getEnergyPer100(): number {
-    return this.getEnergyChunk() * this._defaultSize / this._chunkSize
   }
 
   protected _add(component: T): void {
@@ -72,25 +55,13 @@ implements IImmutableComposite<T> {
     return this._getMacronutrient('proteins') * this.value
   }
 
-  get proteinsChunkPer100(): number {
-    return this.proteinsChunk * this._defaultSize / this._chunkSize
-  };
-
   get carbohydrates(): number {
     return this._getMacronutrient('carbohydrates') * this.value
   }
 
-  get carbohydratesChunkPer100(): number {
-    return this.carbohydratesChunk * this._defaultSize / this._chunkSize
-  };
-
   get fats(): number {
     return this._getMacronutrient('fats') * this.value
   }
-
-  get fatsChunkPer100(): number {
-    return this.fatsChunk * this._defaultSize / this._chunkSize
-  };
 
   get proteinsChunk(): number {
     return this._getMacronutrient('proteins') * this._chunkSize
@@ -150,8 +121,9 @@ extends AComposite<T> implements IMutable<number> {
   set(value: number): void {
     this.set(value)
   }
-  add(component: T): void {
+  add(component: T): T {
     this.add(component)
+    return component
   }
   remove(name: string): boolean {
     return this.remove(name)
@@ -161,8 +133,9 @@ extends AComposite<T> implements IMutable<number> {
 @MutableChilds
 class CompositeWithFixedValue<T extends AComposite<any>>
 extends AComposite<T> implements IMutableChilds<T> {
-  add(component: T): void {
+  add(component: T): T {
     this.add(component)
+    return component
   }
   remove(name: string): boolean {
     return this.remove(name)

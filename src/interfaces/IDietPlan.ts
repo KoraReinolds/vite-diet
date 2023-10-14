@@ -1,10 +1,11 @@
+import type { Meal } from "@/classes/Meal"
 import type { IDietPlanParams } from "./IDietPlanParams"
-import type { GraphState } from "./IGraphNode"
 
 interface IDietPlan
 extends Omit<IDietPlanParams, 'childs'> {
   percise: number
-  setValuesFromState(state: GraphState): void
+  leftKcal: number
+  getNewMeal(): Meal
 }
 
 export type { IDietPlan }

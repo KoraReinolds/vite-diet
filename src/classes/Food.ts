@@ -1,10 +1,12 @@
-import type { PFC } from "@/interfaces/PFC";
+import { PFCRatio, type PFC } from "@/interfaces/PFC";
 import { ImmutableCompositeWithMutableValue } from "./Composite";
 import { Carbohydrates, Fats, Proteins, MacroNutrient } from "./MacroNutrient";
 import type { IFoodParams } from "@/interfaces/IFoodParams";
+import type { IPer100Chunks } from "@/interfaces/IChunks";
 
 class Food
-extends ImmutableCompositeWithMutableValue<MacroNutrient> {
+extends ImmutableCompositeWithMutableValue<MacroNutrient>
+implements IPer100Chunks {
  
   pfcRatio: PFC
 
@@ -25,8 +27,25 @@ extends ImmutableCompositeWithMutableValue<MacroNutrient> {
         new Proteins(proteins),
       ]
     })
-    this.pfcRatio = this.normilizePFC() 
+    this.pfcRatio = new PFCRatio(foodParams).normilize() 
   }
+
+  getEnergyPer100(): number {
+    return this.getEnergyChunk() * this._defaultSize / this._chunkSize
+  }
+
+  get fatsChunkPer100(): number {
+    return this.fatsChunk * this._defaultSize / this._chunkSize
+  };
+  
+  get carbohydratesChunkPer100(): number {
+    return this.carbohydratesChunk * this._defaultSize / this._chunkSize
+  };
+
+  get proteinsChunkPer100(): number {
+    return this.proteinsChunk * this._defaultSize / this._chunkSize
+  };
+
 }
 
 export { Food }

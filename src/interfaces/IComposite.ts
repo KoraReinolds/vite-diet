@@ -11,7 +11,7 @@ extends IEnergy, IHasMacronutrients, IChunks {
 }
 
 interface IMutableChilds<T extends IImmutableComposite<any>> {
-  add(component: T): void
+  add(component: T): T 
   remove(name: string): boolean
 }
 

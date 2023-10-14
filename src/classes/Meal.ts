@@ -7,11 +7,11 @@ extends CompositeWithFixedValue<Food> {
  
   protected _defaultSize: number = 1;
 
-  constructor(mealParams: IMealParams) {
+  constructor(mealParams: IMealParams = {}) {
     super({
       childs: [],
       chunks: 1,
-      name: 'Meal',
+      name: 'newMeal',
       ...mealParams,
     })
   }

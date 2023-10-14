@@ -1,12 +1,11 @@
 import type { IDietPlan } from "@/interfaces/IDietPlan";
 import { CompositeWithFixedValue } from "./Composite";
-import type { Food } from "./Food";
 import type { IDietPlanParams } from "@/interfaces/IDietPlanParams";
-import type { PFC } from "@/interfaces/PFC";
-import type { GraphState } from "@/interfaces/IGraphNode";
+import { PFCRatio, type PFC } from "@/interfaces/PFC";
+import { Meal } from "./Meal";
 
 class DietPlan
-extends CompositeWithFixedValue<Food>
+extends CompositeWithFixedValue<Meal>
 implements IDietPlan {
   private _percise: number = 2
   private _kcal: number
@@ -19,17 +18,20 @@ implements IDietPlan {
     super({
       ...params,
       chunks: 1,
-      name: 'DietPlan'
+      name: 'DietPlan',
+      childs: [new Meal({ childs: params.childs })],
     })
     this._kcal = kcal
-    this._pfc = this.normilizePFC(pfcRatio)
+    this._pfc = new PFCRatio(pfcRatio).normilize()
+  }
+  
+  getNewMeal(): Meal {
+    return this.get('newMeal') || this.add(new Meal())
   }
 
-  setValuesFromState(state: GraphState): void {
-    Object.entries(state).forEach(([key, val]) => {
-      this.get(key)?.set(val)
-    })
-  }
+  get leftKcal() {
+    return this.kcal - this.getEnergy()
+  };
 
   get pfcRatio() {
     return this._pfc 
