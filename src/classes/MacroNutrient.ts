@@ -39,6 +39,9 @@ class Fats extends MacroNutrient {
   get fats(): number {
     return this.chunks
   }
+  get fatsChunk(): number {
+    return 1
+  }
 }
 class Proteins extends MacroNutrient {
   constructor(chunks: number) {
@@ -47,6 +50,9 @@ class Proteins extends MacroNutrient {
   get proteins(): number {
     return this.chunks
   }
+  get proteinsChunk(): number {
+    return 1
+  }
 }
 class Carbohydrates extends MacroNutrient {
   constructor(chunks: number) {
@@ -54,6 +60,9 @@ class Carbohydrates extends MacroNutrient {
   }
   get carbohydrates(): number {
     return this.chunks
+  }
+  get carbohydratesChunk(): number {
+    return 1
   }
 }
 
