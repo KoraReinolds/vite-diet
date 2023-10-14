@@ -1,187 +1,231 @@
 import { Food } from '@/classes/Food'
+import { type MacroNutrient } from '@/classes/MacroNutrient'
 import type { IFoodParams } from '@/interfaces/IFoodParams'
+import type { PFC } from '@/interfaces/PFC'
 import { expect, test } from 'vitest'
+import { MockCarbohydrates, MockFats, MockMacronutient, MockProteins } from './macronutrients.test'
 
-class FoodChecker {
-  food: Food
-  params: IFoodParams
-  constructor(params: IFoodParams) {
-    this.food = new Food(params)
+interface IMockFoodParams extends IFoodParams {
+  ratio: number
+  chunkRatio: number
+  chunks: number
+  chunkSize: number
+}
+
+class MockFood implements Food {
+  pfcRatio: PFC
+  _all: MockMacronutient[]  
+  params: IMockFoodParams
+  constructor(params: IMockFoodParams) {
     this.params = params
+    this.pfcRatio = {
+      carbohydrates: params.carbohydrates,
+      proteins: params.proteins,
+      fats: params.fats,
+    }
+    this._all = [
+      new MockFats(this.pfcRatio.fats),
+      new MockProteins(this.pfcRatio.proteins),
+      new MockCarbohydrates(this.pfcRatio.carbohydrates)
+    ]
+  }
+  getAllList(): MacroNutrient[] {
+    return this._all as unknown as MacroNutrient[]
+  }
+  _getEnergy(): number {
+    return this.getAllList().reduce((sum, cur) => {
+      return sum + cur.getEnergy()
+    }, 0) * this.params.ratio
+  }
+  getEnergy(): number {
+    return this._getEnergy()
+  }
+  getEnergyChunk(): number {
+    return this.params.chunkRatio * this._getEnergy() / this.params.ratio
+  }
+  getEnergyPer100(): number {
+    return this._getEnergy() / this.params.ratio
+  }
+  get proteins(): number {
+    return this.pfcRatio.proteins / 100 * this.value
+  }
+  get proteinsChunkPer100(): number {
+    return this.pfcRatio.proteins
+  }
+  get carbohydrates(): number {
+    return this.pfcRatio.carbohydrates / 100 * this.value
+  }
+  get carbohydratesChunkPer100(): number {
+    return this.pfcRatio.carbohydrates
+  }
+  get fats(): number {
+    return this.pfcRatio.fats / 100 * this.value
+  }
+  get fatsChunkPer100(): number {
+    return this.pfcRatio.fats
+  }
+  get proteinsChunk(): number {
+    return this.pfcRatio.proteins * this.params.chunkRatio
+  }
+  get carbohydratesChunk(): number {
+    return this.pfcRatio.carbohydrates * this.params.chunkRatio
+  }
+  get fatsChunk(): number {
+    return this.pfcRatio.fats * this.params.chunkRatio
+  }
+  get chunks(): number {
+    return this.params.chunks
+  }
+  get chunkSize(): number {
+    return this.params.chunkSize
+  }
+  get value(): number {
+    return this.params.chunks * this.params.chunkSize
+  }
+  get name(): string {
+    return this.params.name
   }
 }
 
-const createPoridge = (params = {}) => new FoodChecker({
-  name: 'poridge',
-  proteins: 12,
-  carbohydrates: 63,
-  fats: 2,
-  ...params,
-})
-
-const createEgg = (params = {}) => new FoodChecker({
-  name: 'egg',
-  proteins: 20,
-  carbohydrates: 1,
-  fats: 10,
-  chunkSize: 60,
-  chunks: 60,
-  ...params,
-})
-
-const createSugar = (params = {}) => new FoodChecker({
-  name: 'sugar',
-  proteins: 0,
-  carbohydrates: 98,
-  fats: 0,
-  ...params,
-})
-
-const createCandy = (params = {}) => new FoodChecker({
-  name: 'candy',
-  proteins: 8,
-  carbohydrates: 90,
-  fats: 0,
-  ...params,
-})
-
-function foodCheck(
-  checker: FoodChecker,
-  testName: string
-) {
-  const params = checker.params
-  const food = checker.food
-  const chunks = params.chunks??100
-  const chunkSize = params.chunkSize??1
-  const ratio = 100 / (chunks * chunkSize)
-  let proteins = params.proteins
-  let fats = params.fats
-  let carbohydrates = params.carbohydrates
-  const kcalPer100 = proteins * 4.2 + fats * 9.3 + carbohydrates * 4.2
-  if (ratio) {
-    proteins /= ratio
-    fats /= ratio
-    carbohydrates /= ratio
+class MockFoodZeroChunks extends MockFood {
+  getEnergy(): number {
+    return 0
   }
-  const kcal = proteins * 4.2 + fats * 9.3 + carbohydrates * 4.2
-  
-
-  test(testName+' name', () => {
-    expect(food.name).toBe(params.name)
-  })
-
-  test(testName+' proteins', () => {
-    expect(food.proteins).toBe(chunks === 0 ? 0 : proteins)
-  })
-
-  test(testName+' fats', () => {
-    expect(food.fats).toBe(chunks === 0 ? 0 : fats)
-  })
-
-  test(testName+' carbohydrates', () => {
-    expect(food.carbohydrates).toBe(chunks === 0 ? 0 : carbohydrates)
-  })
-
-  test(testName+' proteinsPer100', () => {
-    expect(food.proteinsChunkPer100).toBe(params.proteins)
-  })
-
-  test(testName+' fatsPer100', () => {
-    expect(food.fatsChunkPer100).toBe(params.fats)
-  })
-
-  test(testName+' carbohydratesPer100', () => {
-    expect(food.carbohydratesChunkPer100).toBe(params.carbohydrates)
-  })
-
-  test(testName+' energy', () => {
-    expect(food.getEnergy()).toBe(chunks === 0 ? 0 : kcal)
-  })
-
-  test(testName+' energyPer100', () => {
-    expect(food.getEnergyPer100()).toBe(kcalPer100)
-  })
-
-  test(testName+' getEnergyChunk', () => {
-    expect(food.getEnergyChunk()).toBe(kcalPer100 / 100 * chunkSize)
-  })
-
-  test(testName+' chunks', () => {
-    expect(food.chunks).toBe(chunks)
-  })
-
-  test(testName+' chunkSize', () => {
-    expect(food.chunkSize).toBe(chunkSize)
-  })
-  
-  test(testName+' proteins chunks', () => {
-    expect(food.proteinsChunk).toBeCloseTo(
-      chunks === 0
-        ? params.proteins / 100
-        : proteins / chunks
-    )
-  })
-
-  test(testName+' fats chunks', () => {
-    expect(food.fatsChunk).toBeCloseTo(
-      chunks === 0
-        ? params.fats / 100
-        : fats / chunks
-    )
-  })
-
-  test(testName+' carbohydrates chunks', () => {
-    expect(food.carbohydratesChunk).toBeCloseTo(
-      chunks === 0
-        ? params.carbohydrates / 100
-        : carbohydrates / chunks
-    )
-  })
- 
-  test(testName+' immutable', () => {
-    expect(food.add).toBe(undefined)
-    expect(food.remove).toBe(undefined)
-  })
- 
+  get chunks(): number {
+    return 0
+  }
+  get value(): number {
+    return 0
+  }
 }
 
-// not default chunks
-const checker = createPoridge({ chunks: 10 })
-checker.params.chunks = 10
-foodCheck(checker, checker.food.name+checker.food.chunks) 
+const foodCheck = (testName: string, food: Food, mock: MockFood) => {
 
-// with default chunks
-const checker2 = createPoridge()
-foodCheck(checker2, checker2.food.name+' default chunks') 
+  test(testName + 'getAllList', () => {
+    expect(food.getAllList().length).toBe(mock.getAllList().length)
+  })
 
-// changing chunks
-const checker3 = createPoridge()
-const newValue = 25
-const food = checker3.food
-food.set(newValue)
-checker3.params.chunks = newValue
-foodCheck(checker3, food.name+food.chunks) 
+  test(testName + 'getEnergy', () => {
+    expect(food.getEnergy()).toBeCloseTo(mock.getEnergy())
+  })
 
-// not default chunkSize
-const checker4 = createPoridge({
-  chunkSize: 50,
+  test(testName + 'getEnergyChunk', () => {
+    expect(food.getEnergyChunk()).toBeCloseTo(mock.getEnergyChunk())
+  })
+
+  test(testName + 'getEnergyPer100', () => {
+    expect(food.getEnergyPer100()).toBeCloseTo(mock.getEnergyPer100())
+  })
+
+  test(testName + 'get', () => {
+    expect(food.get('proteins')?.name).toBe('proteins')
+  })
+
+  test(testName + 'get', () => {
+    expect(food.get('fats')?.name).toBe('fats')
+  })
+
+  test(testName + 'get', () => {
+    expect(food.get('carbohydrates')?.name).toBe('carbohydrates')
+  })
+
+  test(testName + 'proteins', () => {
+    expect(food.proteins).toBeCloseTo(mock.proteins)
+  })
+  
+  test(testName + 'proteinsChunkPer100', () => {
+    expect(food.proteinsChunkPer100).toBeCloseTo(mock.proteinsChunkPer100)
+  })
+  
+  test(testName + 'carbohydrates', () => {
+    expect(food.carbohydrates).toBeCloseTo(mock.carbohydrates)
+  })
+
+  test(testName + 'carbohydratesChunkPer100', () => {
+    expect(food.carbohydratesChunkPer100).toBeCloseTo(mock.carbohydratesChunkPer100)
+  })
+  
+  test(testName + 'fats', () => {
+    expect(food.fats).toBeCloseTo(mock.fats)
+  })
+  
+  test(testName + 'fatsChunkPer100', () => {
+    expect(food.fatsChunkPer100).toBeCloseTo(mock.fatsChunkPer100)
+  })
+  
+  test(testName + 'proteinsChunk', () => {
+    expect(food.proteinsChunk).toBeCloseTo(mock.proteinsChunk)
+  })
+
+  test(testName + 'carbohydratesChunk', () => {
+    expect(food.carbohydratesChunk).toBeCloseTo(mock.carbohydratesChunk)
+  })
+
+  test(testName + 'fatsChunk', () => {
+    expect(food.fatsChunk).toBeCloseTo(mock.fatsChunk)
+  })
+
+  test(testName + 'chunks', () => {
+    expect(food.chunks).toBe(mock.chunks)
+  })
+
+  test(testName + 'chunkSize', () => {
+    expect(food.chunkSize).toBe(mock.chunkSize)
+  })
+
+  test(testName + 'value', () => {
+    expect(food.value).toBe(mock.value)
+  })
+
+  test(testName + 'name', () => {
+    expect(food.name).toBe(mock.name)
+  })
+}
+
+const poridgeParams = { name: 'poridge', carbohydrates: 60, proteins: 8, fats: 1 }
+const mockPoridge = new MockFood({
+  ...poridgeParams,
+  ratio: 1,
+  chunkRatio: 0.01,
+  chunks: 100,
+  chunkSize: 1,
+}) 
+foodCheck('Poridge ', new Food(poridgeParams), mockPoridge)
+
+const poridge2 = new Food({ ...poridgeParams, chunks: 0 })
+poridge2.set(100)
+foodCheck('Poridge (zero to 100)', poridge2, mockPoridge)
+
+const poridge3 = new Food({ ...poridgeParams, chunks: 50 })
+poridge3.set(0)
+poridge3.set(100)
+foodCheck('Poridge (50 to zero to 100)', poridge3, mockPoridge)
+
+const eggParams = { name: 'egg', carbohydrates: 1.1, proteins: 13, fats: 11, chunks: 2, chunkSize: 60 }
+const mockEgg = new MockFood({
+  ...eggParams,
+  ratio: 1.2,
+  chunkRatio: 0.6,
   chunks: 2,
+  chunkSize: 60,
 })
-checker4.params.chunks = 2
-checker4.params.chunkSize = 50
-foodCheck(checker4, checker4.food.name+' not default chunkSize')
+foodCheck('Egg ', new Food(eggParams), mockEgg)
 
-// default zero chunks
-const checker5 = createPoridge({
-  chunks: 0,
+const egg2 = new Food({
+  ...eggParams,
+  chunks: 10,
 })
-checker5.params.chunks = 0
-foodCheck(checker5, checker5.food.name+' default zero chunks')
+egg2.set(2)
+foodCheck('Egg (10 to 2) ', new Food(eggParams), mockEgg)
 
-// set zero chunks
-const checker6 = createPoridge()
-checker6.food.set(0)
-checker6.params.chunks = 0
-foodCheck(checker6, checker6.food.name+' set zero chunks')
+const chickenParams = { name: 'chicken', carbohydrates: 0.5, proteins: 20, fats: 0.5, chunks: 0 }
+const mockChicken = new MockFoodZeroChunks({
+  ...chickenParams,
+  ratio: 1,
+  chunkRatio: 0.01,
+  chunks: 100,
+  chunkSize: 1,
+})
+foodCheck('Chicken (zero chunks) ', new Food(chickenParams), mockChicken)
 
-export { createPoridge, createEgg, createSugar, createCandy, foodCheck }
+export { mockEgg, mockChicken, mockPoridge }

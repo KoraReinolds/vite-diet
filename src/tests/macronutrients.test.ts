@@ -6,11 +6,10 @@ import { expect, test } from 'vitest'
 class MockMacronutient implements MacroNutrient {
 
   chunks: number
-  energy: number
+  _energy: number | undefined
 
-  constructor(chunks: number, energy: number) {
+  constructor(chunks: number) {
     this.chunks = chunks
-    this.energy = energy
   }
 
   get fats(): number {
@@ -26,11 +25,11 @@ class MockMacronutient implements MacroNutrient {
   }
 
   getEnergy(): number {
-    return this.chunks * this.energy 
+    return this.chunks * this._energy 
   }
 
   getEnergyChunk(): number {
-    return this.energy
+    return this._energy
   }
 
   normilizePFC(pfc?: PFC | undefined): PFC {
@@ -46,7 +45,7 @@ class MockMacronutient implements MacroNutrient {
   }
 
   getEnergyPer100(): number {
-    return this.energy * 100 
+    return this._energy * 100 
   }
 
   get(name: string): MacroNutrient | undefined {
@@ -95,6 +94,7 @@ class MockMacronutient implements MacroNutrient {
 
 class MockFats extends MockMacronutient {
   _name: string = 'fats'
+  _energy: number = 9.3
   get fatsChunk(): number {
     return 1
   }
@@ -108,6 +108,7 @@ class MockFats extends MockMacronutient {
 
 class MockCarbohydrates extends MockMacronutient {
   _name: string = 'carbohydrates'
+  _energy: number = 4.2
   get carbohydratesChunk(): number {
     return 1
   }
@@ -121,6 +122,7 @@ class MockCarbohydrates extends MockMacronutient {
 
 class MockProteins extends MockMacronutient {
   _name: string = 'proteins'
+  _energy: number = 4.2
   get proteinsChunk(): number {
     return 1
   }
@@ -212,8 +214,8 @@ const macronutrientCheck = (testName: string, mn: MacroNutrient, mock: MockMacro
 
 }
 
-macronutrientCheck('Init Fats ', new Fats(10), new MockFats(10, 9.3))
-macronutrientCheck('Init Proteins ', new Proteins(10), new MockProteins(10, 4.2))
-macronutrientCheck('Init Carbohydrates ', new Carbohydrates(10), new MockCarbohydrates(10, 4.2))
+macronutrientCheck('Init Fats ', new Fats(10), new MockFats(10))
+macronutrientCheck('Init Proteins ', new Proteins(10), new MockProteins(10))
+macronutrientCheck('Init Carbohydrates ', new Carbohydrates(10), new MockCarbohydrates(10))
 
-export { MockFats, MockCarbohydrates, MockProteins }
+export { MockFats, MockCarbohydrates, MockProteins, MockMacronutient }
