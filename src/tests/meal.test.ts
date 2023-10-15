@@ -4,17 +4,8 @@ import { Meal } from '@/classes/Meal'
 import { mockChicken, mockEgg, mockPoridge, type MockFood, chicken, poridge, egg } from './food.test'
 import type { IMealParams } from '@/interfaces/IMealParams'
 
-interface IMockMealParams extends IMealParams {
-  all: MockFood[]
-}
-
 class MockMeal implements Meal {
-  _all: MockFood[]
-  params: IMealParams
-  constructor(params: IMockMealParams) {
-    this.params = params
-    this._all = params.all
-  }
+  _all: MockFood[] = []
   getAllList(): Food[] {
     return this._all as unknown as Food[]
   }
@@ -64,6 +55,18 @@ class MockMeal implements Meal {
   }
   get name(): string {
     return 'newMeal'
+  }
+  addChicken() { 
+    this._all.push(mockChicken)
+    return this
+  }
+  addPoridge() {
+    this._all.push(mockPoridge)
+    return this
+  }
+  addEgg() {
+    this._all.push(mockEgg)
+    return this
   }
 }
 
@@ -122,12 +125,14 @@ const mealCheck = (testName: string, meal: Meal, mock: MockMeal) => {
   })
 }
 
-mealCheck('newMeal (empty) ', new Meal(), new MockMeal({
-  all: []
-}))
+mealCheck('newMeal (empty) ', new Meal(), new MockMeal())
 
 mealCheck('newMeal (empty) ', new Meal({
   childs: [chicken, egg, poridge] 
-}), new MockMeal({
-  all: [mockChicken, mockEgg, mockPoridge]
-}))
+}), new MockMeal()
+  .addChicken()
+  .addEgg()
+  .addPoridge()
+)
+
+export { MockMeal, chicken, egg, poridge }

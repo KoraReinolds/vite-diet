@@ -190,7 +190,8 @@ const mockPoridge = new MockFood({
   chunks: 100,
   chunkSize: 1,
 }) 
-foodCheck('Poridge ', new Food(poridgeParams), mockPoridge)
+const poridge = new Food(poridgeParams)
+foodCheck('Poridge ',poridge , mockPoridge)
 
 const poridge2 = new Food({ ...poridgeParams, chunks: 0 })
 poridge2.set(100)
@@ -209,7 +210,8 @@ const mockEgg = new MockFood({
   chunks: 2,
   chunkSize: 60,
 })
-foodCheck('Egg ', new Food(eggParams), mockEgg)
+const egg = new Food(eggParams)
+foodCheck('Egg ', egg, mockEgg)
 
 const egg2 = new Food({
   ...eggParams,
@@ -226,6 +228,7 @@ const mockChicken = new MockFoodZeroChunks({
   chunks: 100,
   chunkSize: 1,
 })
-foodCheck('Chicken (zero chunks) ', new Food(chickenParams), mockChicken)
+const chicken = new Food(chickenParams)
+foodCheck('Chicken (zero chunks) ', chicken, mockChicken)
 
-export { mockEgg, mockChicken, mockPoridge }
+export { mockEgg, mockChicken, mockPoridge, MockFood, chicken, poridge, egg }

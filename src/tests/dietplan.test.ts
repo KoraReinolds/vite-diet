@@ -1,57 +1,161 @@
-
-import { DietPlan } from '@/classes/DietPlan'
-import type { Food } from '@/classes/Food'
 import { expect, test } from 'vitest'
-import { createEgg, createPoridge, createSugar } from './food.test'
-import type { IDietPlanParams } from '@/interfaces/IDietPlanParams'
 import { Meal } from '@/classes/Meal'
-import { MealChecker } from './meal.test'
+import { chicken, poridge, egg } from './food.test'
+import type { IDietPlanParams } from '@/interfaces/IDietPlanParams'
+import { DietPlan } from '@/classes/DietPlan'
+import { MockMeal } from './meal.test'
 
-class DietPlanChecker {
-  dp: DietPlan
-  constructor() {
-    this.dp = new DietPlan({
-      kcal: 2000,
-      pfcRatio: { carbohydrates: 60, fats: 20, proteins: 20 },
-      childs: [],
-    })
+interface IMockDietPlanParams extends IDietPlanParams {
+  all: MockMeal[]
+}
+
+class MockDietPlan implements DietPlan {
+  params: IMockDietPlanParams
+  constructor(params: IMockDietPlanParams) {
+    this.params = params
+  }
+  get leftKcal(): number {
+    return this.kcal - this.getEnergy() 
+  }
+  get kcal(): number {
+    return this.params.kcal
+  }
+  getAllList(): Meal[] {
+    return this.params.all as unknown as Meal[]
+  }
+  getEnergy(): number {
+    return this.getAllList().reduce((sum, cur) => {
+      return sum + cur.getEnergy()
+    }, 0)
+  }
+  getEnergyChunk(): number {
+    return this.getEnergy()
+  }
+  get proteins(): number {
+    return this.getAllList().reduce((sum, cur) => {
+      return sum + cur.proteins
+    }, 0)
+  }
+  get carbohydrates(): number {
+    return this.getAllList().reduce((sum, cur) => {
+      return sum + cur.carbohydrates
+    }, 0)
+  }
+  get fats(): number {
+    return this.getAllList().reduce((sum, cur) => {
+      return sum + cur.fats
+    }, 0)
+  }
+  get proteinsChunk(): number {
+    return this.proteins
+  }
+  get carbohydratesChunk(): number {
+    return this.carbohydrates
+  }
+  get fatsChunk(): number {
+    return this.fats
+  }
+  get chunks(): number {
+    return 1
+  }
+  get chunkSize(): number {
+    return 1
+  }
+  get value(): number {
+    return 1
+  }
+  get name(): string {
+    return 'DietPlan'
   }
 }
 
-// const dietPlanCheck = (dpc: DietPlanChecker, name: string) => {
-//   test(name, () => {
-//     const dp = dpc.dp
-//     expect(dp.carbohydrates).toBeCloseTo(dpc.carbohydrates)
-//     expect(dp.proteins).toBeCloseTo(dpc.proteins)
-//     expect(dp.fats).toBeCloseTo(dpc.fats)
-//     expect(dp.chunks).toBe(dpc.chunks)
-//     expect(dp.set).toBe(undefined)
-//     expect(dp.carbohydratesChunk).toBeCloseTo(dpc.carbohydratesChunk)
-//     expect(dp.proteinsChunk).toBeCloseTo(dpc.proteinsChunk)
-//     expect(dp.fatsChunk).toBeCloseTo(dpc.fatsChunk)
-//     expect(dp.getAllList()).toStrictEqual([...dpc.all.values()])
-//     expect(dp.getEnergy()).toBe(dpc.energy)
-//     expect(dp.getEnergyChunk()).toBe(dpc.energy / dpc.chunks)
-//   })
-// }
+const dietPlanCheck = (testName: string, dp: DietPlan, mock: MockDietPlan) => {
 
-// dietPlanCheck(new DietPlanChecker(), 'init diet plan')
+  test(testName + 'getNewMeal return smth', () => {
+    expect(!!dp.getNewMeal()).toBe(true)
+  })
 
-// const dpc1 = new DietPlanChecker()
-// dpc1.addPoridge()
-// dietPlanCheck(dpc1, 'diet plan with one position')
+  test(testName + 'leftKcal', () => {
+    expect(dp.leftKcal).toBeCloseTo(mock.leftKcal)
+  })
 
-// const dpc2 = new DietPlanChecker()
-// dpc2.addPoridge()
-// dpc2.addEgg()
-// dpc2.addSugar()
-// dietPlanCheck(dpc2, 'diet plan with three position')
+  test(testName + 'kcal', () => {
+    expect(dp.kcal).toBe(mock.kcal)
+  })
 
-// const dpc3 = new DietPlanChecker()
-// dpc3.addPoridge()
-// dpc3.addEgg()
-// dpc3.addSugar()
-// dpc3.remove('sugar')
-// dietPlanCheck(dpc3, 'diet plan add and remove')
+  test(testName + 'getEnergy', () => {
+    expect(dp.getEnergy()).toBeCloseTo(mock.getEnergy())
+  })
 
-export { DietPlanChecker }
+  test(testName + 'getEnergyChunk', () => {
+    expect(dp.getEnergyChunk()).toBeCloseTo(mock.getEnergyChunk())
+  })
+
+  test(testName + 'proteins', () => {
+    expect(dp.proteins).toBeCloseTo(mock.proteins)
+  })
+  
+  test(testName + 'carbohydrates', () => {
+    expect(dp.carbohydrates).toBeCloseTo(mock.carbohydrates)
+  })
+
+  test(testName + 'fats', () => {
+    expect(dp.fats).toBeCloseTo(mock.fats)
+  })
+  
+  test(testName + 'proteinsChunk', () => {
+    expect(dp.proteinsChunk).toBeCloseTo(mock.proteinsChunk)
+  })
+
+  test(testName + 'carbohydratesChunk', () => {
+    expect(dp.carbohydratesChunk).toBeCloseTo(mock.carbohydratesChunk)
+  })
+
+  test(testName + 'fatsChunk', () => {
+    expect(dp.fatsChunk).toBeCloseTo(mock.fatsChunk)
+  })
+
+  test(testName + 'chunks', () => {
+    expect(dp.chunks).toBe(mock.chunks)
+  })
+
+  test(testName + 'chunkSize', () => {
+    expect(dp.chunkSize).toBe(mock.chunkSize)
+  })
+
+  test(testName + 'value', () => {
+    expect(dp.value).toBe(mock.value)
+  })
+
+  test(testName + 'name', () => {
+    expect(dp.name).toBe(mock.name)
+  })
+}
+
+const dietPlanParams: IDietPlanParams = {
+  pfcRatio: { carbohydrates: 60, proteins: 25, fats: 15 },
+  kcal: 1000,
+  childs: [],
+}
+dietPlanCheck(
+  'Init DietPlan (empty) ',
+  new DietPlan(dietPlanParams),
+  new MockDietPlan({
+    ...dietPlanParams,
+    all: [],
+ })
+)
+
+const dp = new DietPlan({
+  ...dietPlanParams,
+  childs: [chicken],
+})
+dp.add(new Meal({ childs: [chicken, poridge, egg] }))
+dietPlanCheck(
+  'Init DietPlan (empty) ',
+  dp,
+  new MockDietPlan({
+    ...dietPlanParams,
+    all: [new MockMeal().addChicken(), new MockMeal().addChicken().addPoridge().addEgg()],
+ })
+)
