@@ -15,6 +15,10 @@ extends CompositeWithFixedValue<Food> {
       ...mealParams,
     })
   }
+  
+  rename(name: string) {
+    this._name = name
+  }
 
 }
 

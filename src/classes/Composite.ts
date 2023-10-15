@@ -34,9 +34,10 @@ implements IImmutableComposite<T> {
     return this._getEnergy() * this._chunkSize
   }
 
-  protected _add(component: T): void {
+  protected _add(component: T): T {
     const name = component.name
     this._components.set(name, component)
+    return component
   }
 
   get(name: string): T | undefined {

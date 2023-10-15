@@ -13,9 +13,10 @@ function MutableValue<T extends { new(...args: any[]): AComposite<any> }>(constr
 function MutableChilds<Childs extends AComposite<any>, T extends { new(...args: any[]): AComposite<Childs> }>(constructor: T, context = {}) {
   return class extends constructor {
 
-    add(component: Childs): void {
+    add(component: Childs): Childs {
       const name = component.name
       this._components.set(name, component)
+      return component
     }
 
     remove(name: string): boolean {

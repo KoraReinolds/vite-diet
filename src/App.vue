@@ -92,7 +92,9 @@ const calculate = () => {
     pfcRatio: { proteins: 25, carbohydrates: 55, fats: 20 },
     kcal: 2500
   })
-  const newMeal = dp.value.get('newMeal')
+  const newMeal = dp.value.getNewMeal()
+  fl.getSelected().forEach(food => newMeal.add(food))
+  console.log(dp.value)
   if (newMeal) {
     const gs = new GreedySearch(new GraphNode(dp.value))
     const meal = gs.search(0.01)?.meal
@@ -103,7 +105,6 @@ const calculate = () => {
       fats: meal.fats,
       proteins: meal.proteins
     }
-
   }
 }
 
