@@ -50,6 +50,10 @@ implements IDietPlan {
     return this._kcal
   }
   
+  set kcal(val: number) {
+    this._kcal = val
+  }
+  
 }
 
 export { DietPlan }

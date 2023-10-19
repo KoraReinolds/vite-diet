@@ -1,5 +1,16 @@
 <template>
   <Header></Header>
+  <AppSection
+    title="Соотношение БЖУ"
+  >
+    <template v-slot:headerSide>
+      <div>
+        <span>Всего ккал ({{ curentEnergy }} / </span>
+        <ResizedInput v-model="totalEnergy" />
+        <span>)</span>
+      </div>
+    </template>
+  </AppSection>
   <FoodListComponent
     :food-list="fl"
     @update-selected="calculate"
@@ -64,6 +75,7 @@
 <script setup lang="ts">
 import FoodListComponent from './components/FoodList.vue'
 import Header from './components/Header.vue'
+import AppSection from './components/AppSection.vue'
 import { ref, type Ref } from 'vue';
 import { Food } from './classes/Food';
 import { FoodList } from './classes/FoodList';
@@ -72,6 +84,8 @@ import { GreedySearch } from './classes/GreedySearch';
 import { DietPlan } from './classes/DietPlan';
 import { Meal } from './classes/Meal';
 import { PFCRatio } from './interfaces/PFC';
+import { useKcal } from './composition/useKcal';
+import ResizedInput from './components/ResizedInput.vue';
 
 const poridge = new Food({ name: 'poridge', fats: 5, carbohydrates: 63, proteins: 14 })
 const milk = new Food({ name: 'milk', fats: 3.2, carbohydrates: 4.7, proteins: 2.9 })
@@ -87,13 +101,15 @@ fl.selectAll()
 const dp: Ref<DietPlan | undefined> = ref()
 const result: Ref<Meal | undefined> = ref()
 const pfc: Ref<PFCRatio> = ref(new PFCRatio({ carbohydrates: 0, fats: 0, proteins: 0}))
+dp.value = new DietPlan({
+  childs: fl.getSelected(),
+  pfcRatio: { proteins: 25, carbohydrates: 55, fats: 20 },
+  kcal: 2500
+})
+const { totalEnergy, curentEnergy } = useKcal(dp.value)
 
 const calculate = () => {
-  dp.value = new DietPlan({
-    childs: fl.getSelected(),
-    pfcRatio: { proteins: 25, carbohydrates: 55, fats: 20 },
-    kcal: 2500
-  })
+  if (!dp.value) return
   const newMeal = dp.value.getNewMeal()
   fl.getSelected().forEach(food => newMeal.add(food))
   console.log(dp.value)
