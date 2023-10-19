@@ -1,4 +1,5 @@
 <template>
+  <Header></Header>
   <FoodListComponent
     :food-list="fl"
     @update-selected="calculate"
@@ -62,6 +63,7 @@
 
 <script setup lang="ts">
 import FoodListComponent from './components/FoodList.vue'
+import Header from './components/Header.vue'
 import { ref, type Ref } from 'vue';
 import { Food } from './classes/Food';
 import { FoodList } from './classes/FoodList';

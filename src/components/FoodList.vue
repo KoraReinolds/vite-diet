@@ -3,8 +3,8 @@
   <thead>
     <tr>
       <th class="w-10 text-sm text-left"></th>
-      <th class="w-20 text-sm text-left">Name</th>
-      <th class="w-20 text-sm text-left">Chunk size</th>
+      <th class="w-24 text-sm text-left">Name</th>
+      <th class="w-10 text-sm text-left">Size</th>
       <th class="w-20 text-sm text-left">Proteins</th>
       <th class="w-20 text-sm text-left">Fats</th>
       <th class="w-20 text-sm text-left">Carbs</th>
