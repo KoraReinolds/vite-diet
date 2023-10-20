@@ -13,9 +13,9 @@ class PFCRatio {
     const fats = this.pfc.fats
     const total = carbohydrates + fats + proteins
     return {
-      carbohydrates: (Math.floor(carbohydrates / total * 1000) / 1000) || 0,
       proteins: (Math.floor(proteins / total * 1000) / 1000) || 0,
       fats: (Math.floor(fats / total * 1000) / 1000) || 0,
+      carbohydrates: (Math.floor(carbohydrates / total * 1000) / 1000) || 0,
     }
   }
 }

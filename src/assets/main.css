@@ -4,6 +4,22 @@ body {
   font-family: 'Inter', 'Montserrat Alternates', sans-serif;
 }
 
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -12px;
+  background-color: #fff;
+  height: 12px;
+  width: 4px;    
+}
+
 input {
   outline: none;
   width: auto;

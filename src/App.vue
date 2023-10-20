@@ -10,6 +10,16 @@
         <span>)</span>
       </div>
     </template>
+    <template v-slot:body>
+      <PFCBar
+        v-model="pfcRatio"
+      />
+      <div class="font-bold">
+        <span>Белки - {{ (pfcRatio.proteins * 100).toFixed() }}%; </span>
+        <span>Жиры - {{ (pfcRatio.fats * 100).toFixed() }}%; </span>
+        <span>Углеводы - {{ (pfcRatio.carbohydrates * 100).toFixed() }}%; </span>
+      </div>
+    </template>
   </AppSection>
   <FoodListComponent
     :food-list="fl"
@@ -84,8 +94,9 @@ import { GreedySearch } from './classes/GreedySearch';
 import { DietPlan } from './classes/DietPlan';
 import { Meal } from './classes/Meal';
 import { PFCRatio } from './interfaces/PFC';
-import { useKcal } from './composition/useKcal';
+import { useDP } from './composition/useDP';
 import ResizedInput from './components/ResizedInput.vue';
+import PFCBar from './components/PFCBar.vue';
 
 const poridge = new Food({ name: 'poridge', fats: 5, carbohydrates: 63, proteins: 14 })
 const milk = new Food({ name: 'milk', fats: 3.2, carbohydrates: 4.7, proteins: 2.9 })
@@ -106,7 +117,7 @@ dp.value = new DietPlan({
   pfcRatio: { proteins: 25, carbohydrates: 55, fats: 20 },
   kcal: 2500
 })
-const { totalEnergy, curentEnergy } = useKcal(dp.value)
+const { totalEnergy, curentEnergy, pfcRatio } = useDP(dp.value)
 
 const calculate = () => {
   if (!dp.value) return

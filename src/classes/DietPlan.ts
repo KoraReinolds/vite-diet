@@ -46,6 +46,10 @@ implements IDietPlan {
     return this._pfc 
   }
   
+  set pfcRatio(val: PFC) {
+    this._pfc = val
+  }
+  
   get kcal() {
     return this._kcal
   }
