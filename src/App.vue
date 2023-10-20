@@ -13,6 +13,7 @@
     <template v-slot:body>
       <PFCBar
         v-model="pfcRatio"
+        :filled="actualPFC"
       />
       <div class="font-bold">
         <span>Белки - {{ (pfcRatio.proteins * 100).toFixed() }}%; </span>
@@ -117,7 +118,7 @@ dp.value = new DietPlan({
   pfcRatio: { proteins: 25, carbohydrates: 55, fats: 20 },
   kcal: 2500
 })
-const { totalEnergy, curentEnergy, pfcRatio } = useDP(dp.value)
+const { totalEnergy, curentEnergy, pfcRatio, actualPFC } = useDP(dp.value)
 
 const calculate = () => {
   if (!dp.value) return

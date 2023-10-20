@@ -17,17 +17,21 @@
       type="range"
     >
     <div class="h-2 flex w-full">
-      <div class="h-2 bg-text" :style="{ flexGrow: modelValue.proteins }">
-        <span></span>
-        <span></span>      
-      </div>
-      <div class="h-2 bg-text" :style="{ flexGrow: modelValue.fats }">
-        <span></span>
-        <span></span>      
-      </div>
-      <div class="h-2 bg-text" :style="{ flexGrow: modelValue.carbohydrates }">
-        <span></span>
-        <span></span>      
+      <div
+        v-for="key in PFCKeys"
+        :key="key"
+        class="h-2 flex first:bg-proteins bg-fats last:bg-carbohydrates"
+        :style="{ flexGrow: modelValue[key] }"
+      >
+        <span
+          class="h-full"
+          :style="{ flexGrow: filled[key] / modelValue[key] }"
+        ></span>
+        <span
+          v-if="filled[key] < modelValue[key]"
+          class="bg-text h-full grow"
+          :style="{ flexGrow: 1 - filled[key] / modelValue[key] }"
+        ></span> 
       </div>
     </div>
   </div>
@@ -43,10 +47,15 @@ const props = defineProps({
     type: Object as PropType<PFC>,
     required: true,
   },
+  filled: {
+    type: Object as PropType<PFC>,
+    required: true,
+  },
 })
 
+const PFCKeys: ['proteins', 'fats', 'carbohydrates'] = ['proteins', 'fats', 'carbohydrates']
 const first = ref(props.modelValue.proteins)
-const second = ref(props.modelValue.fats)
+const second = ref(1 - props.modelValue.carbohydrates)
 
 const changePFC = () => {
   const min = Math.min(first.value, second.value)
