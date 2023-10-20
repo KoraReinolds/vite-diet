@@ -1,27 +1,49 @@
 <template>
   <Header></Header>
-  <AppSection
-    title="Соотношение БЖУ"
-  >
-    <template v-slot:headerSide>
-      <div>
-        <span>Всего ккал ({{ curentEnergy }} / </span>
-        <ResizedInput v-model="totalEnergy" />
-        <span>)</span>
-      </div>
-    </template>
-    <template v-slot:body>
-      <PFCBar
-        v-model="pfcRatio"
-        :filled="actualPFC"
-      />
-      <div class="font-bold">
-        <span>Белки - {{ (pfcRatio.proteins * 100).toFixed() }}%; </span>
-        <span>Жиры - {{ (pfcRatio.fats * 100).toFixed() }}%; </span>
-        <span>Углеводы - {{ (pfcRatio.carbohydrates * 100).toFixed() }}%; </span>
-      </div>
-    </template>
-  </AppSection>
+  <div class="flex-column space-y-2">
+
+    <AppSection
+      title="Соотношение БЖУ"
+    >
+      <template v-slot:headerSide>
+        <div>
+          <span>Всего ккал ({{ curentEnergy }} / </span>
+          <ResizedInput v-model="totalEnergy" />
+          <span>)</span>
+        </div>
+      </template>
+      <template v-slot:body>
+        <PFCBar
+          v-model="pfcRatio"
+          :filled="actualPFC"
+        />
+        <div class="font-bold">
+          <span>Белки - {{ (pfcRatio.proteins * 100).toFixed() }}%; </span>
+          <span>Жиры - {{ (pfcRatio.fats * 100).toFixed() }}%; </span>
+          <span>Углеводы - {{ (pfcRatio.carbohydrates * 100).toFixed() }}%; </span>
+        </div>
+      </template>
+    </AppSection>
+    <AppSection
+      :title="`Приемы пищи (${mealCount})`"
+    >
+      <template v-slot:body>
+        <div class="flex items-center space-x-2 h-6">
+          <div
+            class="flex items-center justify-center w-full text-xs text-center bg-text h-full text-white font-bold cursor-pointer hover:bg-main"
+            v-for="meal in meals"
+            :key="meal.name"
+          >
+            <span>{{ meal.name }}</span>
+          </div>
+        </div>
+        <div>
+          Для расчета нового приема пищи добавьте продукты из списка ниже  
+        </div>
+      </template>
+    </AppSection>
+   
+  </div>
   <FoodListComponent
     :food-list="fl"
     @update-selected="calculate"
@@ -118,7 +140,7 @@ dp.value = new DietPlan({
   pfcRatio: { proteins: 25, carbohydrates: 55, fats: 20 },
   kcal: 2500
 })
-const { totalEnergy, curentEnergy, pfcRatio, actualPFC } = useDP(dp.value)
+const { totalEnergy, curentEnergy, pfcRatio, actualPFC, mealCount, meals } = useDP(dp.value)
 
 const calculate = () => {
   if (!dp.value) return
