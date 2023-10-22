@@ -9,7 +9,7 @@
     <input
       class="absolute w-full right-0 font-bold text-main"
       :value="modelValue"
-      @input="$emit('update:modelValue', +$event.target?.value)"
+      @input="$emit('update:modelValue', $event.target?.value)"
       type="number"
       :min="min"
       :max="max"
@@ -21,7 +21,7 @@
 defineEmits(['update:modelValue'])
 defineProps({
   modelValue: {
-    type: Number,
+    type: String,
     required: true,
   },
   max: {

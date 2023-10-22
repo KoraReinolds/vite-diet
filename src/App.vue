@@ -2,53 +2,16 @@
   <Header></Header>
   <div class="flex-column space-y-2">
 
-    <AppSection
-      title="Соотношение БЖУ"
-    >
-      <template v-slot:headerSide>
-        <div>
-          <span>Всего ккал ({{ curentEnergy }} / </span>
-          <ResizedInput v-model="totalEnergy" />
-          <span>)</span>
-        </div>
-      </template>
-      <template v-slot:body>
-        <PFCBar
-          v-model="pfcRatio"
-          :filled="actualPFC"
-        />
-        <div class="font-bold">
-          <span>Белки - {{ (pfcRatio.proteins * 100).toFixed() }}%; </span>
-          <span>Жиры - {{ (pfcRatio.fats * 100).toFixed() }}%; </span>
-          <span>Углеводы - {{ (pfcRatio.carbohydrates * 100).toFixed() }}%; </span>
-        </div>
-      </template>
-    </AppSection>
-    <AppSection
-      :title="`Приемы пищи (${mealCount})`"
-    >
-      <template v-slot:body>
-        <div class="flex items-center space-x-2 h-6">
-          <div
-            class="flex items-center justify-center w-full text-xs text-center bg-text h-full text-white font-bold cursor-pointer hover:bg-main"
-            v-for="meal in meals"
-            :key="meal.name"
-          >
-            <span>{{ meal.name }}</span>
-          </div>
-        </div>
-        <div>
-          Для расчета нового приема пищи добавьте продукты из списка ниже  
-        </div>
-      </template>
-    </AppSection>
-   
+    <PFCSection :dp="dp" />
+
+    <MealSection :dp="dp" />
+
   </div>
-  <FoodListComponent
+  <!-- <FoodListComponent
     :food-list="fl"
     @update-selected="calculate"
-  />
-  <div>
+  /> -->
+  <!-- <div>
     <div class="flex">
       <div class="w-20">
         name
@@ -102,13 +65,11 @@
       </div>
       {{ Math.floor(dp.getEnergy()) }} {{ pfc.normilize() }}
     </template>
-  </div>
+  </div> -->
 </template>
 
 <script setup lang="ts">
-import FoodListComponent from './components/FoodList.vue'
 import Header from './components/Header.vue'
-import AppSection from './components/AppSection.vue'
 import { ref, type Ref } from 'vue';
 import { Food } from './classes/Food';
 import { FoodList } from './classes/FoodList';
@@ -117,9 +78,9 @@ import { GreedySearch } from './classes/GreedySearch';
 import { DietPlan } from './classes/DietPlan';
 import { Meal } from './classes/Meal';
 import { PFCRatio } from './interfaces/PFC';
-import { useDP } from './composition/useDP';
-import ResizedInput from './components/ResizedInput.vue';
-import PFCBar from './components/PFCBar.vue';
+import PFCSection from './components/PFCSection.vue';
+import type { IDietPlan } from './interfaces/IDietPlan';
+import MealSection from './components/MealSection.vue';
 
 const poridge = new Food({ name: 'poridge', fats: 5, carbohydrates: 63, proteins: 14 })
 const milk = new Food({ name: 'milk', fats: 3.2, carbohydrates: 4.7, proteins: 2.9 })
@@ -132,15 +93,13 @@ const chicken = new Food({ name: 'chicken', fats: 0.5, carbohydrates: 0.5, prote
 const fl = new FoodList([poridge, chicken, milk, nuts, strawberry, cherry, egg, rice])
 fl.selectAll()
 
-const dp: Ref<DietPlan | undefined> = ref()
-const result: Ref<Meal | undefined> = ref()
-const pfc: Ref<PFCRatio> = ref(new PFCRatio({ carbohydrates: 0, fats: 0, proteins: 0}))
-dp.value = new DietPlan({
+const dp: Ref<IDietPlan> = ref(new DietPlan({
   childs: fl.getSelected(),
   pfcRatio: { proteins: 25, carbohydrates: 55, fats: 20 },
   kcal: 2500
-})
-const { totalEnergy, curentEnergy, pfcRatio, actualPFC, mealCount, meals } = useDP(dp.value)
+}))
+const result: Ref<Meal | undefined> = ref()
+const pfc: Ref<PFCRatio> = ref(new PFCRatio({ carbohydrates: 0, fats: 0, proteins: 0 }))
 
 const calculate = () => {
   if (!dp.value) return
@@ -151,7 +110,7 @@ const calculate = () => {
     const gs = new GreedySearch(new GraphNode(dp.value))
     const meal = gs.search(0.01)?.meal
     result.value = meal
-    if (!meal) return 
+    if (!meal) return
     pfc.value.pfc = {
       carbohydrates: meal.carbohydrates,
       fats: meal.fats,

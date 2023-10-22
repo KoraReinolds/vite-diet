@@ -1,5 +1,9 @@
 <template>
-  <table class="table-auto">
+  <TableLayout
+    :rows="rows"
+    :cols="cols"
+  />
+<!-- <table class="table-auto">
   <thead>
     <tr>
       <th class="w-10 text-sm text-left"></th>
@@ -28,18 +32,33 @@
       <td>{{ item.getEnergyPer100().toFixed(1) }}</td>
     </tr>
   </tbody>
-</table>
+</table> -->
 </template>
 
 <script setup lang="ts">
-import type { FoodList } from '@/classes/FoodList';
-import { ref, type PropType, type Ref, watch } from 'vue';
+import { FoodList } from '@/classes/FoodList';
+import { ref, type PropType, type Ref, watch, computed } from 'vue';
+import TableLayout from './TableLayout.vue';
 
 const props = defineProps({
   foodList: {
     type: Object as PropType<FoodList>,
     required: true,
   }
+})
+
+const cols = ['Название','Размер порции','Б','Ж','У','ккал']
+const rows = computed(() => {
+  return props.foodList.getAllList().map((item) => {
+    return [
+      item.name,
+      item.chunkSize,
+      item.proteinsChunkPer100,
+      item.fatsChunkPer100,
+      item.carbohydratesChunkPer100,
+      item.getEnergy(),
+    ]
+  })
 })
 
 const emit = defineEmits(['updateSelected'])

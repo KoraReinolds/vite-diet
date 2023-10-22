@@ -2,16 +2,16 @@ import type { GraphState, IGraphNode } from "@/interfaces/IGraphNode";
 import type { IPrototype } from "@/interfaces/IPrototype";
 import type { Meal } from "./Meal";
 import { PFCRatio } from "@/interfaces/PFC";
-import { DietPlan } from "./DietPlan";
+import type { IDietPlan } from "@/interfaces/IDietPlan";
 
 class GraphNode
 implements IPrototype<GraphNode>, IGraphNode {
 
   state: GraphState = {}
-  dp: DietPlan
+  dp: IDietPlan
   meal: Meal
   
-  constructor(dp: DietPlan, state?: GraphState) {
+  constructor(dp: IDietPlan, state?: GraphState) {
     this.dp = dp
     this.meal = dp.getNewMeal()
     if (state) {

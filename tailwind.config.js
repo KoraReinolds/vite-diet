@@ -12,6 +12,9 @@ module.exports = {
         carbohydrates: '#8B4A5B',
         text: '#324247',
       },
+      fontSize: {
+        'xs': '.7rem',
+      },
       fontFamily: {
         'a': ['Antonio'],
         'j': ['Jua'],

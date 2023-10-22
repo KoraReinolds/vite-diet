@@ -1,9 +1,9 @@
 import type { Meal } from "@/classes/Meal"
 import type { IDietPlanParams } from "./IDietPlanParams"
-import type { IImmutableComposite } from "./IComposite"
+import type { CompositeWithFixedValue } from "@/classes/Composite"
 
 interface IDietPlan
-extends Omit<IDietPlanParams, 'childs'>, IImmutableComposite<Meal> {
+extends Omit<IDietPlanParams, 'childs'>, CompositeWithFixedValue<Meal> {
   leftKcal: number
   getNewMeal(): Meal
 }
