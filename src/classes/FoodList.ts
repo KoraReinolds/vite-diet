@@ -10,6 +10,15 @@ implements ISelected<Food> {
 
   constructor(list: Food[]) {
     super({ childs: list, chunks: 1, name: 'FoodList' })
+    list.forEach(food => this.selected[food.name] = false)
+  }
+
+  setSelected(obj: Record<string, boolean>): void {
+    this.selected = obj
+  }
+  
+  select(name: string) {
+    this.selected[name] = true
   }
 
   getSelected(): Food[] {

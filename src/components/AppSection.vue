@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white py-4 px-3 flex-column space-y-3">
 
-    <div class="w-full flex justify-between">
+    <div class="w-full flex justify-between space-x-2">
       <span class="font-bold">{{ props.title }}</span>
       <slot name="headerSide"></slot>
     </div>

@@ -1,4 +1,5 @@
 <template>
+  <!-- {{  selected }} -->
   <table class="table-auto">
   <thead>
     <tr>
@@ -27,16 +28,27 @@
           v-if="item.editable"
             :model-value="getValue(item)"
           />
-        <div
-          class="flex justify-end text-secondary"
+        <label
+          class="flex justify-end"
           v-else-if="item.type === 'icon'"
+          :name="row[0].value"
         >
+          <input
+            class="hidden"
+            type="checkbox"
+            :checked="modelValue[row[0].value]"
+            @change="$emit('update:modelValue', {
+              ...modelValue,
+              [row[0].value]: !modelValue[row[0].value],
+            })"
+            :name="row[0].value"
+          />
           <component
             class="cursor-pointer"
-            @click="item.onClick($event.target)"
             :is="item.value"
           />
-        </div>
+          <!-- @click="item.onClick($event.target)" -->
+        </label>
         <template v-else>
           {{ getValue(item) }}
         </template>
@@ -47,12 +59,16 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue';
+import { type PropType } from 'vue';
 import ResizedInput from './ResizedInput.vue';
 import type { Cell } from '@/interfaces/ICell';
 
-defineEmits(['delete'])
+const emit = defineEmits(['delete', 'update:modelValue'])
 const props = defineProps({
+  modelValue: {
+    type: Object as PropType<Record<string, boolean>>,
+    required: true,
+  },
   rows: {
     type: Array as PropType<Cell[][]>,
     required: true,

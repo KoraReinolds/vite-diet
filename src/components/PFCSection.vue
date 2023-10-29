@@ -28,19 +28,11 @@
 
 <script setup lang="ts">
 import AppSection from './AppSection.vue'
-import { useDP } from '@/composition/useDP';
+import useDP from '@/store/useDP';
 import ResizedInput from '@/components/ResizedInput.vue';
 import PFCBar from '@/components/PFCBar.vue';
-import type { PropType } from 'vue';
-import type { IDietPlan } from '@/interfaces/IDietPlan';
+import { storeToRefs } from 'pinia';
 
-const props = defineProps({
-  dp: {
-    type: Object as PropType<IDietPlan>,
-    required: true,
-  }
-})
-
-const { totalEnergy, curentEnergy, pfcRatio, actualPFC } = useDP(props.dp)
+const { totalEnergy, curentEnergy, pfcRatio, actualPFC } = storeToRefs(useDP())
 
 </script>

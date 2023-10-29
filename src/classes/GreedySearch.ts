@@ -23,9 +23,9 @@ class GreedySearch implements IGreedySearch<IGraphNode> {
   }
 
   search(goal: number): IGraphNode | undefined {
-    const maxSize = 1000
-    while (this.pq.length < maxSize) {
-      if (this.pq.length > maxSize) return
+    let iteration = 100
+    while (iteration) {
+      iteration -= 1
       const item = this.pq.dequeue()
       if (item) {
         const h = item.heuristic()

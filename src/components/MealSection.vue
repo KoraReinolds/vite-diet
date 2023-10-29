@@ -15,6 +15,7 @@
       v-if="mealName"
       :rows="rows"
       :cols="cols"
+      v-model="selected"
       @delete="removeFood"
     />
     <div v-else-if="mealCount" class="flex items-center space-x-2 h-6">
@@ -41,7 +42,7 @@
         @click="deleteMeal"
       />
     </div>
-    <div v-else>
+    <div class="text-sm" v-else>
       Для расчета нового приема пищи добавьте продукты из списка ниже  
     </div>
   </template>
@@ -50,41 +51,34 @@
 
 <script setup lang="ts">
 import AppSection from '@/components/AppSection.vue'
-import { useDP } from '@/composition/useDP';
-import type { IDietPlan } from '@/interfaces/IDietPlan';
-import { computed, ref, type PropType, type ComputedRef } from 'vue';
+import useDP from '@/store/useDP';
+import { computed, type PropType, type ComputedRef } from 'vue';
 import TableLayout from './TableLayout.vue';
 import AppButton from './AppButton.vue';
 import { IconCell, NumberCell, StringCell } from '@/classes/Cell';
 import type { Cell } from '@/interfaces/ICell';
 import DeleteIcon from '@/components/DeleteIcon.vue'
+import { storeToRefs } from 'pinia';
 
-const props = defineProps({
-  dp: {
-    type: Object as PropType<IDietPlan>,
-    required: true,
-  }
-})
-
-const mealName = ref(props.dp.get('newMeal') ? 'newMeal' : '')
+const { mealCount, meals, mealName, meal, newMeal } = storeToRefs(useDP())
 const isMealNew = computed(() => mealName.value === 'newMeal')
-const meal = computed(() => props.dp.get(mealName.value))
 const removeFood = (name: string) => meal.value?.remove(name)
 const deleteMeal = () => {
-  props.dp.remove(mealName.value)
-  mealName.value = ''
+  console.log('get rid of delete function')
+  // props.dp.remove(mealName)
+  // mealName.value = ''
 }
 const cols: ComputedRef<Cell[]> = computed(() => isMealNew.value
   ? [
       new StringCell('Название'),
-      new StringCell('Порция(г)'),
+      new StringCell('Кол-во порций'),
       new StringCell('Мин'),
       new StringCell('Макс'),
       new StringCell(''),
     ]
   : [
       new StringCell('Название'),
-      new StringCell('Порция(г)'),
+      new StringCell('Кол-во порций'),
       new StringCell('Б'),
       new StringCell('Ж'),
       new StringCell('У'),
@@ -99,8 +93,8 @@ const rows = computed(() => {
         new StringCell(item.name),
         new NumberCell(item.chunks, true),
         new NumberCell(0, true),
-        new NumberCell(Math.floor(props.dp.getNewMeal().getEnergy() / item.getEnergyChunk()), true),
-        new IconCell(DeleteIcon, () => meal.value?.remove(item.name) ),
+        new NumberCell(Math.floor(newMeal.value.getEnergy() / item.getEnergyChunk()), true),
+        new IconCell(DeleteIcon, () => {} ),
       ] : [
         new StringCell(item.name),
         new NumberCell(item.chunks),
@@ -112,6 +106,7 @@ const rows = computed(() => {
   }) || []
 })
 
-const { mealCount, meals } = useDP(props.dp)
+
+const selected = {}
 
 </script>

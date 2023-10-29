@@ -2,70 +2,13 @@
   <Header></Header>
   <div class="flex-column space-y-2">
 
-    <PFCSection :dp="dp" />
+    <PFCSection />
 
-    <MealSection :dp="dp" />
+    <MealSection />
+
+    <FoodSection :fl="fl" @change="calculate" />
 
   </div>
-  <!-- <FoodListComponent
-    :food-list="fl"
-    @update-selected="calculate"
-  /> -->
-  <!-- <div>
-    <div class="flex">
-      <div class="w-20">
-        name
-      </div>
-      <div class="w-20">
-        chunks
-      </div>
-      <div class="w-20">
-        chunkSize
-      </div>
-      <div class="w-20">
-        prots
-      </div>
-      <div class="w-20">
-        fats
-      </div>
-      <div class="w-20">
-        carbs
-      </div>
-      <div class="w-20">
-        kcal
-      </div>
-    </div>
-
-    <template v-if="dp || result">
-      <div v-for="food in result?.getAllList()"
-        :key="`res-${food.name}`"
-        class="flex"
-      >
-        <div class="w-20">
-          {{ food.name }}
-        </div>
-        <div class="w-20">
-          {{ Math.floor(food.chunks * 100) / 100 }}
-        </div>
-        <div class="w-20">
-          {{ Math.floor(food.chunkSize * 100) / 100 }}
-        </div>
-        <div class="w-20">
-          {{ Math.floor(food.proteins * 100) / 100 }}
-        </div>
-        <div class="w-20">
-          {{ Math.floor(food.fats * 100) / 100 }}
-        </div>
-        <div class="w-20">
-          {{ Math.floor(food.carbohydrates * 100) / 100 }}
-        </div>
-        <div class="w-20">
-          {{ Math.floor(food.getEnergy() * 100) / 100 }}
-        </div>
-      </div>
-      {{ Math.floor(dp.getEnergy()) }} {{ pfc.normilize() }}
-    </template>
-  </div> -->
 </template>
 
 <script setup lang="ts">
@@ -79,8 +22,10 @@ import { DietPlan } from './classes/DietPlan';
 import { Meal } from './classes/Meal';
 import { PFCRatio } from './interfaces/PFC';
 import PFCSection from './components/PFCSection.vue';
-import type { IDietPlan } from './interfaces/IDietPlan';
 import MealSection from './components/MealSection.vue';
+import FoodSection from './components/FoodSection.vue';
+import useDP from './store/useDP';
+import { storeToRefs } from 'pinia';
 
 const poridge = new Food({ name: 'poridge', fats: 5, carbohydrates: 63, proteins: 14 })
 const milk = new Food({ name: 'milk', fats: 3.2, carbohydrates: 4.7, proteins: 2.9 })
@@ -91,23 +36,25 @@ const egg = new Food({ name: 'egg', chunkSize: 60, chunks: 2, fats: 11, carbohyd
 const rice = new Food({ name: 'rice', fats: 0.5, carbohydrates: 75, proteins: 6.5 })
 const chicken = new Food({ name: 'chicken', fats: 0.5, carbohydrates: 0.5, proteins: 20 })
 const fl = new FoodList([poridge, chicken, milk, nuts, strawberry, cherry, egg, rice])
-fl.selectAll()
 
-const dp: Ref<IDietPlan> = ref(new DietPlan({
-  childs: fl.getSelected(),
+const { newMeal } = storeToRefs(useDP())
+const { setDietPlan, setNewMealName } = useDP()
+const dp = new DietPlan({
+  childs: [],
   pfcRatio: { proteins: 25, carbohydrates: 55, fats: 20 },
   kcal: 2500
-}))
+})
+setDietPlan(dp)
 const result: Ref<Meal | undefined> = ref()
 const pfc: Ref<PFCRatio> = ref(new PFCRatio({ carbohydrates: 0, fats: 0, proteins: 0 }))
 
 const calculate = () => {
   if (!dp.value) return
-  const newMeal = dp.value.getNewMeal()
-  fl.getSelected().forEach(food => newMeal.add(food))
-  console.log(dp.value)
-  if (newMeal) {
-    const gs = new GreedySearch(new GraphNode(dp.value))
+  fl.getSelected().forEach(food => newMeal.value.add(food))
+  if (newMeal.value.getAllList().length) {
+    console.log(newMeal.value.getAllList().length, dp.value, newMeal)
+    setNewMealName()
+    const gs = new GreedySearch(new GraphNode(dp))
     const meal = gs.search(0.01)?.meal
     result.value = meal
     if (!meal) return
@@ -121,4 +68,4 @@ const calculate = () => {
 
 calculate()
 
-</script>
+</script>./store/useDP

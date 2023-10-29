@@ -21,7 +21,9 @@ implements IDietPlan {
       name: 'DietPlan',
       childs: [],
     })
-    this.add(new Meal({ childs: params.childs, name: this._getName() }))
+    if (params.childs.length) {
+      this.add(new Meal({ childs: params.childs, name: this._getName() }))
+    }
     this._kcal = kcal
     this._pfc = new PFCRatio(pfcRatio).normilize()
   }
