@@ -6,21 +6,51 @@
       <div class="text-right flex flex-wrap justify-end items-center space-x-1">
         <span class="text-sm">Всего&nbsp;ккал </span>
         <span>
-          <span> ({{ curentEnergy }}&nbsp;/&nbsp;</span>
-          <ResizedInput v-model="totalEnergy" />
+          <span> ({{ curentValue.toFixed() }}&nbsp;/&nbsp;</span>
+          <ResizedInput
+            :modelValue="maxValue"
+            @update:modelValue="$emit('update:maxValue', +$event)"
+          />
           <span>)</span>
         </span>
       </div>
     </template>
     <template v-slot:body>
-      <PFCBar
-        v-model="pfcRatio"
-        :filled="actualPFC"
-      />
+      <RangeBar
+        :model-value="percentRatio"
+        @update:model-value="$emit('update:percentRatio', $event)"
+      >
+        <div class="h-3 flex items-center w-full overflow-hidden">
+          <div
+            v-for="(val, i) in percentRatio"
+            :key="displayNames[i]"
+            class="h-2 bg-text flex"
+            :style="{ flex: val }"
+          >
+              <span
+                v-for="(innerVal, key) in filledRatio[i]"
+                :key="displayNames[i] + key"
+                class="h-full inline-block overflow-hidden shrink-0"
+                :data-name="key"
+                :class="{
+                  [colors[i]]: true,
+                  'bg-main': key === selectedName,
+                }"
+                :style="{
+                  width: `${innerVal * curentValue / maxValue / val * 100}%`,
+                }"
+              ></span>
+          </div>
+        </div>
+      </RangeBar>
+
       <div class="font-bold text-sm flex justify-between">
-        <span>Белки - {{ (pfcRatio.proteins * 100).toFixed() }}%</span>
-        <span>Жиры - {{ (pfcRatio.fats * 100).toFixed() }}%</span>
-        <span>Углеводы - {{ (pfcRatio.carbohydrates * 100).toFixed() }}%</span>
+        <span
+          v-for="(name, i) in displayNames"
+          :key="name"
+        >
+          {{ name }} - {{ (percentRatio[i] * 100).toFixed() }}%
+        </span>
       </div>
     </template>
   </AppSection>
@@ -28,11 +58,53 @@
 
 <script setup lang="ts">
 import AppSection from './AppSection.vue'
-import useDP from '@/store/useDP';
 import ResizedInput from '@/components/ResizedInput.vue';
-import PFCBar from '@/components/PFCBar.vue';
-import { storeToRefs } from 'pinia';
+import RangeBar from '@/components/RangeBar.vue';
+import { type PropType } from 'vue';
 
-const { totalEnergy, curentEnergy, pfcRatio, actualPFC } = storeToRefs(useDP())
+defineProps({
+  selectedName: {
+    /* Name of the selected section */
+    type: String,
+  },
+  filledRatio: {
+    /*
+      Sizes of each section 
+      [{
+        [section name]: [size of the section (0 ... 1)]
+      }, ...]
+    */
+    type: Array as PropType<Record<string, number>[]>,
+    required: true,
+  },
+  percentRatio: {
+    /* max size of each section */
+    type: Object as PropType<number[]>,
+    required: true,
+  },
+  displayNames: {
+    /* names of each section */
+    type: Object as PropType<string[]>,
+    required: true,
+  },
+  colors: {
+    /* colors for each section */
+    type: Object as PropType<string[]>,
+    required: true,
+  },
+  curentValue: {
+    type: Number,
+    required: true, 
+  },
+  maxValue: {
+    type: Number,
+    required: true, 
+  },
+})
 
+defineEmits<({
+  'update:percentRatio': [value: Number[]],
+  'update:maxValue': [value: Number],
+})>()
+  
 </script>

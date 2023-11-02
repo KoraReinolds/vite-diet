@@ -51,7 +51,7 @@
 
 <script setup lang="ts">
 import AppSection from '@/components/AppSection.vue'
-import useDP from '@/store/useDP';
+import useDP from '@/composables/useDP';
 import { computed, type PropType, type ComputedRef } from 'vue';
 import TableLayout from './TableLayout.vue';
 import AppButton from './AppButton.vue';
