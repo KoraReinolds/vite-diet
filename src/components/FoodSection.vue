@@ -1,79 +1,87 @@
 
 <template>
   <AppSection
-    :title="`Продукты (${fl.getAllList().length})`"
+    :title="`Продукты (${filteredItems.length})`"
   >
-    <template v-slot:headerSide>
-      <div class="flex items-center pr-2 space-x-2">
-        <SearchField v-model="search" />
-        <AddIcon />
+
+    <template #headerSide>
+      <div v-if="items.length" class="flex items-center pr-2 space-x-2">
+        <SearchField v-model.trim="search" />
+        <AddIcon @click="$emit('add')" />
+      </div>
+      <div v-else>
+        <AppButton type="main" text="Добавить" @click="$emit('add')" /> 
       </div>
     </template>
-    <template v-slot:body>
+
+    <template #body>
       <TableLayout
-        :cols="cols"
-        :rows="rows"
-        v-model="selected"
-      />
+        v-if="filteredItems.length"
+      >
+        <template #header>
+          <th
+            v-for="name in ['Название','Ккал','Белки','Жиры','Углеводы','']"
+            :key="`th-${name}`"
+            class="px-2 first:text-left last:text-right"
+          >
+            {{ name }}
+          </th>
+        </template>
+        <template #body>
+          <tr
+            v-for="item in filteredItems"
+            :key="item.name"
+            class="text-sm h-8 text-center border border-protein border-x-0"
+            @click="$emit('select', item.name)"
+          >
+            <td class="px-2 text-start">{{ item.name }}</td>
+            <td class="px-2">{{ item.kcal }}</td>
+            <td class="px-2">{{ item.proteins }}</td>
+            <td class="px-2">{{ item.fats }}</td>
+            <td class="px-2">{{ item.carbohydrates }}</td>
+            <td class="px-2">
+              <AddIcon
+                class="ml-auto"
+                @click.stop="$emit('delete', item.name)"
+              />
+            </td>
+          </tr>
+        </template>
+      </TableLayout> 
+      <div v-else-if="items.length">
+        Не найдено продуктов, удовлетворяющих условиям поиска.
+      </div>
     </template>
+
   </AppSection>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, type ComputedRef, type PropType, watch } from 'vue';
+import { ref, type PropType, computed } from 'vue';
 import AppSection from './AppSection.vue';
-import type { FoodList } from '@/classes/FoodList';
 import TableLayout from './TableLayout.vue';
-import type { Cell } from '@/interfaces/ICell';
-import { IconCell, NumberCell, StringCell } from '@/classes/Cell';
 import AddIcon from '@/components/AddIcon.vue'
 import SearchField from './SearchField.vue';
-import type { Food } from '@/classes/Food';
+import type { IProductRow } from '@/interfaces/ITable';
+import AppButton from './AppButton.vue';
 
-const emits = defineEmits(['change'])
+defineEmits<({
+  'delete': [value: string],
+  'select': [value: string],
+  'add': [],
+})>()
+
 const props = defineProps({
-  fl: {
-    type: Object as PropType<FoodList>,
+  items: {
+    type: Array as PropType<IProductRow[]>,
     required: true,
   }
 })
 
-const cols: ComputedRef<Cell[]> = computed(() => [
-  new StringCell('Название'),
-  new StringCell('Порция(г)'),
-  new StringCell('Б'),
-  new StringCell('Ж'),
-  new StringCell('У'),
-  new StringCell(''),
-])
-
 const search = ref('')
-const selectedFilter = ((food: Food) => !selected.value[food.name])
-const searchFilter = ((food: Food) => food.name.startsWith(search.value))
-const filteredFoodList = computed(() => {
-  let list = props.fl.getAllList()
-  if (search.value) list = list.filter(searchFilter)
-  return list.filter(selectedFilter)
-})
-
-const rows = computed(() => {
-  return filteredFoodList.value.map((item) => {
-    return [
-      new StringCell(item.name),
-      new NumberCell(item.chunkSize),
-      new NumberCell(item.proteinsChunkPer100, false, 1),
-      new NumberCell(item.fatsChunkPer100, false, 1),
-      new NumberCell(item.carbohydratesChunkPer100, false, 1),
-      new IconCell(AddIcon, () => {} ),
-    ]
-  }) || []
-})
-
-const selected = ref(props.fl.selected)
-
-watch(selected, (val) => {
-  props.fl.setSelected(val)
-  emits('change')
+const searchFilter = ((item: IProductRow) => item.name.startsWith(search.value))
+const filteredItems = computed(() => {
+  return props.items.filter(searchFilter)
 })
 
 </script>

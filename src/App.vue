@@ -12,9 +12,14 @@
       :selectedName="mealName"
     />
 
-    <MealSection />
+    <MealSection v-if="productSectionData.length"/>
 
-    <FoodSection :fl="foodList" @change="calculate" />
+    <FoodSection
+      :items="productSectionData"
+      @delete="togleFoodSelection"
+      @select="console.log($event)"
+      @add="console.log($event)"
+    />
     
   </div>
 </template>
@@ -32,22 +37,24 @@ import MealSection from './components/MealSection.vue';
 import FoodSection from './components/FoodSection.vue';
 import { useFoodList } from './composables/useFoodList';
 
-const { foodList } = useFoodList()
-foodList.selectAll()
+const { foodList, productSectionData, foodListSelected, selectAll: selectAllFood, togleFoodSelection } = useFoodList()
+
 const dietPlan = new DietPlan({
-  childs: foodList.getSelected(),
+  childs: foodListSelected.value,
   pfcRatio: { proteins: 25, carbohydrates: 55, fats: 20 },
   kcal: 2500
 })
 
 const mealName = ref('newMeal')
+const meals = ref(dietPlan.getAllList())
+const mealNameList = computed(() => meals.value.map(meal => meal.name))
 const pfcRatioArr = ref(Object.values(dietPlan.pfcRatio))
 const getMealPFCRanges = () => {
   const p: Record<string, number> = {}
   const f: Record<string, number> = {}
   const c: Record<string, number> = {}
 
-  const all = dietPlan.getAllList()
+  const all = meals.value
   all.forEach(meal => {
     const { proteins, fats, carbohydrates } = new PFCRatio({
       carbohydrates: meal.carbohydrates,
@@ -60,7 +67,7 @@ const getMealPFCRanges = () => {
   })
   return [p, f ,c]
 }
-const mealsPFC = ref(getMealPFCRanges())
+const mealsPFC = computed(getMealPFCRanges)
 
 watch(pfcRatioArr, (val) => {
   dietPlan.pfcRatio = {
@@ -69,7 +76,6 @@ watch(pfcRatioArr, (val) => {
     carbohydrates: val[2],
   }
 })
-
 const curentEnergy = ref(dietPlan.getEnergy())
 
 const totalEnergy = ref(dietPlan.kcal)

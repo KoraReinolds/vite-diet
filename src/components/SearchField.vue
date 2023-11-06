@@ -21,6 +21,8 @@ defineProps({
   }
 })
 
-defineEmits(['update:modelValue'])
+defineEmits<({
+  'update:modelValue': [value: string]
+})>()
 
 </script>

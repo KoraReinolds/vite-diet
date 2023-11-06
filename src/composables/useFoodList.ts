@@ -1,5 +1,7 @@
 import { Food } from "@/classes/Food"
 import { FoodList } from "@/classes/FoodList"
+import type { IProductRow } from "@/interfaces/ITable"
+import { computed, ref } from "vue"
 
 const useFoodList = () => {
   const poridge = new Food({ name: 'poridge', fats: 5, carbohydrates: 63, proteins: 14 })
@@ -12,7 +14,74 @@ const useFoodList = () => {
   const chicken = new Food({ name: 'chicken', fats: 0.5, carbohydrates: 0.5, proteins: 20 })
   const foodList = new FoodList([poridge, chicken, milk, nuts, strawberry, cherry, egg, rice])
 
-  return { foodList }
+  const selectedData = ref<Record<string, boolean>>(foodList.selected)
+
+  const selectedFoodEntries = computed(
+    () => Object.entries(selectedData.value)
+  )
+
+  const reduceNamesFood = (res: Food[], name: string) => {
+    const food = foodList.get(name)
+    if (food) res.push(food)
+    return res
+  }
+  
+  const foodListNamesSelected = computed(
+    () => selectedFoodEntries.value.reduce<string[]>(
+      (res: string[], pair: [string, boolean]) => {
+        if (pair[1]) res.push(pair[0])
+        return res
+      }, []
+    )
+  )
+
+  const foodListSelected = computed(
+    () => foodListNamesSelected.value
+      .reduce<Food[]>(reduceNamesFood, [])
+  )
+  
+  const foodListNamesNotSelected = computed(
+    () => selectedFoodEntries.value.reduce<string[]>(
+      (res: string[], pair: [string, boolean]) => {
+        if (!pair[1]) res.push(pair[0])
+        return res
+      }, []
+    )
+  )
+  
+  const foodListNotSelected = computed(
+    () => foodListNamesNotSelected.value
+      .reduce<Food[]>(reduceNamesFood, [])
+  )
+  
+  const productSectionData = computed(
+    (): IProductRow[] => foodListNotSelected.value.map(
+      food => ({
+        name: food.name, 
+        kcal: food.getEnergy().toFixed(1),
+        proteins: food.proteins.toFixed(1),
+        fats: food.fats.toFixed(1),
+        carbohydrates: food.carbohydrates.toFixed(1),
+      })
+    )
+  )
+
+  const selectAll = () => {
+    foodList.selectAll()
+    selectedData.value = foodList.selected
+  }
+  
+  const addNewFood = () => {
+
+  }
+  
+  const togleFoodSelection = (name: string) => {
+    if (name in selectedData.value) {
+      selectedData.value[name] = !selectedData.value[name]
+    }
+  }
+  
+  return { foodList, selectedData, selectAll, addNewFood, togleFoodSelection, foodListSelected, productSectionData }
 }
 
 export { useFoodList }

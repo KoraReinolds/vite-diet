@@ -2,7 +2,7 @@
   <AppSection
     title="Соотношение БЖУ"
   >
-    <template v-slot:headerSide>
+    <template #headerSide>
       <div class="text-right flex flex-wrap justify-end items-center space-x-1">
         <span class="text-sm">Всего&nbsp;ккал </span>
         <span>
@@ -15,7 +15,7 @@
         </span>
       </div>
     </template>
-    <template v-slot:body>
+    <template #body>
       <RangeBar
         :model-value="percentRatio"
         @update:model-value="$emit('update:percentRatio', $event)"

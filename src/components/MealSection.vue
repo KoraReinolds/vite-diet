@@ -2,7 +2,7 @@
   <AppSection
     :title="`Приемы пищи (${mealCount}) ${ mealName ? ` > ${mealName}` : '' }`"
   >
-  <template v-slot:headerSide>
+  <template #headerSide>
     <AppButton
       v-if="isMealNew"
       text="Отмена"
@@ -10,7 +10,7 @@
       @click="deleteMeal"
     />
   </template>
-  <template v-slot:body>
+  <template #body>
     <TableLayout
       v-if="mealName"
       :rows="rows"
