@@ -8,15 +8,21 @@
       :filledRatio="mealsPFC"
       v-model:percentRatio="pfcRatioArr"
       v-model:maxValue="totalEnergy"
-      :curentValue="curentEnergy"
+      :curentValue="curentEnergy + resultEnergy"
       :selectedName="mealName"
     />
 
-    <MealSection v-if="productSectionData.length"/>
+    <NewMealSection
+      v-if="mealName === 'newMeal'"
+      :items="newMealSectionData"
+      :title="`Приемы пищи (${meals.length}) > Новый`"
+      @delete="removeFoodFromMealSection"
+      @cancel="clearNewMealSection"
+    />
 
     <FoodSection
       :items="productSectionData"
-      @delete="togleFoodSelection"
+      @delete="removeFoodFromProductSection"
       @select="console.log($event)"
       @add="console.log($event)"
     />
@@ -29,32 +35,67 @@ import Header from './components/Header.vue'
 import { ref, watch, type Ref, computed } from 'vue';
 import { GraphNode } from './classes/GraphNode';
 import { GreedySearch } from './classes/GreedySearch';
-import { DietPlan } from './classes/DietPlan';
-import { Meal } from './classes/Meal';
-import { PFCRatio } from './interfaces/PFC';
+import { PFCRatio, type PFC } from './interfaces/PFC';
 import PFCSection from './components/PFCSection.vue';
-import MealSection from './components/MealSection.vue';
+import NewMealSection from './components/NewMealSection.vue';
 import FoodSection from './components/FoodSection.vue';
 import { useFoodList } from './composables/useFoodList';
+import { useDietPlan } from './composables/useDietPlan';
+import type { Meal } from './classes/Meal';
 
-const { foodList, productSectionData, foodListSelected, selectAll: selectAllFood, togleFoodSelection } = useFoodList()
+const result: Ref<Meal | undefined> = ref()
+const resultEnergy = ref(0)
 
-const dietPlan = new DietPlan({
-  childs: foodListSelected.value,
-  pfcRatio: { proteins: 25, carbohydrates: 55, fats: 20 },
-  kcal: 2500
+const {
+  productSectionData,
+  togleFoodSelection,
+  newMealSectionData,
+  getFoodByName,
+} = useFoodList()
+
+const {
+  mealName,
+  meals,
+  pfcRatio,
+  totalEnergy,
+  curentEnergy,
+  dietPlan,
+  setNewMealName,
+  clearName,
+  addFood,
+  removeFood,
+} = useDietPlan()
+
+const removeFoodFromMealSection = (name: string) => {
+  togleFoodSelection(name)
+  removeFood(name)
+}
+
+const clearNewMealSection = () => {
+  newMealSectionData.value
+    .map(food => food.name)
+    .forEach(name => removeFoodFromMealSection(name))
+}
+
+const removeFoodFromProductSection = (name: string) => {
+  togleFoodSelection(name)
+  const food = getFoodByName(name)
+  if (food) addFood(food)
+}
+
+const pfcRatioArr = computed({
+  get: () => Object.values(pfcRatio.value),
+  set: ([proteins, fats, carbohydrates]) => pfcRatio.value = {
+    proteins, fats, carbohydrates
+  }
 })
-
-const mealName = ref('newMeal')
-const meals = ref(dietPlan.getAllList())
-const mealNameList = computed(() => meals.value.map(meal => meal.name))
-const pfcRatioArr = ref(Object.values(dietPlan.pfcRatio))
-const getMealPFCRanges = () => {
+const mealsPFC = computed(() => {
   const p: Record<string, number> = {}
   const f: Record<string, number> = {}
   const c: Record<string, number> = {}
 
-  const all = meals.value
+  const all = [...meals.value]
+  if (result.value) all.push(result.value)
   all.forEach(meal => {
     const { proteins, fats, carbohydrates } = new PFCRatio({
       carbohydrates: meal.carbohydrates,
@@ -66,42 +107,21 @@ const getMealPFCRanges = () => {
     c[meal.name] = carbohydrates / all.length
   })
   return [p, f ,c]
-}
-const mealsPFC = computed(getMealPFCRanges)
-
-watch(pfcRatioArr, (val) => {
-  dietPlan.pfcRatio = {
-    proteins: val[0],
-    fats: val[1],
-    carbohydrates: val[2],
-  }
 })
-const curentEnergy = ref(dietPlan.getEnergy())
-
-const totalEnergy = ref(dietPlan.kcal)
-watch(totalEnergy, (val) => dietPlan.kcal = val )
-
-const result: Ref<Meal | undefined> = ref()
-const pfc: Ref<PFCRatio> = ref(new PFCRatio({ carbohydrates: 0, fats: 0, proteins: 0 }))
-const newMeal = dietPlan.getNewMeal()
 
 const calculate = () => {
-  if (!dietPlan) return
-  foodList.getSelected().forEach(food => newMeal.add(food))
-  if (newMeal.getAllList().length) {
-    console.log(newMeal.getAllList().length, dietPlan, newMeal)
-    const gs = new GreedySearch(new GraphNode(dietPlan))
-    const meal = gs.search(0.01)?.meal
-    result.value = meal
-    if (!meal) return
-    pfc.value.pfc = {
-      carbohydrates: meal.carbohydrates,
-      fats: meal.fats,
-      proteins: meal.proteins
-    }
-  }
+  const gs = new GreedySearch(new GraphNode(dietPlan))
+  const meal = gs.search(0.01)?.meal
+  result.value = meal
+  resultEnergy.value = meal ? meal.getEnergy() : 0
 }
 
 calculate()
+
+watch(newMealSectionData, (data) => {
+  if (!data.length) clearName()
+  else setNewMealName()
+  calculate()
+})
 
 </script>

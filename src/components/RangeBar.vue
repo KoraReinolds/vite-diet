@@ -15,20 +15,20 @@
 </template>
 
 <script setup lang="ts">
-import { type PropType, watch, reactive } from 'vue';
+import { type PropType, watch, ref } from 'vue';
 
 const emit = defineEmits<({
-  'update:modelValue': [value: Number[]],
+  'update:modelValue': [value: number[]],
 })>()
 
 const props = defineProps({
   modelValue: {
-    type: Object as PropType<number[]>,
+    type: Array as PropType<number[]>,
     required: true,
   },
 })
 
-const values = reactive(
+const values = ref(
   [...props.modelValue]
     .map((cur, i, arr) => {
       if (i) arr[i] = arr[i - 1] + cur
@@ -37,13 +37,13 @@ const values = reactive(
     .slice(0, -1),
 )
 
-watch(values, () => {
-  const sortedValues = [...values].map(v => +v).sort()
+watch(values, (newValue) => {
+  const sortedValues = [...newValue].map(v => +v).sort()
   sortedValues.push(1)
   for (let i = sortedValues.length - 1; i > 0; i--) {
     sortedValues[i] -= sortedValues[i - 1]
   }
   emit('update:modelValue', sortedValues)
-})
+}, { deep: true })
 
 </script>

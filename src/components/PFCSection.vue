@@ -32,10 +32,7 @@
                 :key="displayNames[i] + key"
                 class="h-full inline-block overflow-hidden shrink-0"
                 :data-name="key"
-                :class="{
-                  [colors[i]]: true,
-                  'bg-main': key === selectedName,
-                }"
+                :class="key === selectedName ? 'bg-main' : colors[i]"
                 :style="{
                   width: `${innerVal * curentValue / maxValue / val * 100}%`,
                 }"

@@ -6,4 +6,11 @@ interface IProductRow {
   carbohydrates: string,
 }
 
-export type { IProductRow }
+interface IMealRow {
+  name: string,
+  portions: number,
+  min: number,
+  max: number,
+}
+
+export type { IProductRow, IMealRow }
