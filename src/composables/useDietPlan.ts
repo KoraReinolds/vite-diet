@@ -11,9 +11,14 @@ const useDietPlan = () => {
     kcal: 2500
   })
 
+  const newMeal = ref(dietPlan.getNewMeal())
   const mealName = ref('')
   const setMealName = (name: string) => mealName.value = name
-  const setNewMealName = () => setMealName('newMeal')
+  const setNewMealName = () => {
+    if (mealName.value === 'newMeal') return
+    setMealName('newMeal')
+    newMeal.value = dietPlan.getNewMeal()
+  }
   const clearName = () => setMealName('')
 
   const getCurentEnergy = () => +dietPlan.getEnergy().toFixed(0) || 0
@@ -29,11 +34,11 @@ const useDietPlan = () => {
   })
   
   const addFood = (food: Food) => {
-    dietPlan.getNewMeal().add(food)
+    newMeal.value.add(food)
   }
   
   const removeFood = (name: string) => {
-    dietPlan.getNewMeal().remove(name)
+    newMeal.value.remove(name)
   }
 
   const meals = ref(dietPlan.getAllList().filter(food => food.name !== 'newMeal'))
@@ -50,6 +55,7 @@ const useDietPlan = () => {
     dietPlan,
     addFood,
     removeFood,
+    newMeal,
   }
 
 }

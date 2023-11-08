@@ -28,11 +28,7 @@ implements IPrototype<GraphNode>, IGraphNode {
     Object.entries(this.state).forEach(([key, val]) => {
       this.meal.get(key)?.set(val)
     })
-    const { proteins, fats, carbohydrates } = new PFCRatio({
-      carbohydrates: this.meal.carbohydrates,
-      proteins: this.meal.proteins,
-      fats: this.meal.fats,
-    }).normilize()
+    const { proteins, fats, carbohydrates } = new PFCRatio(this.meal).normilize()
     let res = 0
     const pfc = this.dp.pfcRatio
     res += Math.abs(proteins - pfc.proteins)

@@ -1,6 +1,6 @@
 import { Food } from "@/classes/Food"
 import { FoodList } from "@/classes/FoodList"
-import type { IMealRow, IProductRow } from "@/interfaces/ITable"
+import type { IProductRow } from "@/interfaces/ITable"
 import { computed, ref } from "vue"
 
 const useFoodList = () => {
@@ -66,17 +66,6 @@ const useFoodList = () => {
     )
   )
   
-  const newMealSectionData = computed(
-    (): IMealRow[] => foodListSelected.value.map(
-      food => ({
-        name: food.name, 
-        portions: food.chunks,
-        min: 0,
-        max: 1000,
-      })
-    )   
-  )
-
   const selectAll = () => {
     foodList.selectAll()
     selectedData.value = foodList.selected
@@ -105,7 +94,6 @@ const useFoodList = () => {
     togleFoodSelection,
     foodListSelected,
     productSectionData,
-    newMealSectionData,
     getFoodByName,
   }
 }
