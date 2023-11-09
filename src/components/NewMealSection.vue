@@ -32,16 +32,19 @@
             <td class="px-2">
               <ResizedInput
                 :modelValue="item.portions"
+                @update:model-value="updatePortions(item.name, +$event)"
               />
             </td>
             <td class="px-2">
               <ResizedInput
                 :modelValue="item.min"
+                @update:model-value="updateMin(item.name, +$event)"
               />
             </td>
             <td class="px-2">
               <ResizedInput
                 :modelValue="item.max"
+                @update:model-value="updateMax(item.name, +$event)"
               />
             </td>
             <td class="px-2">
@@ -67,10 +70,25 @@ import AppButton from './AppButton.vue';
 import DeleteIcon from './DeleteIcon.vue';
 import ResizedInput from './ResizedInput.vue';
 
-defineEmits<({
+const emit = defineEmits<({
   cancel: [],
   delete: [value: string], 
+  changeMax: [value: { name: string, value: number }], 
+  changeMin: [value: { name: string, value: number }], 
 })>()
+
+const updateMin = (name: string, value: number) => {
+  emit('changeMin', { name, value })
+}
+
+const updateMax = (name: string, value: number) => {
+  emit('changeMax', { name, value })
+}
+
+const updatePortions = (name: string, value: number) => {
+  updateMax(name, value)
+  updateMin(name, value)
+}
 
 defineProps({
   items: {

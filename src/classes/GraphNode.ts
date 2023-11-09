@@ -8,20 +8,21 @@ class GraphNode
 implements IPrototype<GraphNode>, IGraphNode {
 
   state: GraphState = {}
+  maxState: GraphState = {}
   dp: IDietPlan
   meal: Meal
   
-  constructor(dp: IDietPlan, state?: GraphState) {
+  constructor(dp: IDietPlan, state?: GraphState, maxState?: GraphState) {
     this.dp = dp
     this.meal = dp.getNewMeal()
-    if (state) {
-      this.state = state
-    } else {
-      this.meal.getAllList().reduce((state, food) => {
+    this.state = {
+      ...this.meal.getAllList().reduce((state, food) => {
         state[food.name] = 0
         return state
-      }, this.state)
+      }, this.state),
+      ...state,
     }
+    this.maxState = maxState || {}
   }
 
   heuristic(): number {
@@ -46,13 +47,16 @@ implements IPrototype<GraphNode>, IGraphNode {
         const energyChunk = this.dp.leftKcal / 10
         chunks = Math.max(1, Math.floor(energyChunk / food.getEnergyChunk()))
       }
-      newGraphNode.state[key] += chunks
+      newGraphNode.state[key] = Math.min(
+        this.maxState[key] || +Infinity,
+        newGraphNode.state[key] + chunks
+      )
       return newGraphNode 
     })
   }
 
   clone(): GraphNode {
-    return new GraphNode(this.dp, { ...this.state })
+    return new GraphNode(this.dp, { ...this.state }, this.maxState)
   };
 
 }

@@ -12,12 +12,14 @@ const useDietPlan = () => {
   })
 
   const newMeal = ref(dietPlan.getNewMeal())
+  const newMealFoodList = ref(newMeal.value.getAllList())    
   const mealName = ref('')
   const setMealName = (name: string) => mealName.value = name
   const setNewMealName = () => {
     if (mealName.value === 'newMeal') return
     setMealName('newMeal')
     newMeal.value = dietPlan.getNewMeal()
+    newMealFoodList.value = newMeal.value.getAllList()
   }
   const clearName = () => setMealName('')
 
@@ -32,13 +34,15 @@ const useDietPlan = () => {
   watch(pfcRatio, (value) => {
     dietPlan.pfcRatio = value
   })
-  
+
   const addFood = (food: Food) => {
     newMeal.value.add(food)
+    newMealFoodList.value = newMeal.value.getAllList()
   }
   
   const removeFood = (name: string) => {
     newMeal.value.remove(name)
+    newMealFoodList.value = newMeal.value.getAllList()
   }
 
   const meals = ref(dietPlan.getAllList().filter(food => food.name !== 'newMeal'))
@@ -56,6 +60,7 @@ const useDietPlan = () => {
     addFood,
     removeFood,
     newMeal,
+    newMealFoodList, 
   }
 
 }

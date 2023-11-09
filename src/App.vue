@@ -16,6 +16,8 @@
       v-if="mealName === 'newMeal'"
       :items="newMealSectionData"
       :title="`Приемы пищи (${meals.length}) > Новый`"
+      @changeMin="changeMinValues"
+      @changeMax="changeMaxValues"
       @delete="removeFoodFromMealSection"
       @cancel="clearNewMealSection"
     />
@@ -41,7 +43,7 @@ import NewMealSection from './components/NewMealSection.vue';
 import FoodSection from './components/FoodSection.vue';
 import { useFoodList } from './composables/useFoodList';
 import { useDietPlan } from './composables/useDietPlan';
-import type { IMealRow } from './interfaces/ITable';
+import { useKeyValueStorage } from './composables/useKyeValuesStorage';
 
 const resultEnergy = ref(0)
 const searchIsSuccessful = ref(false)
@@ -64,21 +66,40 @@ const {
   addFood,
   removeFood,
   newMeal,
+  newMealFoodList,
 } = useDietPlan()
 
-const getNewMealSectionData = () => newMeal.value
-  .getAllList()
-  .map(food => ({
-    name: food.name, 
-    portions: food.chunks,
-    min: 0,
-    max: 1000,
-  }))   
+const {
+  storage: minValues,
+  addToStorage: changeMinValues,
+  removeFromStorage: removeMinValue,
+} = useKeyValueStorage()
 
-const newMealSectionData = ref<IMealRow[]>(getNewMealSectionData())
+const {
+  storage: maxValues,
+  addToStorage: changeMaxValues,
+  removeFromStorage: removeMaxValue,
+} = useKeyValueStorage()
 
-watch(newMealSectionData, (data) => {
-  if (!data.length) clearName()
+const newMealSectionData = computed(() => {
+  totalEnergy.value
+  pfcRatioArr.value
+  return newMealFoodList.value
+    .map(food => {
+      const min = minValues.value[food.name] || 0
+      const max = maxValues.value[food.name] || 10000
+      return {
+        name: food.name, 
+        portions: food.chunks,
+        min,
+        max,
+     }
+    })
+  }
+)
+
+watch(newMealFoodList, (list) => {
+  if (!list.length) clearName()
   else setNewMealName()
 })
 
@@ -93,7 +114,7 @@ const getMealPFC = () => {
   const res: Record<string, number>[]  = [{}, {}, {}]
 
   const all = [...meals.value]
-  if (searchIsSuccessful.value) all.push(newMeal.value)
+  all.push(newMeal.value)
   all.forEach(meal => {
     Object.entries(new PFCRatio(meal).normilize())
       .map(pair => pair[1] / all.length)
@@ -105,16 +126,18 @@ const getMealPFC = () => {
 const mealsPFC = ref<Record<string, number>[]>(getMealPFC())
 
 const calculate = () => {
-  const gs = new GreedySearch(new GraphNode(dietPlan))
+  const gs = new GreedySearch(
+    new GraphNode(dietPlan, minValues.value, maxValues.value)
+  )
   searchIsSuccessful.value = !!gs.search(0.01)
-  resultEnergy.value = searchIsSuccessful.value
-   ? newMeal.value.getEnergy() : 0
-  newMealSectionData.value = getNewMealSectionData()
+  resultEnergy.value = newMeal.value.getEnergy()
   mealsPFC.value = getMealPFC()
 }
 
 const removeFoodFromMealSection = (name: string) => {
   togleFoodSelection(name)
+  removeMaxValue(name)
+  removeMinValue(name)
   removeFood(name)
   calculate()
 }
@@ -136,5 +159,7 @@ calculate()
 
 watch(pfcRatioArr, calculate)
 watch(totalEnergy, calculate)
+watch(minValues, calculate, { deep: true })
+watch(maxValues, calculate, { deep: true })
 
 </script>
