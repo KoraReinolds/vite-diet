@@ -3,14 +3,6 @@
     :title="title"
   >
 
-    <template #headerSide>
-      <AppButton
-        type="red"
-        text="Отмена"
-        @click="$emit('cancel')"
-      />
-    </template>
-
     <template #body>
       <TableLayout>
         <template #header>
@@ -55,7 +47,21 @@
             </td>
           </tr>
         </template>
-      </TableLayout> 
+      </TableLayout>
+      <div
+        class="flex gap-2 justify-end"
+      >
+        <AppButton
+          type="main"
+          text="Сохранить"
+          @click="$emit('save')"
+        />
+        <AppButton
+          type="red"
+          text="Отмена"
+          @click="$emit('cancel')"
+        />
+      </div>
     </template>
 
   </AppSection>
@@ -71,6 +77,7 @@ import DeleteIcon from './DeleteIcon.vue';
 import ResizedInput from './ResizedInput.vue';
 
 const emit = defineEmits<({
+  save: [],
   cancel: [],
   delete: [value: string], 
   changeMax: [value: { name: string, value: number }], 

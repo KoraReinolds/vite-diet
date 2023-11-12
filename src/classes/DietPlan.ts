@@ -3,6 +3,7 @@ import { CompositeWithFixedValue } from "./Composite";
 import type { IDietPlanParams } from "@/interfaces/IDietPlanParams";
 import { PFCRatio, type PFC } from "@/interfaces/PFC";
 import { Meal } from "./Meal";
+import { newMeal } from "@/dataHandlers/meal";
 
 class DietPlan
 extends CompositeWithFixedValue<Meal>
@@ -33,7 +34,11 @@ implements IDietPlan {
   }
 
   addMeal(): void {
-    this.getNewMeal().rename(this._getName())
+    const newName = this._getName()
+    const newMeal = this.getNewMeal()
+    this.remove('newMeal')
+    newMeal.rename(newName)
+    this.add(newMeal)
   }
   
   getNewMeal(): Meal {

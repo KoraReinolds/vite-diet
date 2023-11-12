@@ -6,6 +6,7 @@ interface IDietPlan
 extends Omit<IDietPlanParams, 'childs'>, CompositeWithFixedValue<Meal> {
   leftKcal: number
   getNewMeal(): Meal
+  addMeal(): void
 }
 
 export type { IDietPlan }
