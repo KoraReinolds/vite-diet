@@ -1,8 +1,12 @@
 import { computed, ref, watch } from "vue"
 import type { Food } from "@/classes/Food"
 import { dietPlan } from "./dietPlanInstance"
+import type { IMealInfoData } from "@/interfaces/ITable"
 
 const mealName = ref('')
+function setMealName(name: string) {
+  mealName.value = name
+}
 const newMeal = ref(dietPlan.getNewMeal())
 function setNewMealName() {
   if (mealName.value === 'newMeal') return
@@ -31,9 +35,21 @@ function removeFood(name: string) {
   mealFoodList.value = getFoodList()
 }
 
+const mealData = computed<IMealInfoData[]>(() => {
+  return mealFoodList.value.map(food => ({
+    name: food.name,
+    chunks: food.chunks.toFixed(0),
+    kcal: food.getEnergy().toFixed(1),
+    proteins: food.proteins.toFixed(1),
+    fats: food.fats.toFixed(1),
+    carbohydrates: food.carbohydrates.toFixed(1),
+  }))
+})
+
 export {
   meal,
   mealName,
+  setMealName,
   setNewMealName,
   clearName,
   addFood,
@@ -41,4 +57,5 @@ export {
   mealFoodList,
   mealFoodNamesList,
   newMeal,
+  mealData,
 }

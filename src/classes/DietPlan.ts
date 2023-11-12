@@ -36,6 +36,11 @@ implements IDietPlan {
   addMeal(): void {
     const newName = this._getName()
     const newMeal = this.getNewMeal()
+    const foodList = newMeal.getAllList()
+    foodList.forEach(food => {
+      newMeal.remove(food.name)
+      newMeal.add(food.clone())
+    })
     this.remove('newMeal')
     newMeal.rename(newName)
     this.add(newMeal)

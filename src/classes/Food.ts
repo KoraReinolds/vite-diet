@@ -3,10 +3,11 @@ import { ImmutableCompositeWithMutableValue } from "./Composite";
 import { Carbohydrates, Fats, Proteins, MacroNutrient } from "./MacroNutrient";
 import type { IFoodParams } from "@/interfaces/IFoodParams";
 import type { IPer100Chunks } from "@/interfaces/IChunks";
+import type { IPrototype } from "@/interfaces/IPrototype";
 
 class Food
 extends ImmutableCompositeWithMutableValue<MacroNutrient>
-implements IPer100Chunks {
+implements IPer100Chunks, IPrototype<Food> {
  
   pfcRatio: PFC
 
@@ -45,6 +46,16 @@ implements IPer100Chunks {
   get proteinsChunkPer100(): number {
     return this.proteinsChunk * this._defaultSize / this._chunkSize
   };
+  
+  clone() {
+    return new Food({
+      proteins: this.proteins,
+      fats: this.fats,
+      carbohydrates: this.carbohydrates,
+      chunks: this.chunks,
+      name: this.name,
+    }) 
+  }
 
 }
 

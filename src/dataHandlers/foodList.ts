@@ -1,6 +1,6 @@
 import { Food } from "@/classes/Food"
 import { FoodList } from "@/classes/FoodList"
-import type { IProductRow } from "@/interfaces/ITable"
+import type { IProductData } from "@/interfaces/ITable"
 import { computed, ref } from "vue"
 
 const poridge = new Food({ name: 'poridge', fats: 5, carbohydrates: 63, proteins: 14 })
@@ -54,7 +54,7 @@ const foodListNotSelected = computed(
 )
 
 const productSectionData = computed(
-  (): IProductRow[] => foodListNotSelected.value.map(
+  (): IProductData[] => foodListNotSelected.value.map(
     food => ({
       name: food.name, 
       kcal: food.getEnergyPer100().toFixed(1),

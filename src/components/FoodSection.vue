@@ -62,7 +62,7 @@ import AppSection from './AppSection.vue';
 import TableLayout from './TableLayout.vue';
 import AddIcon from '@/components/AddIcon.vue'
 import SearchField from './SearchField.vue';
-import type { IProductRow } from '@/interfaces/ITable';
+import type { IProductData } from '@/interfaces/ITable';
 import AppButton from './AppButton.vue';
 
 defineEmits<({
@@ -73,13 +73,13 @@ defineEmits<({
 
 const props = defineProps({
   items: {
-    type: Array as PropType<IProductRow[]>,
+    type: Array as PropType<IProductData[]>,
     required: true,
   }
 })
 
 const search = ref('')
-const searchFilter = ((item: IProductRow) => item.name.startsWith(search.value))
+const searchFilter = ((item: IProductData) => item.name.startsWith(search.value))
 const filteredItems = computed(() => {
   return props.items.filter(searchFilter)
 })

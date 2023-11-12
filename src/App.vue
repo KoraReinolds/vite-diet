@@ -22,11 +22,18 @@
       @cancel="clearNewMealSection"
       @save="saveNewMealSectionData"
     />
+    <MealInfoSection
+      v-else-if="mealName"
+      :info-data="mealData"
+      :title="`Приемы пищи (${meals.length}) > ${mealName}`"
+      @back="clearName"
+    />
     <MealsSection
       v-else-if="meals.length"
       :title="`Приемы пищи (${mealNamesList.length})`"
       :list="mealNamesList"
       @clear="clearMealsSection"
+      @select="setMealName"
     />
 
     <FoodSection
@@ -63,12 +70,14 @@ import {
   clearMealsSection,
 } from './dataHandlers/dietPlan';
 import {
+  setMealName,
   mealName,
   setNewMealName,
   addFood,
   removeFood,
   clearName,
   mealFoodNamesList,
+  mealData,
 } from './dataHandlers/meal';
 import { dietPlan } from './dataHandlers/dietPlanInstance';
 import {
@@ -81,6 +90,7 @@ import {
   removeMaxValue,
 }  from './dataHandlers/result';
 import MealsSection from './components/MealsSection.vue';
+import MealInfoSection from './components/MealInfoSection.vue';
 
 const searchIsSuccessful = ref(false)
 
@@ -100,6 +110,7 @@ function removeDataFromMealSection(name: string) {
 function removeFoodFromMealSection(name: string) {
   removeFood(name)
   removeDataFromMealSection(name)
+  if (!resultData.value.length) clearName()
   calculate()
 }
 
@@ -117,6 +128,7 @@ function clearNewMealSection() {
       removeDataFromMealSection(name)
       removeFood(name)
     })
+  clearName()
   calculate()
 }
 
@@ -131,9 +143,6 @@ function saveNewMealSectionData() {
 
 calculate()
 
-watch(resultData, (data) => {
-  if (!data.length) clearName()
-})
 watch(pfcRatioArr, calculate)
 watch(totalEnergy, calculate)
 watch(minValues, calculate, { deep: true })
