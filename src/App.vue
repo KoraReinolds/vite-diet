@@ -22,6 +22,12 @@
       @cancel="clearNewMealSection"
       @save="saveNewMealSectionData"
     />
+    <MealsSection
+      v-else-if="meals.length"
+      :title="`Приемы пищи (${mealNamesList.length})`"
+      :list="mealNamesList"
+      @clear="clearMealsSection"
+    />
 
     <FoodSection
       :items="productSectionData"
@@ -53,6 +59,8 @@ import {
   saveNewMeal,
   curentEnergy,
   mealsPFC,
+  mealNamesList,
+  clearMealsSection,
 } from './dataHandlers/dietPlan';
 import {
   mealName,
@@ -60,6 +68,7 @@ import {
   addFood,
   removeFood,
   clearName,
+  mealFoodNamesList,
 } from './dataHandlers/meal';
 import { dietPlan } from './dataHandlers/dietPlanInstance';
 import {
@@ -71,25 +80,30 @@ import {
   removeMinValue,
   removeMaxValue,
 }  from './dataHandlers/result';
+import MealsSection from './components/MealsSection.vue';
 
 const searchIsSuccessful = ref(false)
 
-const calculate = () => {
+function calculate() {
   const gs = new GreedySearch(
     new GraphNode(dietPlan, minValues.value, maxValues.value)
   )
   searchIsSuccessful.value = !!gs.search(0.01)
 }
 
-const removeFoodFromMealSection = (name: string) => {
+function removeDataFromMealSection(name: string) {
   togleFoodSelection(name)
   removeMaxValue(name)
   removeMinValue(name)
+}
+
+function removeFoodFromMealSection(name: string) {
   removeFood(name)
+  removeDataFromMealSection(name)
   calculate()
 }
 
-const removeFoodFromProductSection = (name: string) => {
+function removeFoodFromProductSection(name: string) {
   setNewMealName()
   togleFoodSelection(name)
   const food = getFoodByName(name)
@@ -97,15 +111,22 @@ const removeFoodFromProductSection = (name: string) => {
   calculate()
 }
 
-const clearNewMealSection = () => {
-  resultData.value
-    .map(food => food.name)
-    .forEach(name => removeFoodFromMealSection(name))
+function clearNewMealSection() {
+  mealFoodNamesList.value
+    .forEach(name => {
+      removeDataFromMealSection(name)
+      removeFood(name)
+    })
+  calculate()
 }
 
-const saveNewMealSectionData = () => {
+function saveNewMealSectionData() {
   saveNewMeal()
-  clearNewMealSection()
+  mealFoodNamesList.value
+    .forEach(name => {
+      removeDataFromMealSection(name)
+    })
+  clearName()
 }
 
 calculate()

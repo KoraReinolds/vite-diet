@@ -57,10 +57,10 @@ const productSectionData = computed(
   (): IProductRow[] => foodListNotSelected.value.map(
     food => ({
       name: food.name, 
-      kcal: food.getEnergy().toFixed(1),
-      proteins: food.proteins.toFixed(1),
-      fats: food.fats.toFixed(1),
-      carbohydrates: food.carbohydrates.toFixed(1),
+      kcal: food.getEnergyPer100().toFixed(1),
+      proteins: food.proteinsChunkPer100.toFixed(1),
+      fats: food.fatsChunkPer100.toFixed(1),
+      carbohydrates: food.carbohydratesChunkPer100.toFixed(1),
     })
   )
 )

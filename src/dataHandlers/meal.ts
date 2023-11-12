@@ -17,6 +17,7 @@ function getFoodList() {
 }
 const mealFoodList = ref(getFoodList())
 watch(meal, () => mealFoodList.value = getFoodList())
+const mealFoodNamesList = computed(() => mealFoodList.value.map(food => food.name))
 
 function addFood(food: Food) {
   if (!meal.value) return
@@ -38,5 +39,6 @@ export {
   addFood,
   removeFood,
   mealFoodList,
+  mealFoodNamesList,
   newMeal,
 }

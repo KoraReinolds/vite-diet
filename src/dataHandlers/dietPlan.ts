@@ -2,7 +2,7 @@ import { computed, ref, watch } from "vue"
 import { dietPlan } from "./dietPlanInstance"
 import { resultData } from "./result"
 import { PFCRatio } from "@/interfaces/PFC"
-import { newMeal } from "./meal"
+import { mealName, newMeal } from "./meal"
 
 const totalEnergy = ref(dietPlan.kcal)
 watch(totalEnergy, (value: number) => {
@@ -21,23 +21,34 @@ watch(pfcRatio, (value) => {
 })
 
 
-const meals = ref(dietPlan.getAllList())
-
-function saveNewMeal() {
-  dietPlan.addMeal()
-  meals.value = dietPlan.getAllList()
+const meals = ref(getMeals())
+function getMeals() {
+  return dietPlan.getAllList().filter((meal) => meal.name !== 'newMeal')
 }
+const mealNamesList = computed(() => meals.value.map(meal => meal.name))
 
 const curentEnergy = computed(() => {
   resultData.value
+  meals.value // recalculates when clearMealsSection() call 
   return +dietPlan.getEnergy().toFixed(0) || 0
 })
+
+function saveNewMeal() {
+  dietPlan.addMeal()
+  meals.value = getMeals()
+}
+
+function clearMealsSection() {
+  mealNamesList.value.forEach(name => dietPlan.remove(name))
+  meals.value = getMeals() 
+}
 
 const mealsPFC = computed(() => {
   resultData.value
   const res: Record<string, number>[]  = [{}, {}, {}]
 
-  const all = [...meals.value, newMeal.value]
+  const all = [...meals.value]
+  if (mealName.value === 'newMeal') all.push(newMeal.value)
   all.forEach(meal => {
     Object.entries(new PFCRatio(meal).normilize())
       .map(pair => pair[1] / all.length)
@@ -54,4 +65,6 @@ export {
   saveNewMeal,
   curentEnergy,
   mealsPFC,
+  mealNamesList,
+  clearMealsSection,
 }
