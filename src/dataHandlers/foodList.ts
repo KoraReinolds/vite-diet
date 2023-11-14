@@ -15,43 +15,10 @@ const foodList = new FoodList([poridge, chicken, milk, nuts, strawberry, cherry,
 
 const selectedData = ref<Record<string, boolean>>(foodList.selected)
 
-const selectedFoodEntries = computed(
-  () => Object.entries(selectedData.value)
-)
-
-const reduceNamesFood = (res: Food[], name: string) => {
-  const food = foodList.get(name)
-  if (food) res.push(food)
-  return res
-}
-
-const foodListNamesSelected = computed(
-  () => selectedFoodEntries.value.reduce<string[]>(
-    (res: string[], pair: [string, boolean]) => {
-      if (pair[1]) res.push(pair[0])
-      return res
-    }, []
-  )
-)
-
-const foodListSelected = computed(
-  () => foodListNamesSelected.value
-    .reduce<Food[]>(reduceNamesFood, [])
-)
-
-const foodListNamesNotSelected = computed(
-  () => selectedFoodEntries.value.reduce<string[]>(
-    (res: string[], pair: [string, boolean]) => {
-      if (!pair[1]) res.push(pair[0])
-      return res
-    }, []
-  )
-)
-
-const foodListNotSelected = computed(
-  () => foodListNamesNotSelected.value
-    .reduce<Food[]>(reduceNamesFood, [])
-)
+const foodListNotSelected = computed(() => {
+  selectedData.value
+  return foodList.getSelected()
+})
 
 const productSectionData = computed(
   (): IProductData[] => foodListNotSelected.value.map(
@@ -65,33 +32,23 @@ const productSectionData = computed(
   )
 )
 
-const selectAll = () => {
-  foodList.selectAll()
-  selectedData.value = foodList.selected
-}
-
-const addNewFood = () => {
+function addNewFood() {
 
 }
 
-const togleFoodSelection = (name: string) => {
-  if (name in selectedData.value) {
-    selectedData.value[name] = !selectedData.value[name]
-  }
+function togleFoodSelection(name: string) {
+  foodList.togleSelect(name)
+  selectedData.value = { ...foodList.selected }
 }
   
-const getFoodByName = (name: string) => {
+function getFoodByName(name: string) {
   return foodList.get(name) 
 } 
 
 export {
-  selectedFoodEntries,
-  foodList,
   selectedData,
-  selectAll,
   addNewFood,
   togleFoodSelection,
-  foodListSelected,
   productSectionData,
   getFoodByName,
 }

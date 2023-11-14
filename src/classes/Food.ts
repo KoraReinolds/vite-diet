@@ -49,9 +49,9 @@ implements IPer100Chunks, IPrototype<Food> {
   
   clone() {
     return new Food({
-      proteins: this.proteins,
-      fats: this.fats,
-      carbohydrates: this.carbohydrates,
+      proteins: this.proteinsChunkPer100,
+      fats: this.fatsChunkPer100,
+      carbohydrates: this.carbohydratesChunkPer100,
       chunks: this.chunks,
       name: this.name,
     }) 

@@ -13,6 +13,12 @@ implements ISelected<Food> {
     list.forEach(food => this.selected[food.name] = false)
   }
 
+  togleSelect(name: string): void {
+    if (name in this.selected) {
+      this.selected[name] = !this.selected[name]
+    }
+  }
+
   setSelected(obj: Record<string, boolean>): void {
     this.selected = obj
   }
@@ -24,7 +30,7 @@ implements ISelected<Food> {
   getSelected(): Food[] {
     const selected: Food[] = []
     return Object.entries(this.selected)
-      .filter(([item, val]) => val)
+      .filter(([item, val]) => !val)
       .reduce((arr, [name]) => {
         const food = this.get(name)
         if (food) arr.push(food)

@@ -118,7 +118,7 @@ function removeFoodFromProductSection(name: string) {
   setNewMealName()
   togleFoodSelection(name)
   const food = getFoodByName(name)
-  if (food) addFood(food)
+  if (food) addFood.value(food)
   calculate()
 }
 

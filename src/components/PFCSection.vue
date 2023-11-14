@@ -100,8 +100,8 @@ defineProps({
 })
 
 defineEmits<({
-  'update:percentRatio': [value: Number[]],
-  'update:maxValue': [value: Number],
+  'update:percentRatio': [value: number[]],
+  'update:maxValue': [value: number],
 })>()
   
 </script>

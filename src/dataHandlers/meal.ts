@@ -1,4 +1,4 @@
-import { computed, ref, watch } from "vue"
+import { computed, ref } from "vue"
 import type { Food } from "@/classes/Food"
 import { dietPlan } from "./dietPlanInstance"
 import type { IMealInfoData } from "@/interfaces/ITable"
@@ -16,11 +16,11 @@ function setNewMealName() {
 function clearName() { mealName.value = '' }
 
 const meal = computed(() => dietPlan.get(mealName.value))
+
 function getFoodList() {
-  return meal.value?.getAllList() || []
+  return meal.value?.getAllList() || [] 
 }
 const mealFoodList = ref(getFoodList())
-watch(meal, () => mealFoodList.value = getFoodList())
 const mealFoodNamesList = computed(() => mealFoodList.value.map(food => food.name))
 
 function addFood(food: Food) {

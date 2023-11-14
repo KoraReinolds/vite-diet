@@ -3,10 +3,6 @@
     :title="title"
   >
   
-    <!-- <template #headerSide>
-
-    </template> -->
-
     <template #body>
       <TableLayout>
         <template #header>
