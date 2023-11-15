@@ -12,6 +12,18 @@ implements ISelected<Food> {
     super({ childs: list, chunks: 1, name: 'FoodList' })
     list.forEach(food => this.selected[food.name] = false)
   }
+  
+  add(food: Food) {
+    super.add(food)
+    this.selected[food.name] = false
+    return food
+  }
+  
+  remove(name: string) {
+    const res = super.remove(name)
+    delete this.selected[name]
+    return res
+  }
 
   togleSelect(name: string): void {
     if (name in this.selected) {

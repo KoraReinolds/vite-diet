@@ -1,4 +1,5 @@
 import { FoodList } from "@/classes/FoodList";
+import type { INewFoodData } from "@/interfaces/ITable";
 import food from "@/layerClasses.ts/food"
 
 const foodList = new FoodList([
@@ -26,7 +27,26 @@ function getProductData() {
     .map(food.getProductData)
 }
 
+function addNewFood(params: INewFoodData) {
+  const newFood = food.createFood(params)
+  foodList.add(newFood)
+}
+
+function changeFoodData(params: INewFoodData) {  
+  foodList.remove(params.name)
+  addNewFood(params)
+}
+
+function getFoodDataToChangeByName(name: string) {
+  const f = getFoodByName(name)
+  if (!f) return
+  return food.getFoodDataToChange(f)
+}
+
 export default {
+  getFoodDataToChangeByName,
+  addNewFood,
+  changeFoodData,
   getFoodByName,
   togleSelection,
   getProductData,

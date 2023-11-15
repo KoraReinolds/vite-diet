@@ -3,17 +3,17 @@ import { ref } from "vue"
 
 const productSectionData = ref(foodList.getProductData())
 
-function addNewFood() {
-
+function reloadProductSectionData() {
+  productSectionData.value = foodList.getProductData()
 }
 
 function togleFoodSelection(name: string) {
   foodList.togleSelection(name)
-  productSectionData.value = foodList.getProductData()
+  reloadProductSectionData()
 }
   
 export {
-  addNewFood,
+  reloadProductSectionData,
   togleFoodSelection,
   productSectionData,
 }

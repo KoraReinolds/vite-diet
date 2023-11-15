@@ -1,5 +1,6 @@
 import { Food } from "@/classes/Food";
-import type { IMealEditableData, IMealInfoData, IProductData } from "@/interfaces/ITable"
+import type { IFoodParams } from "@/interfaces/IFoodParams";
+import type { IMealEditableData, IMealInfoData, INewFoodData, IProductData } from "@/interfaces/ITable"
 
 const poridge = new Food({ name: 'poridge', fats: 5, carbohydrates: 63, proteins: 14 })
 const milk = new Food({ name: 'milk', fats: 3.2, carbohydrates: 4.7, proteins: 2.9 })
@@ -40,7 +41,23 @@ function getMealEditalbeData(food: Food): IMealEditableData {
   }
 }
 
+function createFood(params: IFoodParams) {
+  return new Food(params)
+}
+
+function getFoodDataToChange(food: Food): INewFoodData {
+  return {
+    name: food.name,
+    proteins: food.proteins,
+    fats: food.fats,
+    carbohydrates: food.carbohydrates,
+    chunkSize: food.chunkSize,
+  }
+}
+
 export default {
+  getFoodDataToChange,
+  createFood,
   getMealEditalbeData,
   getFoodData,
   getProductData,

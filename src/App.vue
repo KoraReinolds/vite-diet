@@ -37,10 +37,18 @@
     />
 
     <FoodSection
+      v-if="foodData"
+      :title="`Продукты (${productSectionData.length})`"
+      v-model="foodData"
+      @cancel="closeFoodSection"
+      @save="saveFood"
+    />
+    <FoodListSection
+      v-else
       :items="productSectionData"
       @delete="removeFoodFromProductSection"
-      @select="console.log($event)"
-      @add="console.log($event)"
+      @select="editFoodDataByName"
+      @add="addNewFood"
     />
     
   </div>
@@ -51,11 +59,19 @@ import Header from './components/Header.vue'
 import { watch } from 'vue';
 import PFCSection from './components/PFCSection.vue';
 import NewMealSection from './components/NewMealSection.vue';
+import FoodListSection from './components/FoodListSection.vue';
 import FoodSection from './components/FoodSection.vue';
 import {
   productSectionData,
   togleFoodSelection,
 } from './layerUI/foodList';
+import {
+  foodData,
+  addNewFood,
+  clearFoodData,
+  saveFood,
+  editFoodDataByName,
+} from './layerUI/foodItem';
 import {
   curentEnergy,
   totalEnergy,
@@ -93,6 +109,10 @@ import {
 }  from './layerUI/result';
 import MealsSection from './components/MealsSection.vue';
 import MealInfoSection from './components/MealInfoSection.vue';
+
+function closeFoodSection() {
+  clearFoodData()
+}
 
 function removeDataFromMealSection(name: string) {
   togleFoodSelection(name)
@@ -140,4 +160,4 @@ watch(totalEnergy, calculate)
 watch(minValues, calculate, { deep: true })
 watch(maxValues, calculate, { deep: true })
 
-</script>
+</script>./layerUI/foodItem

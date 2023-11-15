@@ -22,4 +22,12 @@ interface IMealInfoData {
   carbohydrates: string,
 }
 
-export type { IProductData, IMealEditableData, IMealInfoData }
+interface INewFoodData {
+  name: string,
+  proteins: number,
+  fats: number,
+  carbohydrates: number,
+  chunkSize: number,
+}
+
+export type { IProductData, IMealEditableData, IMealInfoData, INewFoodData }
