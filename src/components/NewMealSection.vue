@@ -71,7 +71,7 @@
 import { type PropType } from 'vue';
 import AppSection from './AppSection.vue';
 import TableLayout from './TableLayout.vue';
-import type { IMealData } from '@/interfaces/ITable';
+import type { IMealEditableData } from '@/interfaces/ITable';
 import AppButton from './AppButton.vue';
 import DeleteIcon from './DeleteIcon.vue';
 import ResizedInput from './ResizedInput.vue';
@@ -99,7 +99,7 @@ const updatePortions = (name: string, value: number) => {
 
 defineProps({
   items: {
-    type: Array as PropType<IMealData[]>,
+    type: Array as PropType<IMealEditableData[]>,
     required: true,
   },
   title: {

@@ -6,7 +6,7 @@ interface IProductData {
   carbohydrates: string,
 }
 
-interface IMealData {
+interface IMealEditableData {
   name: string,
   portions: number,
   min: number,
@@ -22,4 +22,4 @@ interface IMealInfoData {
   carbohydrates: string,
 }
 
-export type { IProductData, IMealData, IMealInfoData }
+export type { IProductData, IMealEditableData, IMealInfoData }

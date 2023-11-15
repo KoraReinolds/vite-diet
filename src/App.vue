@@ -15,7 +15,7 @@
     <NewMealSection
       v-if="mealName === 'newMeal'"
       :items="resultData"
-      :title="`Приемы пищи (${meals.length}) > Новый`"
+      :title="`Приемы пищи (${mealsCount}) > Новый`"
       @changeMin="changeMinValues"
       @changeMax="changeMaxValues"
       @delete="removeFoodFromMealSection"
@@ -25,14 +25,14 @@
     <MealInfoSection
       v-else-if="mealName"
       :info-data="mealData"
-      :title="`Приемы пищи (${meals.length}) > ${mealName}`"
+      :title="`Приемы пищи (${mealsCount}) > ${mealName}`"
       @back="clearName"
     />
     <MealsSection
-      v-else-if="meals.length"
-      :title="`Приемы пищи (${mealNamesList.length})`"
+      v-else-if="mealsCount"
+      :title="`Приемы пищи (${mealsCount})`"
       :list="mealNamesList"
-      @clear="clearMealsSection"
+      @clear="clearMealList"
       @select="setMealName"
     />
 
@@ -48,38 +48,39 @@
 
 <script setup lang="ts">
 import Header from './components/Header.vue'
-import { ref, watch } from 'vue';
-import { GraphNode } from './classes/GraphNode';
-import { GreedySearch } from './classes/GreedySearch';
+import { watch } from 'vue';
 import PFCSection from './components/PFCSection.vue';
 import NewMealSection from './components/NewMealSection.vue';
 import FoodSection from './components/FoodSection.vue';
 import {
   productSectionData,
   togleFoodSelection,
-  getFoodByName,
-} from './dataHandlers/foodList';
+} from './layerUI/foodList';
 import {
-  meals,
-  pfcRatioArr,
-  totalEnergy,
-  saveNewMeal,
   curentEnergy,
+  totalEnergy,
+} from './layerUI/energyData';
+import {
+  pfcRatioArr,
   mealsPFC,
+} from './layerUI/pfc';
+import {
+  saveNewMeal,
   mealNamesList,
-  clearMealsSection,
-} from './dataHandlers/dietPlan';
+  clearMealList,
+  mealsCount,
+} from './layerUI/mealsList';
 import {
   setMealName,
   mealName,
   setNewMealName,
+  clearName,
+} from './layerUI/mealName';
+import {
   addFood,
   removeFood,
-  clearName,
-  mealFoodNamesList,
   mealData,
-} from './dataHandlers/meal';
-import { dietPlan } from './dataHandlers/dietPlanInstance';
+} from './layerUI/mealData';
 import {
   resultData,
   minValues,
@@ -88,18 +89,10 @@ import {
   changeMaxValues,
   removeMinValue,
   removeMaxValue,
-}  from './dataHandlers/result';
+  calculate,
+}  from './layerUI/result';
 import MealsSection from './components/MealsSection.vue';
 import MealInfoSection from './components/MealInfoSection.vue';
-
-const searchIsSuccessful = ref(false)
-
-function calculate() {
-  const gs = new GreedySearch(
-    new GraphNode(dietPlan, minValues.value, maxValues.value)
-  )
-  searchIsSuccessful.value = !!gs.search(0.01)
-}
 
 function removeDataFromMealSection(name: string) {
   togleFoodSelection(name)
@@ -117,16 +110,15 @@ function removeFoodFromMealSection(name: string) {
 function removeFoodFromProductSection(name: string) {
   setNewMealName()
   togleFoodSelection(name)
-  const food = getFoodByName(name)
-  if (food) addFood.value(food)
+  addFood(name)
   calculate()
 }
 
 function clearNewMealSection() {
-  mealFoodNamesList.value
-    .forEach(name => {
-      removeDataFromMealSection(name)
-      removeFood(name)
+  resultData.value
+    .forEach(item => {
+      removeDataFromMealSection(item.name)
+      removeFood(item.name)
     })
   clearName()
   calculate()
@@ -134,9 +126,9 @@ function clearNewMealSection() {
 
 function saveNewMealSectionData() {
   saveNewMeal()
-  mealFoodNamesList.value
-    .forEach(name => {
-      removeDataFromMealSection(name)
+  resultData.value
+    .forEach(item => {
+      removeDataFromMealSection(item.name)
     })
   clearName()
 }
