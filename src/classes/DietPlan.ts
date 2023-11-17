@@ -51,7 +51,7 @@ implements IDietPlan {
 
   get leftKcal() {
     return this.kcal - this.getEnergy()
-  };
+  }
 
   get pfcRatio() {
     return this._pfc 

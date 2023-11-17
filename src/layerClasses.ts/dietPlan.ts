@@ -42,8 +42,6 @@ function getMeals() {
   return dietPlan.getAllList()
 }
 
-// function getP
-
 function getCurentEnergy() {
   return dietPlan.getEnergy()
 }
