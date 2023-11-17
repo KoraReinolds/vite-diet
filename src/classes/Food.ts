@@ -9,8 +9,6 @@ class Food
 extends ImmutableCompositeWithMutableValue<MacroNutrient>
 implements IPer100Chunks, IPrototype<Food> {
  
-  pfcRatio: PFC
-
   constructor(foodParams: IFoodParams) {
     if (foodParams.chunks === undefined) {
       foodParams.chunks = 100
@@ -28,7 +26,6 @@ implements IPer100Chunks, IPrototype<Food> {
         new Proteins(proteins),
       ]
     })
-    this.pfcRatio = new PFCRatio(foodParams).normilize() 
   }
 
   getEnergyPer100(): number {

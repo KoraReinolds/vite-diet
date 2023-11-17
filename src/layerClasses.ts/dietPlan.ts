@@ -1,6 +1,6 @@
 import { DietPlan } from "@/classes/DietPlan";
 import type { IDietPlan } from "@/interfaces/IDietPlan";
-import { PFCRatio, type PFC } from "@/interfaces/PFC";
+import { type PFC, PFCEnergyRatio } from "@/interfaces/PFC";
 import foodList from "@/layerClasses.ts/foodList"
 import food from "./food";
 import { GreedySearch } from "@/classes/GreedySearch";
@@ -99,13 +99,14 @@ function getMealEditableDataByName(name: string) {
 }
 
 function getFilledPFCRatio() {
-   
+  
   const pfcData: Record<string, Record<string, number>> = { proteins: {}, fats: {}, carbohydrates: {} } 
 
-  const allMeals = getMeals()
-  allMeals.reduce((result, meal) => {
-    Object.entries(new PFCRatio(meal).normilize())
-      .forEach(([key, val]) => result[key][meal.name] = val / allMeals.length)
+  getMeals().reduce((result, meal) => {
+    Object.entries(new PFCEnergyRatio(meal).normilize())
+      .forEach(([key, val]) =>
+        result[key][meal.name] = val * meal.getEnergy() / getTotalEnergy()
+      )
     return result
   }, pfcData)
   

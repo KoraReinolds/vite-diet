@@ -41,13 +41,43 @@
         </div>
       </RangeBar>
 
-      <div class="font-bold text-sm flex justify-between">
-        <span
+      <div class="flex-column font-bold text-sm justify-between">
+        <div
           v-for="(name, i) in displayNames"
           :key="name"
+          class="flex items-center relative"
         >
-          {{ name }} - {{ (percentRatio[i] * 100).toFixed() }}%
-        </span>
+          <div class="w-60 flex justify-between mr-4">
+            <span>
+              {{ name }}
+            </span>
+            <span>
+              ({{ totalMacronutrietnSum(filledRatio[i]) }}
+              / {{ (percentRatio[i] * 100).toFixed() }})<span class="text-xs">%</span>
+            </span>
+          </div>
+
+          <div
+            class="flex items-center h-2 w-full overflow-hidden relative"
+          >
+            <div
+              v-for="(val, key) in filledRatio[i]"
+              :key="displayNames[i] + key"
+              class="h-2"
+              :data-name="key"
+              :class="key === selectedName ? 'bg-main' : colors[i]"
+              :style="{
+                width: `${val * 100}%`,
+              }"
+            >
+            </div>
+            <span
+              class="h-3 w-0.5 bg-text absolute"
+              :style="{ left: percentRatio[i] * 100 + '%' }"
+            >
+            </span>
+          </div>
+        </div>
       </div>
     </template>
   </AppSection>
@@ -103,5 +133,11 @@ defineEmits<({
   'update:percentRatio': [value: number[]],
   'update:maxValue': [value: number],
 })>()
-  
+
+const totalMacronutrietnSum = (obj: Record<string, number>) => {
+  const sum = Object.values(obj).reduce((c, p) => c+p, 0)
+  if (sum > 1) return '>99'
+  else return (sum * 100).toFixed(0)
+}
+
 </script>

@@ -5,7 +5,7 @@
     <PFCSection
       :displayNames="['Белки', 'Жиры', 'Углеводы']"
       :colors="['bg-proteins', 'bg-fats', 'bg-carbohydrates']"
-      :filledRatio="mealsPFC"
+      :filledRatio="filledData"
       v-model:percentRatio="pfcRatioArr"
       v-model:maxValue="totalEnergy"
       :curentValue="curentEnergy"
@@ -78,7 +78,7 @@ import {
 } from './layerUI/energyData';
 import {
   pfcRatioArr,
-  mealsPFC,
+  filledData,
 } from './layerUI/pfc';
 import {
   saveNewMeal,
@@ -160,4 +160,4 @@ watch(totalEnergy, calculate)
 watch(minValues, calculate, { deep: true })
 watch(maxValues, calculate, { deep: true })
 
-</script>./layerUI/foodItem
+</script>

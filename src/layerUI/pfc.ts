@@ -2,6 +2,7 @@ import { computed } from "vue"
 import { resultData } from "./result"
 import { useReactive } from "@/composables/useReactive"
 import dietPlan from "@/layerClasses.ts/dietPlan"
+import { mealsCount } from "./mealsList"
 
 const pfcRatio = useReactive(
   dietPlan.getPFCRatio,
@@ -15,12 +16,13 @@ const pfcRatioArr = computed({
   }
 })
 
-const mealsPFC = computed(() => {
+const filledData = computed(() => {
   resultData.value
+  mealsCount.value
   return dietPlan.getFilledPFCRatio()
 })
 
 export {
   pfcRatioArr,
-  mealsPFC,
+  filledData,
 }
