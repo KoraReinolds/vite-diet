@@ -1,10 +1,10 @@
 <template>
-  <AppSection
+  <LayoutSection
     :title="title"
   >
   
     <template #body>
-      <TableLayout>
+      <LayoutTable>
         <template #header>
           <th
             v-for="name in ['Название','Порций','Белки','Жиры','Углеводы','Ккал']"
@@ -18,7 +18,7 @@
           <tr
             v-for="item in infoData"
             :key="item.name"
-            class="text-sm h-8 text-center border border-protein border-x-0"
+            class="text-sm h-8 md:h-10 text-center border border-protein border-x-0"
           >
             <td class="px-2 text-start">{{ item.name }}</td>
             <td class="px-2">{{ item.chunks }}</td>
@@ -28,7 +28,7 @@
             <td class="px-2 text-end">{{ item.kcal }}</td>
           </tr>
         </template>
-      </TableLayout>
+      </LayoutTable>
 
       <div
         class="flex justify-end"
@@ -41,15 +41,15 @@
       </div>
     </template>
 
-  </AppSection>
+  </LayoutSection>
 </template>
 
 <script setup lang="ts">
 import { type PropType } from 'vue';
-import AppSection from './AppSection.vue';
+import LayoutSection from './LayoutSection.vue';
 import AppButton from './AppButton.vue';
 import type { IMealInfoData } from '@/interfaces/ITable';
-import TableLayout from './TableLayout.vue';
+import LayoutTable from './LayoutTable.vue';
 
 const emit = defineEmits<({
   back: [], 

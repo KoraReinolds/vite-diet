@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Antonio:wght@400;700&family=Inter:wght@400;700&family=Jua&family=Montserrat+Alternates:wght@400;900&display=swap');
 
+html {
+  @media (min-width: 400px) { font-size: 18px; }
+  @media (min-width: 640px) { font-size: 20px; }
+}
+
 body {
   font-family: 'Inter', 'Montserrat Alternates', sans-serif;
 }

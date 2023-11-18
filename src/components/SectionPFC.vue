@@ -1,5 +1,5 @@
 <template>
-  <AppSection
+  <LayoutSection
     title="Соотношение БЖУ"
   >
     <template #headerSide>
@@ -41,7 +41,7 @@
         </div>
       </RangeBar>
 
-      <div class="flex-column font-bold text-sm justify-between">
+      <div class="flex-col font-bold text-sm justify-between">
         <div
           v-for="(name, i) in displayNames"
           :key="name"
@@ -72,7 +72,12 @@
             >
             </div>
             <span
-              class="h-3 w-0.5 bg-text absolute"
+              class="h-[1px] bg-text absolute"
+              :style="{ width: percentRatio[i] * 100 + '%' }"
+            >
+            </span>
+            <span
+              class="h-3 w-[1px] bg-text absolute"
               :style="{ left: percentRatio[i] * 100 + '%' }"
             >
             </span>
@@ -80,11 +85,11 @@
         </div>
       </div>
     </template>
-  </AppSection>
+  </LayoutSection>
 </template>
 
 <script setup lang="ts">
-import AppSection from './AppSection.vue'
+import LayoutSection from './LayoutSection.vue'
 import ResizedInput from '@/components/ResizedInput.vue';
 import RangeBar from '@/components/RangeBar.vue';
 import { type PropType } from 'vue';

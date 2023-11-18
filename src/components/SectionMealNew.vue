@@ -1,10 +1,10 @@
 <template>
-  <AppSection
+  <LayoutSection
     :title="title"
   >
 
     <template #body>
-      <TableLayout>
+      <LayoutTable>
         <template #header>
           <th
             v-for="name in ['Название','Порций','Мин','Макс','']"
@@ -12,13 +12,13 @@
             class="px-2 first:text-left last:text-right"
           >
             {{ name }}
-          </th>
+        </th>
         </template>
         <template #body>
           <tr
             v-for="item in items"
             :key="item.name"
-            class="text-sm h-8 text-center border border-protein border-x-0"
+            class="text-sm h-8 md:h-10 text-center border border-protein border-x-0"
           >
             <td class="px-2 text-start">{{ item.name }}</td>
             <td class="px-2">
@@ -40,14 +40,14 @@
               />
             </td>
             <td class="px-2">
-              <DeleteIcon
-                class="ml-auto"
+              <IconDelete
+                class="ml-auto cursor-pointer w-4 h-4 shr"
                 @click="$emit('delete', item.name)"
               />
             </td>
           </tr>
         </template>
-      </TableLayout>
+      </LayoutTable>
       <div
         class="flex gap-2 justify-end"
       >
@@ -64,16 +64,16 @@
       </div>
     </template>
 
-  </AppSection>
+  </LayoutSection>
 </template>
 
 <script setup lang="ts">
 import { type PropType } from 'vue';
-import AppSection from './AppSection.vue';
-import TableLayout from './TableLayout.vue';
+import LayoutSection from './LayoutSection.vue';
+import LayoutTable from './LayoutTable.vue';
 import type { IMealEditableData } from '@/interfaces/ITable';
 import AppButton from './AppButton.vue';
-import DeleteIcon from './DeleteIcon.vue';
+import IconDelete from './IconDelete.vue';
 import ResizedInput from './ResizedInput.vue';
 
 const emit = defineEmits<({

@@ -1,8 +1,11 @@
 <template>
   <Header></Header>
-  <div class="foodlistex-column space-y-2">
+  <div class="
+    flex flex-col
+    gap-2 lg:gap-3
+  ">
 
-    <PFCSection
+    <SectionPFC
       :displayNames="['Белки', 'Жиры', 'Углеводы']"
       :colors="['bg-proteins', 'bg-fats', 'bg-carbohydrates']"
       :filledRatio="filledData"
@@ -12,44 +15,49 @@
       :selectedName="mealName"
     />
 
-    <NewMealSection
-      v-if="mealName === 'newMeal'"
-      :items="resultData"
-      :title="`Приемы пищи (${mealsCount}) > Новый`"
-      @changeMin="changeMinValues"
-      @changeMax="changeMaxValues"
-      @delete="removeFoodFromMealSection"
-      @cancel="clearNewMealSection"
-      @save="saveNewMealSectionData"
-    />
-    <MealInfoSection
-      v-else-if="mealName"
-      :info-data="mealData"
-      :title="`Приемы пищи (${mealsCount}) > ${mealName}`"
-      @back="clearName"
-    />
-    <MealsSection
-      v-else-if="mealsCount"
-      :title="`Приемы пищи (${mealsCount})`"
-      :list="mealNamesList"
-      @clear="clearMealList"
-      @select="setMealName"
-    />
+    <div class="
+      gap-2 lg:gap-3
+      lg:flex 
+    ">
+      <SectionMealNew
+        v-if="mealName === 'newMeal'"
+        :items="resultData"
+        :title="`Приемы пищи (${mealsCount}) > Новый`"
+        @changeMin="changeMinValues"
+        @changeMax="changeMaxValues"
+        @delete="removeFoodFromMealSection"
+        @cancel="clearSectionMealNew"
+        @save="saveSectionMealNewData"
+      />
+      <SectionMealInfo
+        v-else-if="mealName"
+        :info-data="mealData"
+        :title="`Приемы пищи (${mealsCount}) > ${mealName}`"
+        @back="clearName"
+      />
+      <SectionMeals
+        v-else-if="mealsCount"
+        :title="`Приемы пищи (${mealsCount})`"
+        :list="mealNamesList"
+        @clear="clearMealList"
+        @select="setMealName"
+      />
 
-    <FoodSection
-      v-if="foodData"
-      :title="`Продукты (${productSectionData.length})`"
-      v-model="foodData"
-      @cancel="closeFoodSection"
-      @save="saveFood"
-    />
-    <FoodListSection
-      v-else
-      :items="productSectionData"
-      @delete="removeFoodFromProductSection"
-      @select="editFoodDataByName"
-      @add="addNewFood"
-    />
+      <SectionFood
+        v-if="foodData"
+        :title="`Продукты (${productSectionData.length})`"
+        v-model="foodData"
+        @cancel="closeSectionFood"
+        @save="saveFood"
+      />
+      <SectionFoodList
+        v-else
+        :items="productSectionData"
+        @delete="removeFoodFromProductSection"
+        @select="editFoodDataByName"
+        @add="addNewFood"
+      />
+    </div>
     
   </div>
 </template>
@@ -57,10 +65,10 @@
 <script setup lang="ts">
 import Header from './components/Header.vue'
 import { watch } from 'vue';
-import PFCSection from './components/PFCSection.vue';
-import NewMealSection from './components/NewMealSection.vue';
-import FoodListSection from './components/FoodListSection.vue';
-import FoodSection from './components/FoodSection.vue';
+import SectionPFC from './components/SectionPFC.vue';
+import SectionMealNew from './components/SectionMealNew.vue';
+import SectionFoodList from './components/SectionFoodList.vue';
+import SectionFood from './components/SectionFood.vue';
 import {
   productSectionData,
   togleFoodSelection,
@@ -107,10 +115,10 @@ import {
   removeMaxValue,
   calculate,
 }  from './layerUI/result';
-import MealsSection from './components/MealsSection.vue';
-import MealInfoSection from './components/MealInfoSection.vue';
+import SectionMeals from './components/SectionMeals.vue';
+import SectionMealInfo from './components/SectionMealInfo.vue';
 
-function closeFoodSection() {
+function closeSectionFood() {
   clearFoodData()
 }
 
@@ -134,7 +142,7 @@ function removeFoodFromProductSection(name: string) {
   calculate()
 }
 
-function clearNewMealSection() {
+function clearSectionMealNew() {
   resultData.value
     .forEach(item => {
       removeDataFromMealSection(item.name)
@@ -144,7 +152,7 @@ function clearNewMealSection() {
   calculate()
 }
 
-function saveNewMealSectionData() {
+function saveSectionMealNewData() {
   saveNewMeal()
   resultData.value
     .forEach(item => {

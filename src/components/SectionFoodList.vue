@@ -1,13 +1,23 @@
 
 <template>
-  <AppSection
+  <LayoutSection
     :title="`Продукты (${filteredItems.length})`"
   >
 
     <template #headerSide>
       <div v-if="items.length" class="flex items-center pr-2 space-x-2">
-        <SearchField v-model.trim="search" />
-        <AddIcon @click="$emit('add')" />
+        <SearchField
+          class="md:h-8"
+          v-model.trim="search"
+        />
+        <IconAdd
+          class="
+            ml-auto cursor-pointer rounded-lg
+            w-4 h-4
+            hover:bg-main_light
+          "
+          @click="$emit('add')"
+        />
       </div>
       <div v-else>
         <AppButton type="main" text="Добавить" @click="$emit('add')" /> 
@@ -15,7 +25,7 @@
     </template>
 
     <template #body>
-      <TableLayout
+      <LayoutTable
         v-if="filteredItems.length"
       >
         <template #header>
@@ -31,7 +41,12 @@
           <tr
             v-for="item in filteredItems"
             :key="item.name"
-            class="text-sm h-8 text-center border border-protein border-x-0"
+            class="
+              h-8 md:h-10
+              cursor-pointer
+              text-sm text-center
+              border border-protein border-x-0
+            "
             @click="$emit('select', item.name)"
           >
             <td class="px-2 text-start">{{ item.name }}</td>
@@ -40,27 +55,31 @@
             <td class="px-2">{{ item.fats }}</td>
             <td class="px-2">{{ item.carbohydrates }}</td>
             <td class="px-2">
-              <AddIcon
-                class="ml-auto"
+              <IconAdd
+                class="
+                  ml-auto cursor-pointer rounded-lg
+                  w-4 h-4
+                  hover:bg-main_light
+                "
                 @click.stop="$emit('delete', item.name)"
               />
             </td>
           </tr>
         </template>
-      </TableLayout> 
+      </LayoutTable> 
       <div v-else-if="items.length">
         Не найдено продуктов, удовлетворяющих условиям поиска.
       </div>
     </template>
 
-  </AppSection>
+  </LayoutSection>
 </template>
 
 <script setup lang="ts">
 import { ref, type PropType, computed } from 'vue';
-import AppSection from './AppSection.vue';
-import TableLayout from './TableLayout.vue';
-import AddIcon from '@/components/AddIcon.vue'
+import LayoutSection from './LayoutSection.vue';
+import LayoutTable from './LayoutTable.vue';
+import IconAdd from '@/components/IconAdd.vue'
 import SearchField from './SearchField.vue';
 import type { IProductData } from '@/interfaces/ITable';
 import AppButton from './AppButton.vue';

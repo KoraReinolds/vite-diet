@@ -1,5 +1,5 @@
 <template>
-  <AppSection
+  <LayoutSection
     :title="title + ` > ${foodInfo.name || 'Новый продукт'}`"
   >
     <template #body>
@@ -36,12 +36,12 @@
         />
       </div>
     </template>
-  </AppSection>
+  </LayoutSection>
 </template>
 
 <script setup lang="ts">
 import type { INewFoodData } from '@/interfaces/ITable';
-import AppSection from './AppSection.vue';
+import LayoutSection from './LayoutSection.vue';
 import { ref, type PropType } from 'vue';
 import AppButton from './AppButton.vue';
 
