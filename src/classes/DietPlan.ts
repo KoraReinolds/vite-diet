@@ -22,7 +22,7 @@ implements IDietPlan {
       childs: [],
     })
     if (params.childs.length) {
-      this.add(new Meal({ childs: params.childs, name: this._getName() }))
+      params.childs.forEach(meal => this.add(meal))
     }
     this._kcal = kcal
     this._pfc = new PFCRatio(pfcRatio).normilize()

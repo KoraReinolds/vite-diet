@@ -11,6 +11,26 @@ const egg = new Food({ name: 'egg', chunkSize: 60, chunks: 2, fats: 11, carbohyd
 const rice = new Food({ name: 'rice', fats: 0.5, carbohydrates: 75, proteins: 6.5 })
 const chicken = new Food({ name: 'chicken', fats: 0.5, carbohydrates: 0.5, proteins: 20 })
 
+function isFoodParams(data: IFoodParams): data is IFoodParams {
+  return typeof data === 'object'
+    && data.name !== undefined
+    && data.proteins !== undefined
+    && data.fats !== undefined
+    && data.carbohydrates !== undefined
+    && data.chunks !== undefined
+}
+
+function getParamsFromFood(food: Food) {
+  return {
+    name: food.name,
+    proteins: food.proteins,
+    fats: food.fats,
+    carbohydrates: food.carbohydrates,
+    chunkSize: food.chunkSize, 
+    chunks: food.chunks, 
+  }
+}
+
 function getFoodData(food: Food): IMealInfoData {
   return {
     name: food.name,
@@ -56,6 +76,8 @@ function getFoodDataToChange(food: Food): INewFoodData {
 }
 
 export default {
+  getParamsFromFood,
+  isFoodParams,
   getFoodDataToChange,
   createFood,
   getMealEditalbeData,

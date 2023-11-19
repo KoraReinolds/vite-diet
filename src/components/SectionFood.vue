@@ -9,16 +9,26 @@
           :key="key"
           class="h-10 flex items-center m-0 justify-between"
         >
-          <span>
+          <label
+            :for="key"
+          >
             {{ displayNames[key] }}:
-          </span>
-          <div class="flex items-center w-half bg-proteins h-[27px] px-[10px] rounded-lg">
+          </label>
+          <div
+            class="
+              flex items-center
+              bg-proteins
+              h-[27px] md:h-8
+              px-[10px] rounded-lg
+            "
+          >
             <input
               class="w-full bg-proteins text-xs"
               :type="(typeof val === 'number') ? 'number' : 'text'" 
+              :id="key"
               v-model="foodInfo[key]"
             />
-          </div>
+        </div>
         </div>
       </div>
       <div

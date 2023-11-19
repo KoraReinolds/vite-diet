@@ -1,4 +1,3 @@
-import { PFCRatio, type PFC } from "@/interfaces/PFC";
 import { ImmutableCompositeWithMutableValue } from "./Composite";
 import { Carbohydrates, Fats, Proteins, MacroNutrient } from "./MacroNutrient";
 import type { IFoodParams } from "@/interfaces/IFoodParams";

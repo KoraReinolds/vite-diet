@@ -168,4 +168,4 @@ watch(totalEnergy, calculate)
 watch(minValues, calculate, { deep: true })
 watch(maxValues, calculate, { deep: true })
 
-</script>
+</script>./layers/layerUI/foodList./layers/layerUI/foodItem./layers/layerUI/energyData./layers/layerUI/pfc./layers/layerUI/mealsList./layers/layerUI/mealName./layers/layerUI/mealData./layers/layerUI/result

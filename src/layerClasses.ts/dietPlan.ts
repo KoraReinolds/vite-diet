@@ -5,9 +5,45 @@ import foodList from "@/layerClasses.ts/foodList"
 import food from "./food";
 import { GreedySearch } from "@/classes/GreedySearch";
 import { GraphNode } from "@/classes/GraphNode";
+import { CREATED_FOOD_LIST_KEY } from "./constants";
+import { Meal } from "@/classes/Meal";
+import type { IFoodParams } from "@/interfaces/IFoodParams";
 
-const dietPlan: IDietPlan = new DietPlan({
-  childs: [],
+interface IStorageMealParams {
+  name: string
+  childs: IFoodParams[]
+}
+function isListOfMealParams(data: IStorageMealParams[]): data is IStorageMealParams[] {
+  return Array.isArray(data)
+    && data.every(mealParams => {
+      return mealParams.name !== undefined
+      && mealParams.childs !== undefined
+      && foodList.isListOfFoodParams(mealParams.childs)
+    }) 
+}
+
+function parseMealList(foodData: string) {
+  try {
+    const data = JSON.parse(foodData)
+
+    if (isListOfMealParams(data)) {
+      return data.map(({ name, childs }) => new Meal({
+        name, childs: childs.map(food.createFood)
+      }))
+    }
+
+    throw new Error()
+  } catch {
+    console.warn("Can't parse meal list data")
+  }
+}
+
+const childs = parseMealList(
+  localStorage.getItem(CREATED_FOOD_LIST_KEY) || ''
+) || []
+
+const dietPlanInstance: IDietPlan = new DietPlan({
+  childs,
   pfcRatio: { proteins: 25, carbohydrates: 55, fats: 20 },
   kcal: 2500
 })
@@ -17,45 +53,45 @@ function calculate(
   maxState: Record<string, number> | undefined
 ) {
   const gs = new GreedySearch(
-    new GraphNode(dietPlan, initState, maxState)
+    new GraphNode(dietPlanInstance, initState, maxState)
   )
   return gs.search(0.01)
 }
 
 function getTotalEnergy() {
-  return dietPlan.kcal
+  return dietPlanInstance.kcal
 }
 
 function setTotalEnergy(value: number) {
-  dietPlan.kcal = value
+  dietPlanInstance.kcal = value
 }
 
 function getPFCRatio() {
-  return dietPlan.pfcRatio
+  return dietPlanInstance.pfcRatio
 }
 
 function setPFCRatio(value: PFC) {
-  dietPlan.pfcRatio = value
+  dietPlanInstance.pfcRatio = value
 }
 
 function getMeals() {
-  return dietPlan.getAllList()
+  return dietPlanInstance.getAllList()
 }
 
 function getCurentEnergy() {
-  return dietPlan.getEnergy()
+  return dietPlanInstance.getEnergy()
 }
 
 function saveNewMeal() {
-  return dietPlan.addMeal()
+  return dietPlanInstance.addMeal()
 }
 
 function removeMealByName(name: string) {
-  dietPlan.remove(name)
+  dietPlanInstance.remove(name)
 }
 
 function getMealByName(name: string) {
-  return dietPlan.get(name)
+  return dietPlanInstance.get(name)
 }
 
 function removeAll() {
@@ -65,7 +101,7 @@ function removeAll() {
 }
 
 function getNewMeal() {
-  return dietPlan.getNewMeal()
+  return dietPlanInstance.getNewMeal()
 }
 
 function addFoodByName(mealName: string, name: string) {
@@ -123,6 +159,7 @@ function createdMeals() {
 }
 
 export default {
+  parseMealList,
   calculate,
   createdMeals,
   getFilledPFCRatio,
