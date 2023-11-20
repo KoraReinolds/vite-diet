@@ -9,7 +9,7 @@ const productSectionData = ref(foodList.getProductData())
 const storageFoodData = computed({
   get() {
     productSectionData.value
-    return foodList.getAllItems().map(food.getParamsFromFood)
+    return foodList.getAllItems().map(food.getProductData)
   },
   set() {}
 }) 

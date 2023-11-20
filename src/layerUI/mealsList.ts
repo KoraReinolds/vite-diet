@@ -11,7 +11,7 @@ const storageMealsData = computed({
     mealNamesList.value
     return dietPlan.getMeals()
       .map(meal => ({
-        childs: dietPlan.getFoodListByMealName(meal.name).map(food.getParamsFromFood),
+        childs: dietPlan.getFoodListByMealName(meal.name).map(food.getProductData),
         name: meal.name,
       }))
   },

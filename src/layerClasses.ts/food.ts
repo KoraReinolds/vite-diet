@@ -20,17 +20,6 @@ function isFoodParams(data: IFoodParams): data is IFoodParams {
     && data.chunks !== undefined
 }
 
-function getParamsFromFood(food: Food) {
-  return {
-    name: food.name,
-    proteins: food.proteins,
-    fats: food.fats,
-    carbohydrates: food.carbohydrates,
-    chunkSize: food.chunkSize, 
-    chunks: food.chunks, 
-  }
-}
-
 function getFoodData(food: Food): IMealInfoData {
   return {
     name: food.name,
@@ -76,7 +65,6 @@ function getFoodDataToChange(food: Food): INewFoodData {
 }
 
 export default {
-  getParamsFromFood,
   isFoodParams,
   getFoodDataToChange,
   createFood,
