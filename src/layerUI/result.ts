@@ -25,8 +25,8 @@ const resultData = computed(() => {
   if (mealName.value !== 'newMeal') return []
   const data = dietPlan.getMealEditableDataByName(mealName.value)
   data.forEach(item => {
-    const min = minValues.value[item.name] || 0
-    const max = maxValues.value[item.name] || 10000
+    const min = minValues.value[item.name] ?? 0
+    const max = maxValues.value[item.name] ?? 10000
     item.min = min
     item.max = max
   })

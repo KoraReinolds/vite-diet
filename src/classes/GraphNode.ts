@@ -1,7 +1,7 @@
 import type { GraphState, IGraphNode } from "@/interfaces/IGraphNode";
 import type { IPrototype } from "@/interfaces/IPrototype";
 import type { Meal } from "./Meal";
-import { PFCEnergyRatio, PFCRatio } from "@/interfaces/PFC";
+import { PFCEnergyRatio } from "@/interfaces/PFC";
 import type { IDietPlan } from "@/interfaces/IDietPlan";
 
 class GraphNode
@@ -48,7 +48,7 @@ implements IPrototype<GraphNode>, IGraphNode {
         chunks = Math.max(1, Math.floor(energyChunk / food.getEnergyChunk()))
       }
       newGraphNode.state[key] = Math.min(
-        this.maxState[key] || +Infinity,
+        this.maxState[key] ?? +Infinity,
         newGraphNode.state[key] + chunks
       )
       return newGraphNode 

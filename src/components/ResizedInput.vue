@@ -8,8 +8,10 @@
     </span>
     <input
       class="absolute w-full right-0 font-bold text-main"
+      ref="input"
       :value="modelValue"
-      @input="$emit('update:modelValue', $event.target?.value)"
+      @input="changeValue"
+      @focus="selectAll"
       type="number"
       :min="min"
       :max="max"
@@ -18,7 +20,9 @@
 </template>
 
 <script setup lang="ts">
-defineEmits<({
+import { ref } from 'vue';
+
+const emit = defineEmits<({
   'update:modelValue': [value: Number]
 })>()
 
@@ -35,6 +39,21 @@ defineProps({
     type: Number,
     required: false,
   },
-
 })
+
+const input = ref(null)
+
+const changeValue = (e: Event) => {
+  emit('update:modelValue', e.target?.value || 0)
+  if (!e.target?.value && input.value) {
+    input.value.value = 0
+  }
+}
+
+const selectAll = (e: Event) => {
+  if (input.value) {
+    input.value?.select()
+  }
+}
+
 </script>

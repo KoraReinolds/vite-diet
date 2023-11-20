@@ -23,18 +23,21 @@
             <td class="px-2 text-start">{{ item.name }}</td>
             <td class="px-2">
               <ResizedInput
+                :min="1"
                 :modelValue="item.portions"
                 @update:model-value="updatePortions(item.name, +$event)"
               />
             </td>
             <td class="px-2">
               <ResizedInput
+                :min="1"
                 :modelValue="item.min"
                 @update:model-value="updateMin(item.name, +$event)"
               />
             </td>
             <td class="px-2">
               <ResizedInput
+                :min="1"
                 :modelValue="item.max"
                 @update:model-value="updateMax(item.name, +$event)"
               />
