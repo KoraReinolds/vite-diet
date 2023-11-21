@@ -1,25 +1,6 @@
-# nutrition
+# [DietPlanner](https://diet-planer.vercel.app/) App
 
-This template should help get you started developing with Vue 3 in Vite.
-
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+*DietPlanner* is an application designed to control nutrition, helping users monitor the caloric content of their food and the ratio of proteins, fats, and carbohydrates. It's distinctive feature is the automatic recalculation of necessary products from a manually created list.
 
 ## Project Setup
 
@@ -50,3 +31,36 @@ npm run test:unit
 ```sh
 npm run lint
 ```
+
+### Description
+
+The application allows users to:
+
+- Customize diet parameters: consumed calories and macronutrient ratios (proteins, fats, and carbohydrates).
+- Create a list of product items.
+- Select products from the list and adjust the range within which product recalculation occurs.
+- Save the results and create a list from multiple calculations.
+
+The project was developed as a practice in OOP patterns for creating a web application.
+
+The Composition pattern was chosen as the main, providing a structure for the application:
+
+`macronutrients` ⇒ `foods` ⇒ `meals`
+
+The calculation of necessary product items are implemented using a greedy search algorithm. The heuristic function in the greedy search algorithm returns a numerical value indicating how closely a specific list of products aligns with the caloric and macronutrient ratio settings. The algorithm is also implemented as classes.
+
+The application has two layers:
+
+- Logic layer providing an API consisting of several functions and hiding implementation details.
+- UI layer with access to the API, utilizing the Vue framework for reactivity.
+
+Advantages of this separation:
+
+- The logic layer is abstracted from the UI and can even be separated into a third party library for use in projects with other frameworks or pure js.
+- Two developers can work on the project simultaneously without conflicts when merging branches.
+
+Drawbacks of this separation:
+
+- Requires more control and effort to ensure reactivity.
+
+[Link to the application](https://diet-planer.vercel.app/)
