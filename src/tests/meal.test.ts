@@ -2,9 +2,8 @@ import { Food } from '@/classes/Food'
 import { expect, test } from 'vitest'
 import { Meal } from '@/classes/Meal'
 import { mockChicken, mockEgg, mockPoridge, type MockFood, chicken, poridge, egg } from './food.test'
-import type { IMealParams } from '@/interfaces/IMealParams'
 
-class MockMeal implements Meal {
+class MockMeal {
   _all: MockFood[] = []
   getAllList(): Food[] {
     return this._all as unknown as Food[]

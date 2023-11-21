@@ -12,7 +12,7 @@ interface IMockFoodParams extends IFoodParams {
   chunkSize: number
 }
 
-class MockFood implements Food {
+class MockFood {
   pfcRatio: PFC
   _all: MockMacronutient[]  
   params: IMockFoodParams

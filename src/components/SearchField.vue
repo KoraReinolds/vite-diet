@@ -10,7 +10,7 @@
       class="w-full bg-proteins text-xs"
       type="text"
       :value="modelValue"
-      @input="$emit('update:modelValue', $event.target?.value)"
+      @input="$emit('update:modelValue', ($event.target as HTMLInputElement)?.value)"
     />
     <IconSearch
       class="md:w-4 md:h-4"

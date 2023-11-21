@@ -9,7 +9,7 @@ interface IMockDietPlanParams extends IDietPlanParams {
   all: MockMeal[]
 }
 
-class MockDietPlan implements DietPlan {
+class MockDietPlan {
   params: IMockDietPlanParams
   constructor(params: IMockDietPlanParams) {
     this.params = params
@@ -148,7 +148,7 @@ dietPlanCheck(
 
 const dp = new DietPlan({
   ...dietPlanParams,
-  childs: [chicken],
+  childs: [new Meal({ childs: [chicken] })],
 })
 dp.add(new Meal({ childs: [chicken, poridge, egg] }))
 dietPlanCheck(

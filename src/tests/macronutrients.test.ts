@@ -3,7 +3,7 @@ import type { PFC } from '@/interfaces/PFC'
 import { expect, test } from 'vitest'
 
 
-abstract class MockMacronutient implements MacroNutrient {
+abstract class MockMacronutient {
 
   chunks: number
   abstract _energy: number

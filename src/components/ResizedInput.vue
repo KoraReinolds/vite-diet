@@ -41,16 +41,17 @@ defineProps({
   },
 })
 
-const input = ref(null)
+const input = ref<HTMLInputElement | null>(null)
 
 const changeValue = (e: Event) => {
-  emit('update:modelValue', e.target?.value || 0)
-  if (!e.target?.value && input.value) {
-    input.value.value = 0
+  const target = e.target as HTMLInputElement
+  emit('update:modelValue', +target?.value || 0)
+  if (!target?.value && input.value) {
+    input.value.value = '0'
   }
 }
 
-const selectAll = (e: Event) => {
+const selectAll = () => {
   if (input.value) {
     input.value?.select()
   }
