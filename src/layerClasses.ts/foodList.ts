@@ -1,10 +1,9 @@
 import { FoodList } from "@/classes/FoodList";
-import type { INewFoodData } from "@/interfaces/ITable";
+import type { INewFoodData, IProductData } from "@/interfaces/ITable";
 import food from "@/layerClasses.ts/food"
 import { FOOD_LIST_KEY } from "./constants";
-import type { IFoodParams } from "@/interfaces/IFoodParams";
 
-function isListOfFoodParams(data: IFoodParams[]): data is IFoodParams[] {
+function isListOfFoodParams(data: IProductData[]): data is IProductData[] {
   return Array.isArray(data)
     && data.every((item) => food.isFoodParams(item))
 }
@@ -14,7 +13,13 @@ function parseFoodList(foodData: string) {
     const data = JSON.parse(foodData)
 
     if (isListOfFoodParams(data)) {
-      return data.map(food.createFood)
+      return data.map(params => food.createFood({
+        name: params.name,
+        proteins: +params.proteins,
+        fats: +params.fats,
+        carbohydrates: +params.carbohydrates,
+        chunks: +params.chunks,
+      }))
     }
 
     throw new Error()
@@ -34,6 +39,13 @@ const foodListInstance = new FoodList(
     food.cherry,
     food.egg,
     food.rice,
+    food.carrot,
+    food.sunflowerOil,
+    food.onion,
+    food.greanBeans,
+    food.cauliflower,
+    food.broccoli,
+    food.pepper,
   ]
 )
 
@@ -49,6 +61,7 @@ function getProductData() {
   return foodListInstance
     .getSelected()
     .map(food.getProductData)
+    .sort((a, b) => (a.name < b.name) ? -1 : 1)
 }
 
 function addNewFood(params: INewFoodData) {

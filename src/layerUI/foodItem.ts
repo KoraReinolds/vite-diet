@@ -32,6 +32,7 @@ function saveFood() {
     foodList.changeFoodData(foodData.value)
   }
   clearFoodData()
+  reloadProductSectionData()
 }
 
 function editFoodDataByName(name: string) {

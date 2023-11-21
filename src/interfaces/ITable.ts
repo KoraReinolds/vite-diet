@@ -4,6 +4,7 @@ interface IProductData {
   proteins: string,
   fats: string,
   carbohydrates: string,
+  chunks: string,
 }
 
 interface IMealEditableData {
