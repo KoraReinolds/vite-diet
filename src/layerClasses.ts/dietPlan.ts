@@ -7,11 +7,11 @@ import { GreedySearch } from "@/classes/GreedySearch";
 import { GraphNode } from "@/classes/GraphNode";
 import { CREATED_FOOD_LIST_KEY } from "./constants";
 import { Meal } from "@/classes/Meal";
-import type { IFoodParams } from "@/interfaces/IFoodParams";
+import type { IProductData } from "@/interfaces/ITable";
 
 interface IStorageMealParams {
   name: string
-  childs: IFoodParams[]
+  childs: IProductData[]
 }
 function isListOfMealParams(data: IStorageMealParams[]): data is IStorageMealParams[] {
   return Array.isArray(data)
@@ -28,7 +28,13 @@ function parseMealList(foodData: string) {
 
     if (isListOfMealParams(data)) {
       return data.map(({ name, childs }) => new Meal({
-        name, childs: childs.map(food.createFood)
+        name, childs: childs.map(params => food.createFood({
+          name: params.name,
+          proteins: +params.proteins,
+          fats: +params.fats,
+          carbohydrates: +params.carbohydrates,
+          chunks: +params.chunks,
+        }))
       }))
     }
 
