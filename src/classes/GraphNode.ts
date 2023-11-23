@@ -39,17 +39,18 @@ implements IPrototype<GraphNode>, IGraphNode {
   }
 
   getNeighbors(): IGraphNode[] {
+    const energyChunk = this.dp.leftKcal / 10
+
     return Object.keys(this.state).map(key => {
       const newGraphNode = this.clone()
       const food = this.meal.get(key)
       let chunks = 1
       if (food) {
-        const energyChunk = this.dp.leftKcal / 10
-        chunks = Math.max(1, Math.floor(energyChunk / food.getEnergyChunk()))
+        chunks = Math.max(1, energyChunk / food.getEnergyChunk())
       }
       newGraphNode.state[key] = Math.min(
         this.maxState[key] ?? +Infinity,
-        newGraphNode.state[key] + chunks
+        newGraphNode.state[key] + Math.floor(chunks)
       )
       return newGraphNode 
     })

@@ -24,11 +24,18 @@ class GreedySearch implements IGreedySearch<IGraphNode> {
 
   search(goal: number): IGraphNode | undefined {
     let iteration = 100
+    let min = +Infinity
+    let minItem
+
     while (iteration) {
       iteration -= 1
       const item = this.pq.dequeue()
       if (item) {
         const h = item.heuristic()
+        if (h < min) {
+          minItem = item
+          min = h
+        }
         if (h < goal) {
           return item
         }
@@ -38,8 +45,10 @@ class GreedySearch implements IGreedySearch<IGraphNode> {
         })
       }
     }
+    
+    minItem?.heuristic()
    
-    return undefined
+    return minItem
   }
 
 }
