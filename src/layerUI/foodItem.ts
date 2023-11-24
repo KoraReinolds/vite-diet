@@ -5,6 +5,7 @@ import { reloadProductSectionData } from "./foodList"
 
 const foodData = ref<INewFoodData>()
 const isNewFood = ref(false)
+const oldName = ref('')
 
 function addNewFood() {
   isNewFood.value = true
@@ -20,6 +21,7 @@ function addNewFood() {
 function clearFoodData() {
   foodData.value = undefined
   isNewFood.value = false
+  oldName.value = ''
 }
 
 function saveFood() {
@@ -29,14 +31,16 @@ function saveFood() {
     foodList.addNewFood(foodData.value)
     reloadProductSectionData()
   } else {
-    foodList.changeFoodData(foodData.value)
+    foodList.changeFoodData(foodData.value, oldName.value)
   }
   clearFoodData()
   reloadProductSectionData()
+  oldName.value = ''
 }
 
 function editFoodDataByName(name: string) {
   foodData.value = foodList.getFoodDataToChangeByName(name)
+  oldName.value = name
 }
 
 export {

@@ -69,8 +69,8 @@ function addNewFood(params: INewFoodData) {
   foodListInstance.add(newFood)
 }
 
-function changeFoodData(params: INewFoodData) {  
-  foodListInstance.remove(params.name)
+function changeFoodData(params: INewFoodData, oldName: string) {  
+  foodListInstance.remove(oldName)
   addNewFood(params)
 }
 

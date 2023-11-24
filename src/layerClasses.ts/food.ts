@@ -65,9 +65,9 @@ function createFood(params: IFoodParams) {
 function getFoodDataToChange(food: Food): INewFoodData {
   return {
     name: food.name,
-    proteins: food.proteins,
-    fats: food.fats,
-    carbohydrates: food.carbohydrates,
+    proteins: food.proteinsChunkPer100,
+    fats: food.fatsChunkPer100,
+    carbohydrates: food.carbohydratesChunkPer100,
     chunkSize: food.chunkSize,
   }
 }
