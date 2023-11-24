@@ -1,66 +1,68 @@
 <template>
-  <Header></Header>
-  <div class="
-    flex flex-col
-    gap-2 lg:gap-3
-  ">
 
-    <SectionPFC
-      :displayNames="['Белки', 'Жиры', 'Углеводы']"
-      :colors="['bg-proteins', 'bg-fats', 'bg-carbohydrates']"
-      :filledRatio="filledData"
-      v-model:percentRatio="pfcRatioArr"
-      v-model:maxValue="totalEnergy"
-      :curentValue="curentEnergy"
-      :selectedName="mealName"
+  <Header></Header>
+ 
+  <SectionPFC
+    class="grow-0"
+    :displayNames="['Белки', 'Жиры', 'Углеводы']"
+    :colors="['bg-proteins', 'bg-fats', 'bg-carbohydrates']"
+    :filledRatio="filledData"
+    v-model:percentRatio="pfcRatioArr"
+    v-model:maxValue="totalEnergy"
+    :curentValue="curentEnergy"
+    :selectedName="mealName"
+  />
+
+  <div class="
+    flex flex-col lg:flex-row
+    gap-2 lg:gap-3
+    max-h-full
+    overflow-y-scroll
+  ">
+    <SectionMealNew
+      v-if="mealName === 'newMeal'"
+      class="lg:w-[50%]"
+      :items="resultData"
+      :title="`Приемы пищи (${mealsCount}) > Новый`"
+      @changeMin="changeMinValues"
+      @changeMax="changeMaxValues"
+      @delete="removeFoodFromMealSection"
+      @cancel="clearSectionMealNew"
+      @save="saveSectionMealNewData"
+    />
+    <SectionMealInfo
+      v-else-if="mealName"
+      class="lg:w-[50%]"
+      :info-data="mealData"
+      :title="`Приемы пищи (${mealsCount}) > ${mealName}`"
+      @back="clearName"
+    />
+    <SectionMeals
+      v-else-if="mealsCount"
+      class="lg:w-[50%]"
+      :title="`Приемы пищи (${mealsCount})`"
+      :list="mealNamesList"
+      @clear="clearMealList"
+      @select="setMealName"
     />
 
-    <div class="
-      flex flex-col lg:flex-row
-      gap-2 lg:gap-3
-    ">
-      <SectionMealNew
-        v-if="mealName === 'newMeal'"
-        :items="resultData"
-        :title="`Приемы пищи (${mealsCount}) > Новый`"
-        @changeMin="changeMinValues"
-        @changeMax="changeMaxValues"
-        @delete="removeFoodFromMealSection"
-        @cancel="clearSectionMealNew"
-        @save="saveSectionMealNewData"
-      />
-      <SectionMealInfo
-        v-else-if="mealName"
-        :info-data="mealData"
-        :title="`Приемы пищи (${mealsCount}) > ${mealName}`"
-        @back="clearName"
-      />
-      <SectionMeals
-        v-else-if="mealsCount"
-        :title="`Приемы пищи (${mealsCount})`"
-        :list="mealNamesList"
-        @clear="clearMealList"
-        @select="setMealName"
-      />
-
-      <SectionFood
-        v-if="foodData"
-        :title="`Продукты (${productSectionData.length})`"
-        v-model="foodData"
-        @cancel="closeSectionFood"
-        @save="saveFood"
-        @delete="deleteFood"
-      />
-      <SectionFoodList
-        v-else
-        :items="productSectionData"
-        @delete="removeFoodFromProductSection"
-        @select="editFoodDataByName"
-        @add="addNewFood"
-      />
-    </div>
-    
+    <SectionFood
+      v-if="foodData"
+      :title="`Продукты (${productSectionData.length})`"
+      v-model="foodData"
+      @cancel="closeSectionFood"
+      @save="saveFood"
+      @delete="deleteFood"
+    />
+    <SectionFoodList
+      v-else
+      :items="productSectionData"
+      @delete="removeFoodFromProductSection"
+      @select="editFoodDataByName"
+      @add="addNewFood"
+    />
   </div>
+    
 </template>
 
 <script setup lang="ts">
