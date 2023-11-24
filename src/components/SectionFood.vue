@@ -2,6 +2,15 @@
   <LayoutSection
     :title="title + ` > ${foodInfo.name || 'Новый продукт'}`"
   >
+
+    <template #headerSide>
+      <AppButton
+        text="Удалить"
+        type="red"
+        @click="$emit('delete')"
+      />
+    </template>
+
     <template #body>
       <div>
         <div
@@ -79,6 +88,7 @@ const emit = defineEmits<({
   'update:modelValue': [value: INewFoodData],
   save: [],
   cancel: [],
+  delete: [],
 })>()
 
 function save() {

@@ -22,6 +22,12 @@ function clearFoodData() {
   foodData.value = undefined
   isNewFood.value = false
   oldName.value = ''
+  reloadProductSectionData()
+}
+
+function deleteFood() {
+  foodList.removeFoodByName(oldName.value) 
+  clearFoodData()
 }
 
 function saveFood() {
@@ -29,13 +35,10 @@ function saveFood() {
 
   if (isNewFood.value) {
     foodList.addNewFood(foodData.value)
-    reloadProductSectionData()
   } else {
     foodList.changeFoodData(foodData.value, oldName.value)
   }
   clearFoodData()
-  reloadProductSectionData()
-  oldName.value = ''
 }
 
 function editFoodDataByName(name: string) {
@@ -46,6 +49,7 @@ function editFoodDataByName(name: string) {
 export {
   editFoodDataByName,
   saveFood,
+  deleteFood,
   clearFoodData,
   foodData,
   addNewFood,

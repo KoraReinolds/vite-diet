@@ -69,8 +69,12 @@ function addNewFood(params: INewFoodData) {
   foodListInstance.add(newFood)
 }
 
+function removeFoodByName(name: string) {
+  foodListInstance.remove(name)
+}
+  
 function changeFoodData(params: INewFoodData, oldName: string) {  
-  foodListInstance.remove(oldName)
+  removeFoodByName(oldName)
   addNewFood(params)
 }
 
@@ -94,4 +98,5 @@ export default {
   getFoodByName,
   togleSelection,
   getProductData,
+  removeFoodByName,
 }

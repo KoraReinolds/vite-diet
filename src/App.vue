@@ -16,8 +16,8 @@
     />
 
     <div class="
+      flex flex-col lg:flex-row
       gap-2 lg:gap-3
-      lg:flex 
     ">
       <SectionMealNew
         v-if="mealName === 'newMeal'"
@@ -49,6 +49,7 @@
         v-model="foodData"
         @cancel="closeSectionFood"
         @save="saveFood"
+        @delete="deleteFood"
       />
       <SectionFoodList
         v-else
@@ -78,6 +79,7 @@ import {
   addNewFood,
   clearFoodData,
   saveFood,
+  deleteFood,
   editFoodDataByName,
 } from './layerUI/foodItem';
 import {
