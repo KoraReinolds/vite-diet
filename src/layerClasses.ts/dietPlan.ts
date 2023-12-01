@@ -8,6 +8,7 @@ import { GraphNode } from "@/classes/GraphNode";
 import { CREATED_FOOD_LIST_KEY } from "./constants";
 import { Meal } from "@/classes/Meal";
 import type { IMealEditableData, IMealInfoData, IProductData } from "@/interfaces/ITable";
+import { getItemByName } from "./composition";
 
 interface IStorageMealParams {
   name: string
@@ -64,6 +65,10 @@ function calculate(
   return gs.search(0.01)
 }
 
+function getInstance() {
+  return dietPlanInstance
+}
+
 function getTotalEnergy() {
   return dietPlanInstance.kcal
 }
@@ -96,10 +101,6 @@ function removeMealByName(name: string) {
   dietPlanInstance.remove(name)
 }
 
-function getMealByName(name: string) {
-  return dietPlanInstance.get(name)
-}
-
 function removeAll() {
   getMeals()
     .map(meal => meal.name)
@@ -111,22 +112,22 @@ function getNewMeal() {
 }
 
 function addFoodByName(mealName: string, name: string) {
-  const food = foodList.getFoodByName(name)
-  const meal = getMealByName(mealName)
+  const food = getItemByName(foodList.getInstance(), name)
+  const meal = getItemByName(getInstance(), mealName)
   if (!food || !meal) return []
   meal.add(food)
   return getFoodListByMealName(mealName)
 }
 
 function removeFoodByName(mealName: string, name: string) {
-  const meal = getMealByName(mealName)
+  const meal = getItemByName(getInstance(), mealName)
   if (!meal) return []
   meal.remove(name)
   return getFoodListByMealName(mealName)
 }
 
 function getFoodListByMealName(name: string) {
-  const meal = getMealByName(name)
+  const meal = getItemByName(getInstance(), name)
   return meal?.getAllList() || [] 
 }
 
@@ -192,7 +193,6 @@ export default {
   getFoodListByMealName,
   addFoodByName,
   removeFoodByName,
-  getMealByName,
   getNewMeal,
   getTotalEnergy,
   setTotalEnergy,

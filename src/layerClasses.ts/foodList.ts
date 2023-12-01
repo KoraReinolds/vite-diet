@@ -3,6 +3,7 @@ import type { INewFoodData, IProductData } from "@/interfaces/ITable";
 import food from "@/layerClasses.ts/food"
 import { FOOD_LIST_KEY } from "./constants";
 import type { Food } from "@/classes/Food";
+import { getItemByName } from "./composition";
 
 function getSelected() {
   return foodListInstance.getSelected()
@@ -54,8 +55,8 @@ const foodListInstance = new FoodList(
   ]
 )
 
-function getFoodByName(name: string) {
-  return foodListInstance.get(name) 
+function getInstance() {
+  return foodListInstance
 }
 
 function togleSelection(name: string) {
@@ -94,7 +95,7 @@ function changeFoodData(params: INewFoodData, oldName: string) {
 }
 
 function getFoodDataToChangeByName(name: string): INewFoodData | undefined {
-  const f = getFoodByName(name)
+  const f = getItemByName(getInstance(), name)
   if (!f) return
   const data = food.getAllData(f)
   return {
@@ -111,6 +112,7 @@ function getAllItems() {
 }
 
 export default {
+  getInstance,
   getSelected,
   isListOfFoodParams,
   parseFoodList,
@@ -118,7 +120,6 @@ export default {
   getFoodDataToChangeByName,
   addNewFood,
   changeFoodData,
-  getFoodByName,
   togleSelection,
   getProductData,
   removeFoodByName,
