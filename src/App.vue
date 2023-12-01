@@ -142,11 +142,11 @@ import IconBadge from './components/IconBadge.vue';
 const selectedSection = ref<'meal' | 'food'>("food")
 const mealSectionClass = computed(() => [
   selectedSection.value === "food" ? "hidden" : "",
-  "sm:flex lg:max-w-[50%]"
+  "sm:flex"
 ])
 const productSectionClass = computed(() => [
   selectedSection.value === "meal" ? "hidden" : "",
-  "sm:flex lg:max-w-[50%]"
+  "sm:flex"
 ])
 function closeSectionFood() {
   clearFoodData()

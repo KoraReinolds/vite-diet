@@ -2,7 +2,7 @@ import { computed, ref } from "vue"
 import dietPlan from "@/layerClasses.ts/dietPlan"
 import { useLocalStorage } from "@vueuse/core"
 import { CREATED_FOOD_LIST_KEY } from "@/layerClasses.ts/constants"
-import food from "@/layerClasses.ts/food"
+import foodList from "@/layerClasses.ts/foodList"
 
 const mealNamesList = ref(dietPlan.createdMeals())
 
@@ -11,7 +11,7 @@ const storageMealsData = computed({
     mealNamesList.value
     return dietPlan.getMeals()
       .map(meal => ({
-        childs: dietPlan.getFoodListByMealName(meal.name).map(food.getProductData),
+        childs: foodList.getProductData(dietPlan.getFoodListByMealName(meal.name)),
         name: meal.name,
       }))
   },

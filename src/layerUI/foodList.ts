@@ -2,14 +2,13 @@ import foodList from "@/layerClasses.ts/foodList"
 import { computed, ref } from "vue"
 import { useLocalStorage } from '@vueuse/core'
 import { FOOD_LIST_KEY } from "@/layerClasses.ts/constants"
-import food from "@/layerClasses.ts/food"
 
-const productSectionData = ref(foodList.getProductData())
+const productSectionData = ref(foodList.getProductData(foodList.getSelected()))
 
 const storageFoodData = computed({
   get() {
     productSectionData.value
-    return foodList.getAllItems().map(food.getProductData)
+    return foodList.getProductData(foodList.getAllItems())
   },
   set() {}
 }) 
@@ -17,7 +16,7 @@ const storageFoodData = computed({
 useLocalStorage(FOOD_LIST_KEY, storageFoodData)
 
 function reloadProductSectionData() {
-  productSectionData.value = foodList.getProductData()
+  productSectionData.value = foodList.getProductData(foodList.getSelected())
 }
 
 function togleFoodSelection(name: string) {

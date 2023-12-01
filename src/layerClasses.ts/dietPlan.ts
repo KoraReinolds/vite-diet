@@ -7,7 +7,7 @@ import { GreedySearch } from "@/classes/GreedySearch";
 import { GraphNode } from "@/classes/GraphNode";
 import { CREATED_FOOD_LIST_KEY } from "./constants";
 import { Meal } from "@/classes/Meal";
-import type { IProductData } from "@/interfaces/ITable";
+import type { IMealEditableData, IMealInfoData, IProductData } from "@/interfaces/ITable";
 
 interface IStorageMealParams {
   name: string
@@ -130,14 +130,32 @@ function getFoodListByMealName(name: string) {
   return meal?.getAllList() || [] 
 }
 
-function getMealInfoDataByName(name: string) {
+function getMealInfoDataByName(name: string): IMealInfoData[] {
   return getFoodListByMealName(name)
-    .map(food.getFoodData)
+    .map((f) => {
+      const data = food.getAllData(f)
+      return {
+        name: data.name,
+        chunks: data.chunks,
+        kcal: data.kcal,
+        proteins: data.proteins,
+        fats: data.fats,
+        carbohydrates: data.carbohydrates,
+      }
+    })
 }
 
-function getMealEditableDataByName(name: string) {
+function getMealEditableDataByName(name: string): IMealEditableData[] {
   return getFoodListByMealName(name)
-    .map(food.getMealEditalbeData)
+    .map(f => {
+      const data = food.getAllData(f)
+      return {
+        name: data.name, 
+        portions: +data.chunks,
+        min: 0,
+        max: 0,
+      }
+    })
 }
 
 function getFilledPFCRatio() {

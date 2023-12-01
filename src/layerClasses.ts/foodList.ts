@@ -2,6 +2,11 @@ import { FoodList } from "@/classes/FoodList";
 import type { INewFoodData, IProductData } from "@/interfaces/ITable";
 import food from "@/layerClasses.ts/food"
 import { FOOD_LIST_KEY } from "./constants";
+import type { Food } from "@/classes/Food";
+
+function getSelected() {
+  return foodListInstance.getSelected()
+}
 
 function isListOfFoodParams(data: IProductData[]): data is IProductData[] {
   return Array.isArray(data)
@@ -57,10 +62,20 @@ function togleSelection(name: string) {
   foodListInstance.togleSelect(name)
 }
 
-function getProductData() {
-  return foodListInstance
-    .getSelected()
-    .map(food.getProductData)
+function getProductData(list: Food[]): IProductData[] {
+  return list
+    .map(f => {
+      const data = food.getAllData(f)
+      return {
+        name: data.name, 
+        kcal: data.kcal100,
+        proteins: data.proteins100,
+        
+        fats: data.fats100,
+        carbohydrates: data.carbohydrates100,
+        chunks: data.chunks,
+      }
+    })
     .sort((a, b) => (a.name < b.name) ? -1 : 1)
 }
 
@@ -78,10 +93,17 @@ function changeFoodData(params: INewFoodData, oldName: string) {
   addNewFood(params)
 }
 
-function getFoodDataToChangeByName(name: string) {
+function getFoodDataToChangeByName(name: string): INewFoodData | undefined {
   const f = getFoodByName(name)
   if (!f) return
-  return food.getFoodDataToChange(f)
+  const data = food.getAllData(f)
+  return {
+    name: data.name,
+    proteins: +data.proteins100,
+    fats: +data.fats100,
+    carbohydrates: +data.carbohydrates100,
+    chunkSize: +data.chunkSize, 
+  }
 }
 
 function getAllItems() {
@@ -89,6 +111,7 @@ function getAllItems() {
 }
 
 export default {
+  getSelected,
   isListOfFoodParams,
   parseFoodList,
   getAllItems,

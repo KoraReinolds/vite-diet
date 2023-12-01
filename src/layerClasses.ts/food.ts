@@ -1,6 +1,7 @@
 import { Food } from "@/classes/Food";
+import type { IFoodData } from "@/interfaces/IFoodData";
 import type { IFoodParams } from "@/interfaces/IFoodParams";
-import type { IMealEditableData, IMealInfoData, INewFoodData, IProductData } from "@/interfaces/ITable"
+import type { IProductData } from "@/interfaces/ITable"
 
 const poridge = new Food({ name: 'овсянка', fats: 5, carbohydrates: 63, proteins: 14 })
 const milk = new Food({ name: 'молоко', fats: 3.2, carbohydrates: 4.7, proteins: 2.9 })
@@ -27,7 +28,7 @@ function isFoodParams(data: IProductData): data is IProductData {
     && data.chunks !== undefined
 }
 
-function getFoodData(food: Food): IMealInfoData {
+function getAllData(food: Food): IFoodData {
   return {
     name: food.name,
     chunks: food.chunks.toFixed(0),
@@ -35,26 +36,11 @@ function getFoodData(food: Food): IMealInfoData {
     proteins: food.proteins.toFixed(1),
     fats: food.fats.toFixed(1),
     carbohydrates: food.carbohydrates.toFixed(1),
-  }
-}
-
-function getProductData(food: Food): IProductData {
-  return {
-    name: food.name, 
-    kcal: food.getEnergyPer100().toFixed(1),
-    proteins: food.proteinsChunkPer100.toFixed(1),
-    fats: food.fatsChunkPer100.toFixed(1),
-    carbohydrates: food.carbohydratesChunkPer100.toFixed(1),
-    chunks: food.chunks.toFixed(0),
-  }
-}
-
-function getMealEditalbeData(food: Food): IMealEditableData {
-  return {
-    name: food.name, 
-    portions: food.chunks,
-    min: 0,
-    max: 0,
+    kcal100: food.getEnergyPer100().toFixed(1),
+    proteins100: food.proteinsChunkPer100.toFixed(1),
+    fats100: food.fatsChunkPer100.toFixed(1),
+    carbohydrates100: food.carbohydratesChunkPer100.toFixed(1),
+    chunkSize: food.chunkSize.toFixed(0),
   }
 }
 
@@ -62,23 +48,9 @@ function createFood(params: IFoodParams) {
   return new Food(params)
 }
 
-function getFoodDataToChange(food: Food): INewFoodData {
-  return {
-    name: food.name,
-    proteins: food.proteinsChunkPer100,
-    fats: food.fatsChunkPer100,
-    carbohydrates: food.carbohydratesChunkPer100,
-    chunkSize: food.chunkSize,
-  }
-}
-
 export default {
   isFoodParams,
-  getFoodDataToChange,
   createFood,
-  getMealEditalbeData,
-  getFoodData,
-  getProductData,
   poridge,
   milk,
   nuts,
@@ -94,4 +66,5 @@ export default {
   cauliflower,
   broccoli,
   pepper,
+  getAllData,
 }
