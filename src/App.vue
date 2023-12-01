@@ -1,27 +1,38 @@
 <template>
 
-  <Header></Header>
- 
-  <SectionPFC
-    class="grow-0"
-    :displayNames="['Белки', 'Жиры', 'Углеводы']"
-    :colors="['bg-proteins', 'bg-fats', 'bg-carbohydrates']"
-    :filledRatio="filledData"
-    v-model:percentRatio="pfcRatioArr"
-    v-model:maxValue="totalEnergy"
-    :curentValue="curentEnergy"
-    :selectedName="mealName"
-  />
-
-  <div class="
-    flex flex-col lg:flex-row
-    gap-2 lg:gap-3
-    max-h-full
-    overflow-y-scroll
+  <Header>
+    <IconProduct
+      class="w-8 h-8"
+      :class="selectedSection === 'food' ? 'text-white' : 'text-main cursor-pointer'"
+      @click="selectedSection = 'food'"
+    />
+    <IconBadge :value="resultData.length">      
+      <IconDish
+        class="w-8 h-8"
+        :class="selectedSection === 'meal' ? 'text-white' : 'text-main cursor-pointer'"
+        @click="selectedSection = 'meal'"
+      />
+    </IconBadge>
+  </Header>
+  
+  <main class="
+    flex gap-2 flex-wrap
   ">
+
+    <SectionPFC
+      class="w-full"
+      :displayNames="['Белки', 'Жиры', 'Углеводы']"
+      :colors="['bg-proteins', 'bg-fats', 'bg-carbohydrates']"
+      :filledRatio="filledData"
+      v-model:percentRatio="pfcRatioArr"
+      v-model:maxValue="totalEnergy"
+      :curentValue="curentEnergy"
+      :selectedName="mealName"
+    />
+
     <SectionMealNew
       v-if="mealName === 'newMeal'"
-      class="lg:w-[50%]"
+      :class="mealSectionClass"
       :items="resultData"
       :title="`Приемы пищи (${mealsCount}) > Новый`"
       @changeMin="changeMinValues"
@@ -32,14 +43,14 @@
     />
     <SectionMealInfo
       v-else-if="mealName"
-      class="lg:w-[50%]"
+      :class="mealSectionClass"
       :info-data="mealData"
       :title="`Приемы пищи (${mealsCount}) > ${mealName}`"
       @back="clearName"
     />
     <SectionMeals
       v-else-if="mealsCount"
-      class="lg:w-[50%]"
+      :class="mealSectionClass"
       :title="`Приемы пищи (${mealsCount})`"
       :list="mealNamesList"
       @clear="clearMealList"
@@ -48,6 +59,7 @@
 
     <SectionFood
       v-if="foodData"
+      :class="productSectionClass"
       :title="`Продукты (${productSectionData.length})`"
       v-model="foodData"
       @cancel="closeSectionFood"
@@ -56,18 +68,22 @@
     />
     <SectionFoodList
       v-else
+      :class="productSectionClass"
       :items="productSectionData"
       @delete="removeFoodFromProductSection"
       @select="editFoodDataByName"
       @add="addNewFood"
     />
-  </div>
+
+  </main>
     
 </template>
 
 <script setup lang="ts">
+import IconProduct from './components/IconProduct.vue';
+import IconDish from './components/IconDish.vue';
 import Header from './components/Header.vue'
-import { watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import SectionPFC from './components/SectionPFC.vue';
 import SectionMealNew from './components/SectionMealNew.vue';
 import SectionFoodList from './components/SectionFoodList.vue';
@@ -121,7 +137,17 @@ import {
 }  from './layerUI/result';
 import SectionMeals from './components/SectionMeals.vue';
 import SectionMealInfo from './components/SectionMealInfo.vue';
+import IconBadge from './components/IconBadge.vue';
 
+const selectedSection = ref<'meal' | 'food'>("food")
+const mealSectionClass = computed(() => [
+  selectedSection.value === "food" ? "hidden" : "",
+  "sm:flex lg:max-w-[50%]"
+])
+const productSectionClass = computed(() => [
+  selectedSection.value === "meal" ? "hidden" : "",
+  "sm:flex lg:max-w-[50%]"
+])
 function closeSectionFood() {
   clearFoodData()
 }
@@ -172,4 +198,4 @@ watch(totalEnergy, calculate)
 watch(minValues, calculate, { deep: true })
 watch(maxValues, calculate, { deep: true })
 
-</script>./layers/layerUI/foodList./layers/layerUI/foodItem./layers/layerUI/energyData./layers/layerUI/pfc./layers/layerUI/mealsList./layers/layerUI/mealName./layers/layerUI/mealData./layers/layerUI/result
+</script>

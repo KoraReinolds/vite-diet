@@ -18,7 +18,7 @@
           <tr
             v-for="item in items"
             :key="item.name"
-            class="text-sm h-8 md:h-10 text-center border border-protein border-x-0"
+            class="text-sm h-10 text-center border border-protein border-x-0"
           >
             <td class="px-2 text-start">{{ item.name }}</td>
             <td class="px-2">

@@ -3,16 +3,15 @@
     title="Соотношение БЖУ"
   >
     <template #headerSide>
-      <div class="text-right flex flex-wrap justify-end items-center space-x-1">
-        <span class="text-sm">Всего&nbsp;ккал </span>
+      <div class="text-sm text-right flex flex-wrap justify-end items-center space-x-1">
         <span>
-          <span> ({{ curentValue.toFixed() }}&nbsp;/&nbsp;</span>
+          <span> {{ curentValue.toFixed() }}&nbsp;/&nbsp;</span>
           <ResizedInput
             :modelValue="maxValue"
             @update:modelValue="$emit('update:maxValue', +$event)"
           />
-          <span>)</span>
         </span>
+        <span>&nbsp;ккал</span>
       </div>
     </template>
     <template #body>
@@ -47,13 +46,14 @@
           :key="name"
           class="flex items-center relative"
         >
-          <div class="w-60 flex justify-between mr-4">
+          <div class="w-72 flex justify-between mr-4">
             <span>
               {{ name }}
             </span>
             <span>
-              ({{ totalMacronutrietnSum(filledRatio[i]) }}
-              / {{ (percentRatio[i] * 100).toFixed() }})<span class="text-xs">%</span>
+              {{ totalMacronutrietnSum(filledRatio[i]) }}
+              / {{ (percentRatio[i] * 100).toFixed() }}
+              <span class="text-xs">%</span>
             </span>
           </div>
 

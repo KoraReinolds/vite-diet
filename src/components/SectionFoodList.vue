@@ -42,7 +42,7 @@
             v-for="item in filteredItems"
             :key="item.name"
             class="
-              h-8 md:h-10
+              h-10
               cursor-pointer
               text-sm text-center
               border border-protein border-x-0
