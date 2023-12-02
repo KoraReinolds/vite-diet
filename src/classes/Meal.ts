@@ -1,4 +1,5 @@
 import { CompositeWithFixedValue } from "./Composite";
+import { DietPlan } from "./DietPlan";
 import type { Food } from "./Food";
 import type { IMealParams } from "@/interfaces/IMealParams";
 
@@ -11,7 +12,7 @@ extends CompositeWithFixedValue<Food> {
     super({
       childs: [],
       chunks: 1,
-      name: 'newMeal',
+      name: DietPlan.NEW_MEAL_NAME,
       ...mealParams,
     })
   }

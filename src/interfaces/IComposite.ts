@@ -15,7 +15,10 @@ interface IMutableChilds<T extends IImmutableComposite<any>> {
   remove(name: string): boolean
 }
 
-interface IComposite<T extends IImmutableComposite<any>>
-extends IImmutableComposite<T>, IMutable<number>, IMutableChilds<T> {}
+interface ICompositeFixedValue<T extends IImmutableComposite<any>>
+extends IImmutableComposite<T>, IMutableChilds<T> {}
 
-export type { IComposite, IImmutableComposite, IMutableChilds }
+interface IComposite<T extends ICompositeFixedValue<any>>
+extends ICompositeFixedValue<T>, IMutable<number> {}
+
+export type { IComposite, IImmutableComposite, IMutableChilds, ICompositeFixedValue }

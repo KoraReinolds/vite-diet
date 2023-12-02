@@ -1,7 +1,5 @@
 import { Food } from "@/classes/Food";
-import type { IFoodData } from "@/interfaces/IFoodData";
 import type { IFoodParams } from "@/interfaces/IFoodParams";
-import type { IProductData } from "@/interfaces/ITable"
 
 const poridge = new Food({ name: 'овсянка', fats: 5, carbohydrates: 63, proteins: 14 })
 const milk = new Food({ name: 'молоко', fats: 3.2, carbohydrates: 4.7, proteins: 2.9 })
@@ -19,52 +17,27 @@ const cauliflower = new Food({ name: 'цветная капусто', proteins: 
 const broccoli = new Food({ name: 'брокколи', proteins: 3, fats: 0.4, carbohydrates: 5.2 })
 const pepper = new Food({ name: 'перец', proteins: 1.3, fats: 0.1, carbohydrates: 5.3 })
 
-function isFoodParams(data: IProductData): data is IProductData {
-  return typeof data === 'object'
-    && data.name !== undefined
-    && data.proteins !== undefined
-    && data.fats !== undefined
-    && data.carbohydrates !== undefined
-    && data.chunks !== undefined
-}
-
-function getAllData(food: Food): IFoodData {
-  return {
-    name: food.name,
-    chunks: food.chunks.toFixed(0),
-    kcal: food.getEnergy().toFixed(1),
-    proteins: food.proteins.toFixed(1),
-    fats: food.fats.toFixed(1),
-    carbohydrates: food.carbohydrates.toFixed(1),
-    kcal100: food.getEnergyPer100().toFixed(1),
-    proteins100: food.proteinsChunkPer100.toFixed(1),
-    fats100: food.fatsChunkPer100.toFixed(1),
-    carbohydrates100: food.carbohydratesChunkPer100.toFixed(1),
-    chunkSize: food.chunkSize.toFixed(0),
-  }
-}
-
 function createFood(params: IFoodParams) {
   return new Food(params)
 }
 
 export default {
-  isFoodParams,
   createFood,
-  poridge,
-  milk,
-  nuts,
-  strawberry,
-  cherry,
-  egg,
-  rice,
-  chicken,
-  carrot,
-  sunflowerOil,
-  onion,
-  greanBeans,
-  cauliflower,
-  broccoli,
-  pepper,
-  getAllData,
+  all: [
+    poridge,
+    milk,
+    nuts,
+    strawberry,
+    cherry,
+    egg,
+    rice,
+    chicken,
+    carrot,
+    sunflowerOil,
+    onion,
+    greanBeans,
+    cauliflower,
+    broccoli,
+    pepper,
+  ],
 }

@@ -74,10 +74,10 @@
 import { type PropType } from 'vue';
 import LayoutSection from './LayoutSection.vue';
 import LayoutTable from './LayoutTable.vue';
-import type { IMealEditableData } from '@/interfaces/ITable';
 import AppButton from './AppButton.vue';
 import IconDelete from './IconDelete.vue';
 import ResizedInput from './ResizedInput.vue';
+import type { IMealEditableData } from '@/interfaces/IData';
 
 const emit = defineEmits<({
   save: [],

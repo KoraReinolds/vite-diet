@@ -59,10 +59,10 @@
 </template>
 
 <script setup lang="ts">
-import type { INewFoodData } from '@/interfaces/ITable';
 import LayoutSection from './LayoutSection.vue';
 import { ref, type PropType } from 'vue';
 import AppButton from './AppButton.vue';
+import type { INewFoodData } from '@/interfaces/IData';
 
 const props = defineProps({
   title: {

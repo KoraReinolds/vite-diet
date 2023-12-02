@@ -1,39 +1,33 @@
-import { computed, ref } from "vue"
-import dietPlan from "@/layerClasses.ts/dietPlan"
+import { computed } from "vue"
 import { useLocalStorage } from "@vueuse/core"
-import { CREATED_FOOD_LIST_KEY } from "@/layerClasses.ts/constants"
-import foodList from "@/layerClasses.ts/foodList"
+import { CREATED_FOOD_LIST_KEY } from "@/layerUtils/constants"
+import mealListData from "@/layerData/mealListData"
+import { getProductDataByMealName } from "@/layerData/mealData"
 
-const mealNamesList = ref(dietPlan.createdMeals())
+const mealNamesList = computed(() =>
+  mealListData.createdMealsData.value
+    .map(meal => meal.name)
+)
 
 const storageMealsData = computed({
   get() {
     mealNamesList.value
-    return dietPlan.getMeals()
-      .map(meal => ({
-        childs: foodList.getProductData(dietPlan.getFoodListByMealName(meal.name)),
-        name: meal.name,
-      }))
+    return mealNamesList.value
+      .map(name => {
+        return ({
+          childs: getProductDataByMealName(name),
+          name,
+        })
+      })
   },
   set() {}
 }) 
 
 useLocalStorage(CREATED_FOOD_LIST_KEY, storageMealsData)
+
 const mealsCount = computed(() => mealNamesList.value.length)
-
-function saveNewMeal() {
-  dietPlan.saveNewMeal()
-  mealNamesList.value = dietPlan.createdMeals()
-}
-
-function clearMealList() {
-  dietPlan.removeAll()
-  mealNamesList.value = dietPlan.createdMeals()
-} 
 
 export {
   mealsCount,
-  saveNewMeal,
   mealNamesList,
-  clearMealList,
 }

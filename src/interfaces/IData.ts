@@ -14,15 +14,6 @@ interface IMealEditableData {
   max: number,
 }
 
-interface IMealInfoData {
-  name: string,
-  chunks: string,
-  kcal: string,
-  proteins: string,
-  fats: string,
-  carbohydrates: string,
-}
-
 interface INewFoodData {
   name: string,
   proteins: number,
@@ -31,4 +22,12 @@ interface INewFoodData {
   chunkSize: number,
 }
 
-export type { IProductData, IMealEditableData, IMealInfoData, INewFoodData }
+interface IMealData {
+  proteins: number
+  carbohydrates: number
+  fats: number
+  energy: number
+  name: string 
+}
+
+export type { IMealData, IProductData, IMealEditableData, INewFoodData }

@@ -81,8 +81,8 @@ import LayoutSection from './LayoutSection.vue';
 import LayoutTable from './LayoutTable.vue';
 import IconAdd from '@/components/IconAdd.vue'
 import SearchField from './SearchField.vue';
-import type { IProductData } from '@/interfaces/ITable';
 import AppButton from './AppButton.vue';
+import type { IProductData } from '@/interfaces/IData';
 
 defineEmits<({
   'delete': [value: string],
@@ -105,3 +105,4 @@ const filteredItems = computed(() => {
 
 </script>
 
+@/interfaces/IData

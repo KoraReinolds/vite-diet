@@ -48,8 +48,8 @@
 import { type PropType } from 'vue';
 import LayoutSection from './LayoutSection.vue';
 import AppButton from './AppButton.vue';
-import type { IMealInfoData } from '@/interfaces/ITable';
 import LayoutTable from './LayoutTable.vue';
+import type { IProductData } from '@/interfaces/IData';
 
 const emit = defineEmits<({
   back: [], 
@@ -57,7 +57,7 @@ const emit = defineEmits<({
 
 defineProps({
   infoData: {
-    type: Object as PropType<IMealInfoData[]>,
+    type: Object as PropType<IProductData[]>,
     required: true,
   },
   title: {

@@ -31,7 +31,7 @@
     />
 
     <SectionMealNew
-      v-if="mealName === 'newMeal'"
+      v-if="isNewMeal"
       :class="mealSectionClass"
       :items="resultData"
       :title="`Приемы пищи (${mealsCount}) > Новый`"
@@ -44,7 +44,7 @@
     <SectionMealInfo
       v-else-if="mealName"
       :class="mealSectionClass"
-      :info-data="mealData"
+      :info-data="mealInfoData"
       :title="`Приемы пищи (${mealsCount}) > ${mealName}`"
       @back="clearName"
     />
@@ -53,7 +53,7 @@
       :class="mealSectionClass"
       :title="`Приемы пищи (${mealsCount})`"
       :list="mealNamesList"
-      @clear="clearMealList"
+      @clear="mealListData.clearMealList"
       @select="setMealName"
     />
 
@@ -90,7 +90,6 @@ import SectionFoodList from './components/SectionFoodList.vue';
 import SectionFood from './components/SectionFood.vue';
 import {
   productSectionData,
-  togleFoodSelection,
 } from './layerUI/foodList';
 import {
   foodData,
@@ -103,15 +102,13 @@ import {
 import {
   curentEnergy,
   totalEnergy,
-} from './layerUI/energyData';
+} from './layerData/energyData';
 import {
   pfcRatioArr,
   filledData,
 } from './layerUI/pfc';
 import {
-  saveNewMeal,
   mealNamesList,
-  clearMealList,
   mealsCount,
 } from './layerUI/mealsList';
 import {
@@ -119,12 +116,8 @@ import {
   mealName,
   setNewMealName,
   clearName,
-} from './layerUI/mealName';
-import {
-  addFood,
-  removeFood,
-  mealData,
-} from './layerUI/mealData';
+  isNewMeal,
+} from './layerData/mealData';
 import {
   resultData,
   minValues,
@@ -138,6 +131,9 @@ import {
 import SectionMeals from './components/SectionMeals.vue';
 import SectionMealInfo from './components/SectionMealInfo.vue';
 import IconBadge from './components/IconBadge.vue';
+import selectedFoodData from './layerData/selectedFoodData';
+import mealListData from './layerData/mealListData';
+import { addFoodByName, removeFoodByName, mealInfoData } from './layerData/mealData';
 
 const selectedSection = ref<'meal' | 'food'>("food")
 const mealSectionClass = computed(() => [
@@ -148,18 +144,19 @@ const productSectionClass = computed(() => [
   selectedSection.value === "meal" ? "hidden" : "",
   "sm:flex"
 ])
+
 function closeSectionFood() {
   clearFoodData()
 }
 
 function removeDataFromMealSection(name: string) {
-  togleFoodSelection(name)
+  selectedFoodData.togleSelection(name)
   removeMaxValue(name)
   removeMinValue(name)
 }
 
 function removeFoodFromMealSection(name: string) {
-  removeFood(name)
+  removeFoodByName(name)
   removeDataFromMealSection(name)
   if (!resultData.value.length) clearName()
   calculate()
@@ -167,8 +164,8 @@ function removeFoodFromMealSection(name: string) {
 
 function removeFoodFromProductSection(name: string) {
   setNewMealName()
-  togleFoodSelection(name)
-  addFood(name)
+  selectedFoodData.togleSelection(name)
+  addFoodByName(name)
   calculate()
 }
 
@@ -176,14 +173,14 @@ function clearSectionMealNew() {
   resultData.value
     .forEach(item => {
       removeDataFromMealSection(item.name)
-      removeFood(item.name)
+      removeFoodByName(item.name)
     })
   clearName()
   calculate()
 }
 
 function saveSectionMealNewData() {
-  saveNewMeal()
+  mealListData.saveNewMeal()
   resultData.value
     .forEach(item => {
       removeDataFromMealSection(item.name)

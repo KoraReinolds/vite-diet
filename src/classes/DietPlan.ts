@@ -7,6 +7,7 @@ import { Meal } from "./Meal";
 class DietPlan
 extends CompositeWithFixedValue<Meal>
 implements IDietPlan {
+  static NEW_MEAL_NAME = 'newMeal'
   private _kcal: number
   private _pfc: PFC
   protected _chunks: number = 1
@@ -40,13 +41,13 @@ implements IDietPlan {
       newMeal.remove(food.name)
       newMeal.add(food.clone())
     })
-    this.remove('newMeal')
+    this.remove(DietPlan.NEW_MEAL_NAME)
     newMeal.rename(newName)
     this.add(newMeal)
   }
   
   getNewMeal(): Meal {
-    return this.get('newMeal') || this.add(new Meal())
+    return this.get(DietPlan.NEW_MEAL_NAME) || this.add(new Meal())
   }
 
   get leftKcal() {

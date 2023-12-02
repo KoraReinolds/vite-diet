@@ -1,13 +1,8 @@
 import { computed } from "vue"
+import { pfcRatio } from "@/layerData/pfcData"
+import mealListData from "@/layerData/mealListData"
 import { resultData } from "./result"
-import { useReactive } from "@/composables/useReactive"
-import dietPlan from "@/layerClasses.ts/dietPlan"
-import { mealsCount } from "./mealsList"
-
-const pfcRatio = useReactive(
-  dietPlan.getPFCRatio,
-  dietPlan.setPFCRatio
-)
+import { groupMealListDataByName } from "@/layerData/mealData"
 
 const pfcRatioArr = computed({
   get: () => Object.values(pfcRatio.value),
@@ -18,9 +13,14 @@ const pfcRatioArr = computed({
 
 const filledData = computed(() => {
   resultData.value
-  mealsCount.value
-  return dietPlan.getFilledPFCRatio()
-})
+
+  const mealsData = mealListData.getMealData()
+  return [
+    groupMealListDataByName(mealsData, 'proteins'),
+    groupMealListDataByName(mealsData, 'fats'),
+    groupMealListDataByName(mealsData, 'carbohydrates'),
+  ]}
+)
 
 export {
   pfcRatioArr,

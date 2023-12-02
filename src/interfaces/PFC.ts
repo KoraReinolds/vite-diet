@@ -1,4 +1,3 @@
-import type { AComposite } from "@/classes/Composite";
 import { Carbohydrates, Fats, Proteins } from "@/classes/MacroNutrient";
 
 type PFC = { proteins: number, carbohydrates: number, fats: number }

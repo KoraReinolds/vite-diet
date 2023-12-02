@@ -1,7 +1,7 @@
-import type { INewFoodData } from "@/interfaces/ITable"
-import foodList from "@/layerClasses.ts/foodList"
+import type { INewFoodData } from "@/interfaces/IData"
 import { ref } from "vue"
-import { reloadProductSectionData } from "./foodList"
+import foodListData from "@/layerData/foodListData"
+import utilsData from "@/layerUtils/utilsData"
 
 const foodData = ref<INewFoodData>()
 const isNewFood = ref(false)
@@ -22,11 +22,10 @@ function clearFoodData() {
   foodData.value = undefined
   isNewFood.value = false
   oldName.value = ''
-  reloadProductSectionData()
 }
 
 function deleteFood() {
-  foodList.removeFoodByName(oldName.value) 
+  foodListData.removeFoodByName(oldName.value)
   clearFoodData()
 }
 
@@ -34,15 +33,20 @@ function saveFood() {
   if (!foodData.value) return 
 
   if (isNewFood.value) {
-    foodList.addNewFood(foodData.value)
+    foodListData.addNewFood(foodData.value)
   } else {
-    foodList.changeFoodData(foodData.value, oldName.value)
+    foodListData.changeFoodData(foodData.value, oldName.value)
   }
   clearFoodData()
 }
 
 function editFoodDataByName(name: string) {
-  foodData.value = foodList.getFoodDataToChangeByName(name)
+  foodData.value = utilsData.getNewFoodDataFromFoodData(
+    utilsData.getItemByName(
+      foodListData.allFoodData.value,
+      name
+    )
+  )
   oldName.value = name
 }
 
