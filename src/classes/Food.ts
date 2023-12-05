@@ -1,11 +1,11 @@
 import { ImmutableCompositeWithMutableValue } from "./Composite";
-import { Carbohydrates, Fats, Proteins, MacroNutrient } from "./MacroNutrient";
+import { Carbohydrates, Fats, Proteins, AMacroNutrient } from "./MacroNutrient";
 import type { IFoodParams } from "@/interfaces/IFoodParams";
 import type { IPer100Chunks } from "@/interfaces/IChunks";
 import type { IPrototype } from "@/interfaces/IPrototype";
 
 class Food
-extends ImmutableCompositeWithMutableValue<MacroNutrient>
+extends ImmutableCompositeWithMutableValue<AMacroNutrient>
 implements IPer100Chunks, IPrototype<Food> {
  
   constructor(foodParams: IFoodParams) {

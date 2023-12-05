@@ -1,5 +1,5 @@
 import { Food } from '@/classes/Food'
-import { type MacroNutrient } from '@/classes/MacroNutrient'
+import { type AMacroNutrient } from '@/classes/MacroNutrient'
 import type { IFoodParams } from '@/interfaces/IFoodParams'
 import type { PFC } from '@/interfaces/PFC'
 import { expect, test } from 'vitest'
@@ -29,8 +29,8 @@ class MockFood {
       new MockCarbohydrates(this.pfcRatio.carbohydrates)
     ]
   }
-  getAllList(): MacroNutrient[] {
-    return this._all as unknown as MacroNutrient[]
+  getAllList(): AMacroNutrient[] {
+    return this._all as unknown as AMacroNutrient[]
   }
   _getEnergy(): number {
     return this.getAllList().reduce((sum, cur) => {

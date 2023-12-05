@@ -1,4 +1,4 @@
-import { Fats, Proteins, type MacroNutrient, Carbohydrates } from '@/classes/MacroNutrient'
+import { Fats, Proteins, type AMacroNutrient, Carbohydrates } from '@/classes/MacroNutrient'
 import type { PFC } from '@/interfaces/PFC'
 import { expect, test } from 'vitest'
 
@@ -41,7 +41,7 @@ abstract class MockMacronutient {
     }
   }
 
-  getAllList(): MacroNutrient[] {
+  getAllList(): AMacroNutrient[] {
     return []
   }
 
@@ -49,7 +49,7 @@ abstract class MockMacronutient {
     return this._energy * 100 
   }
 
-  get(name: string): MacroNutrient | undefined {
+  get(name: string): AMacroNutrient | undefined {
     return undefined
   }
 
@@ -133,7 +133,7 @@ class MockProteins extends MockMacronutient {
   }
 }
 
-const macronutrientCheck = (testName: string, mn: MacroNutrient, mock: MockMacronutient) => {
+const macronutrientCheck = (testName: string, mn: AMacroNutrient, mock: MockMacronutient) => {
   
   test(testName + 'fats', () => {
     expect(mn.fats).toBe(mock.fats)

@@ -1,8 +1,8 @@
 import { ImmutableComposite } from "./Composite";
 import type { ILeafParams } from "@/interfaces/ICompositeParams";
 
-class MacroNutrient
-extends ImmutableComposite<MacroNutrient> {
+abstract class AMacroNutrient
+extends ImmutableComposite<AMacroNutrient> {
   protected _energyPerGram!: number;
 
   constructor({ chunks, energyPerGram, name }: ILeafParams) {
@@ -32,7 +32,7 @@ extends ImmutableComposite<MacroNutrient> {
 
 }
 
-class Fats extends MacroNutrient {
+class Fats extends AMacroNutrient {
   constructor(chunks: number) {
     super({ chunks, energyPerGram: 9.3, name: 'fats' })
   }
@@ -43,7 +43,7 @@ class Fats extends MacroNutrient {
     return 1
   }
 }
-class Proteins extends MacroNutrient {
+class Proteins extends AMacroNutrient {
   constructor(chunks: number) {
     super({ chunks, energyPerGram: 4.2, name: 'proteins' })
   }
@@ -54,7 +54,7 @@ class Proteins extends MacroNutrient {
     return 1
   }
 }
-class Carbohydrates extends MacroNutrient {
+class Carbohydrates extends AMacroNutrient {
   constructor(chunks: number) {
     super({ chunks, energyPerGram: 4.2, name: 'carbohydrates' })
   }
@@ -70,5 +70,5 @@ export {
   Fats,
   Proteins,
   Carbohydrates,
-  MacroNutrient,
+  AMacroNutrient,
 }
