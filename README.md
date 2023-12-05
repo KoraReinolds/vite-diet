@@ -18,55 +18,55 @@ The project was developed as a practice in OOP patterns for creating a web appli
 The `Composite` pattern was chosen as the main, providing a structure for the application:
 `macronutrients` ⇒ `foods` ⇒ `meals`
 
+___
 ### `AComposite` class
-___
 Represents a unified interface for working with a tree-like structure of objects.
-### `Decorators`
 ___
+### `Decorators`
 Complements the immutable class `AComposite` with methods allowing state modifications:
 - `MutableValue` - enables changing the value after initialization
 - `MutableChilds` - allows changing the structure after initialization
 This results in 4 composite classes with different behaviors: `Composite`, `ImmutableComposite`, `CompositeWithFixedValue`, `ImmutableCompositeWithMutableValue`
+___
 ### `AMacroNutrient` class
 ##### extends `ImmutableComposite`
-___
 Is a leaf node in the composite hierarchy.
 Ddefines the structure for macronutrient classes: `Fats`, `Carbohydrates`, `Proteins`
+___
 ### `Food` class
 ##### extends `ImmutableCompositeWithMutableValue`<`AMacroNutrient`>
-___
 Composite class containing a single macronutrient each and does not allow changes to this structure after creation.
 Also implements the `clone()` method following the `Prototype` pattern.
+___
 ### `FoodList` class
 ##### extends `CompositeWithFixedValue`<`Food`>
-___
 Composite class containing a list of products used in the application.
 Also implements methods for selecting products.
+___
 ### `Meal` class
 ##### extends `CompositeWithFixedValue`<`Food`>
-___
 Composite class representing a meal containing multiple food items.
+___
 ### `DietPlan` class
 ##### extends `CompositeWithFixedValue`<`Meal`>
-___
 Composite class representing a list containing multiple meals.
 Contains information necessary for calculating an optimal meal plan.
 
 ## Algorythm details
 The calculation of necessary product items are implemented using a greedy search algorithm. The heuristic function in the greedy search algorithm returns a numerical value indicating how closely a specific list of products aligns with the caloric and macronutrient ratio settings. The algorithm is also implemented as classes.
 
-### `GreedySearch` class
 ___
+### `GreedySearch` class
 Class implementing a greedy search algorithm. It has a search() method for finding solutions.
 Encapsulates implementation details and can be replaced by another class implementing a different algorithm with the same interface.
 
-### `GraphNode` class
 ___
+### `GraphNode` class
 Class encapsulating logic related to the search. Contains methods:
 - `getNeighbors()` for obtaining neighboring `GraphNodes`
 - `heuristic()` for calculating how close the state in the `GraphNode` is to the optimal state.
-### `PriorityQueue`, `PriorityQueueMin`, `Comparable` classes
 ___
+### `PriorityQueue`, `PriorityQueueMin`, `Comparable` classes
 Auxiliary classes implementing data structures necessary for the `GreedySearch`.
 
 ## Application structure
