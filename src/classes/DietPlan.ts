@@ -30,7 +30,11 @@ implements IDietPlan {
   }
   
   _getName(): string {
-    return `Meal-${this._counter++}`
+    let name = `Meal-${this._counter++}`
+    while (this.get(name)) {
+      name = `Meal-${this._counter++}`
+    }
+    return name
   }
 
   addMeal(): void {
