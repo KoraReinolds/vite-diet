@@ -10,6 +10,7 @@ function isProductData(data: IProductData): data is IProductData {
     && data.fats !== undefined
     && data.carbohydrates !== undefined
     && data.chunks !== undefined
+    && data.chunkSize !== undefined
 }
 
 function isListOfProductData(data: IProductData[]): data is IProductData[] {
@@ -25,6 +26,7 @@ function getProductData(data: IFoodData): IProductData {
     fats: data.fats100,
     carbohydrates: data.carbohydrates100,
     chunks: data.chunks,
+    chunkSize: data.chunkSize,
   }
 }
 
@@ -35,6 +37,7 @@ function getFoodParamsFromProductData(data: IProductData): IFoodParams {
     fats: +data.fats,
     carbohydrates: +data.carbohydrates,
     chunks: +data.chunks,
+    chunkSize: +data.chunkSize,
   }
 }
 
