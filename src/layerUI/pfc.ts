@@ -13,6 +13,7 @@ const pfcRatioArr = computed({
 
 const filledData = computed(() => {
   resultData.value
+  mealListData.createdMealsData.value
 
   const mealsData = mealListData.getMealData()
   return [

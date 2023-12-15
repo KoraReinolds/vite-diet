@@ -1,5 +1,4 @@
 import { DietPlan } from "@/classes/DietPlan"
-// import { getMealList, removeMeals, saveNewMeal } from "@/layerClasses.ts/mealList"
 import mealList from "@/layerClasses.ts/mealList"
 import { computed, ref } from "vue"
 import type { Meal } from "@/classes/Meal"
