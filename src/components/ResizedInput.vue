@@ -45,7 +45,11 @@ const input = ref<HTMLInputElement | null>(null)
 
 const changeValue = (e: Event) => {
   const target = e.target as HTMLInputElement
-  emit('update:modelValue', +target?.value || 0)
+  const value = Math.min(
+    Math.max(0, +target?.value || 0),
+    10000
+  )
+  emit('update:modelValue', value)
   if (!target?.value && input.value) {
     input.value.value = '0'
   }

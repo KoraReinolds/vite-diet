@@ -138,11 +138,11 @@ import { addFoodByName, removeFoodByName, mealInfoData } from './layerData/mealD
 const selectedSection = ref<'meal' | 'food'>("food")
 const mealSectionClass = computed(() => [
   selectedSection.value === "food" ? "hidden" : "",
-  "sm:flex"
+  "sm:flex flex-1"
 ])
 const productSectionClass = computed(() => [
   selectedSection.value === "meal" ? "hidden" : "",
-  "sm:flex"
+  "sm:flex flex-1"
 ])
 
 function closeSectionFood() {

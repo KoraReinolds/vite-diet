@@ -24,6 +24,7 @@
             <td class="px-2">
               <ResizedInput
                 :min="1"
+                :max="10000"
                 :modelValue="item.portions"
                 @update:model-value="updatePortions(item.name, +$event)"
               />
@@ -31,6 +32,7 @@
             <td class="px-2">
               <ResizedInput
                 :min="1"
+                :max="10000"
                 :modelValue="item.min"
                 @update:model-value="updateMin(item.name, +$event)"
               />
@@ -38,6 +40,7 @@
             <td class="px-2">
               <ResizedInput
                 :min="1"
+                :max="10000"
                 :modelValue="item.max"
                 @update:model-value="updateMax(item.name, +$event)"
               />
