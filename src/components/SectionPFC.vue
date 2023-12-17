@@ -15,30 +15,21 @@
       </div>
     </template>
     <template #body>
-      <RangeBar
+      <BarRange
         :model-value="percentRatio"
         @update:model-value="$emit('update:percentRatio', $event)"
       >
         <div class="h-3 flex items-center w-full overflow-hidden">
-          <div
+          <BarPercent
             v-for="(val, i) in percentRatio"
             :key="displayNames[i]"
-            class="h-2 bg-text flex"
-            :style="{ flex: val }"
-          >
-              <span
-                v-for="(innerVal, key) in filledRatio[i]"
-                :key="displayNames[i] + key"
-                class="h-full inline-block overflow-hidden shrink-0"
-                :data-name="key"
-                :class="key === selectedName ? 'bg-main' : colors[i]"
-                :style="{
-                  width: `${innerVal * curentValue / maxValue / val * 100}%`,
-                }"
-              ></span>
-          </div>
+            :percentValue="val"
+            :selectedName="selectedName"
+            :filled="filledRatio[i]"
+            :color="colors[i]"
+          />
         </div>
-      </RangeBar>
+      </BarRange>
 
       <div class="flex-col font-bold text-sm justify-between">
         <div
@@ -60,27 +51,12 @@
           <div
             class="flex items-center h-2 w-full overflow-hidden relative"
           >
-            <div
-              v-for="(val, key) in filledRatio[i]"
-              :key="displayNames[i] + key"
-              class="h-2"
-              :data-name="key"
-              :class="key === selectedName ? 'bg-main' : colors[i]"
-              :style="{
-                width: `${val * 100}%`,
-              }"
-            >
-            </div>
-            <span
-              class="h-[1px] bg-text absolute"
-              :style="{ width: percentRatio[i] * 100 + '%' }"
-            >
-            </span>
-            <span
-              class="h-3 w-[1px] bg-text absolute"
-              :style="{ left: percentRatio[i] * 100 + '%' }"
-            >
-            </span>
+            <BarPercent
+              :percentValue="percentRatio[i]"
+              :selectedName="selectedName"
+              :filled="filledRatio[i]"
+              :color="colors[i]"
+            />
           </div>
         </div>
       </div>
@@ -91,7 +67,8 @@
 <script setup lang="ts">
 import LayoutSection from './LayoutSection.vue'
 import ResizedInput from '@/components/ResizedInput.vue';
-import RangeBar from '@/components/RangeBar.vue';
+import BarRange from '@/components/BarRange.vue';
+import BarPercent from '@/components/BarPercent.vue';
 import { type PropType } from 'vue';
 
 defineProps({
