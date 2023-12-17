@@ -98,11 +98,13 @@ const props = defineProps({
 })
 
 const search = ref('')
-const searchFilter = ((item: IProductData) => item.name.startsWith(search.value))
+
 const filteredItems = computed(() => {
-  return props.items.filter(searchFilter)
+  const regex = new RegExp(`(?=.*${search.value.split('').join(')(?=.*')})`, 'i')
+
+  const filteredArray = props.items.filter(item => regex.test(item.name))
+
+  return filteredArray
 })
 
 </script>
-
-@/interfaces/IData
